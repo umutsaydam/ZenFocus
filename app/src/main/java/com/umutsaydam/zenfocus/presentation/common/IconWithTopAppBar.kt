@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.presentation.settings
+package com.umutsaydam.zenfocus.presentation.common
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api

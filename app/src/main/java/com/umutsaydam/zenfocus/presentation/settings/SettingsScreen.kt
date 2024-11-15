@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
+import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 
 @Composable
 fun SettingsScreen(
