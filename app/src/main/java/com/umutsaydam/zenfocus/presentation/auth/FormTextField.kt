@@ -1,0 +1,76 @@
+package com.umutsaydam.zenfocus.presentation.auth
+
+import android.content.res.Configuration
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.umutsaydam.zenfocus.presentation.Dimens.BORDER_SMALL
+import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
+
+@Composable
+fun FormTextField(
+    formTitle: String,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    placeHolder: String,
+    keyboardOptions: KeyboardOptions
+) {
+    Text(
+        text = formTitle
+    )
+    TextField(
+        modifier = Modifier
+
+            .fillMaxWidth(),
+        value = value,
+        onValueChange = { onValueChanged(value) },
+        label = { Text(formTitle) },
+        placeholder = { Text(placeHolder) },
+        keyboardOptions = keyboardOptions,
+        singleLine = true,
+        maxLines = 1,
+        shape = RoundedCornerShape(CORNER_SMALL),
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.White
+        )
+    )
+}
+
+
+@Preview(
+    name = "Light Mode",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Composable
+fun FormTextFieldPreview(modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier.padding(all = 50.dp)
+    ) {
+        FormTextField(
+            formTitle = "Email",
+            value = "",
+            onValueChanged = {},
+            placeHolder = "",
+            keyboardOptions = KeyboardOptions()
+        )
+    }
+}

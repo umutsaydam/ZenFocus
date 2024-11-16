@@ -16,5 +16,15 @@
                     "\n"
                     "Elementum nam himenaeos parturient; dignissim sodales purus libero. Dapibus hac penatibus ultricies pretium; iaculis quis sit tincidunt. Penatibus feugiat commodo turpis porta ridiculus hendrerit neque mattis. Pretium integer sagittis ac arcu vivamus luctus dictum. Dapibus cubilia luctus massa tortor mollis tristique diam varius. Nulla ex platea ipsum lectus duis? Pharetra urna morbi leo eget molestie bibendum vestibulum. Conubia tortor convallis netus; efficitur tristique suspendisse aliquet aliquet.",
     </string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="email">Email</string>
+    <string name="enter_email">Enter your email</string>
+    <string name="password">Password</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="or_sign_in_with">Or Sign in With</string>
+    <string name="or_sign_up_with">Or Sign up With</string>
+    <string name="google">Google</string>
+    <string name="join_with_google">Join with google</string>
 
 </resources>

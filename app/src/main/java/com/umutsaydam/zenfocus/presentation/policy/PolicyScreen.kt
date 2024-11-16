@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.LINE_HEIGHT_MEDIUM
-import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM
+import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.TEXT_INDENT_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 
@@ -54,7 +54,7 @@ fun PolicyScreen(
                 )
                 .padding(
                     vertical = paddingValues.calculateTopPadding(),
-                    horizontal = PADDING_MEDIUM
+                    horizontal = PADDING_MEDIUM2
                 ),
             text = stringResource(R.string.lorem_ipsum),
             color = MaterialTheme.colorScheme.outline,
