@@ -19,6 +19,7 @@ object Dimens {
     const val WEIGHT_LARGE = 0.85f
 
     val CORNER_SMALL = 5.dp
+    val CORNER_MEDIUM = 10.dp
 
     val SIZE_SMALL = 17.dp
     val SIZE_MEDIUM = 25.dp
