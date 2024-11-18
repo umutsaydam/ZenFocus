@@ -26,5 +26,9 @@
     <string name="or_sign_up_with">Or Sign up With</string>
     <string name="google">Google</string>
     <string name="join_with_google">Join with google</string>
+    <string name="open_side_menu">Open side menu</string>
+    <string name="pomodoro_times">Select pomodoro times</string>
+    <string name="pomodoro_start">Start pomodoro</string>
+    <string name="pomodoro_sounds">Pomodoro sounds</string>
 
 </resources>

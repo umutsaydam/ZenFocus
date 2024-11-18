@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.umutsaydam.zenfocus.presentation.appearance.AppearanceScreen
+import com.umutsaydam.zenfocus.presentation.home.HomeScreen
 import com.umutsaydam.zenfocus.ui.theme.ZenFocusTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ZenFocusTheme {
-                AppearanceScreen()
+                HomeScreen()
             }
         }
     }
