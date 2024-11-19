@@ -1,14 +1,16 @@
 package com.umutsaydam.zenfocus.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,13 +20,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
+import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
+import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.auth.FormTextField
 
 @Composable
@@ -62,19 +65,25 @@ fun AddToDo(
             )
         )
 
-        IconButton(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(BUTTON_HEIGHT_MEDIUM),
-            onClick = {
-                onClick(toDoTask)
-            },
-            enabled = toDoTask.isNotEmpty()
+                .padding(horizontal = PADDING_MEDIUM2),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_add),
-                contentDescription = stringResource(R.string.add_to_do_button)
-            )
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(BUTTON_HEIGHT_MEDIUM),
+                onClick = {
+                    onClick(toDoTask)
+                },
+                enabled = toDoTask.isNotEmpty()
+            ) {
+                Text(
+                    text = stringResource(R.string.select)
+                )
+            }
         }
     }
 }

@@ -31,5 +31,6 @@
     <string name="pomodoro_start">Start pomodoro</string>
     <string name="pomodoro_sounds">Pomodoro sounds</string>
     <string name="add_to_do_button">Add to do button</string>
+    <string name="select">Select</string>
 
 </resources>

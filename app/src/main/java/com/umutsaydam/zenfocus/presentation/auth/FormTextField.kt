@@ -36,10 +36,9 @@ fun FormTextField(
     )
     TextField(
         modifier = Modifier
-
             .fillMaxWidth(),
         value = value,
-        onValueChange = { onValueChanged(value) },
+        onValueChange = { onValueChanged(it) },
         placeholder = { Text(placeHolder) },
         keyboardOptions = keyboardOptions,
         singleLine = true,
