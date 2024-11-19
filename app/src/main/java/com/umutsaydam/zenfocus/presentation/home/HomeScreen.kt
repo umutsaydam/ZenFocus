@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -19,6 +21,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +44,10 @@ import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
+    var bottomSheetState by remember {
+        mutableStateOf(false)
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -157,9 +168,23 @@ fun HomeScreen(
                     alignment = Alignment.BottomEnd,
                     containerColor = MaterialTheme.colorScheme.outlineVariant,
                     fabIcon = painterResource(R.drawable.ic_add),
-                    contentDescription = stringResource(R.string.add_to_do_button)
-                ) {
-                    //TODO perform click
+                    contentDescription = stringResource(R.string.add_to_do_button),
+                    onClick = {
+                        bottomSheetState = true
+                    }
+                )
+
+                if (bottomSheetState) {
+                    CustomBottomSheet(
+                        onDismissRequest = {
+                            bottomSheetState = false
+                        },
+                        content = {
+                            AddToDo { newTask ->
+                                //TODO add newTask
+                            }
+                        }
+                    )
                 }
             }
         }

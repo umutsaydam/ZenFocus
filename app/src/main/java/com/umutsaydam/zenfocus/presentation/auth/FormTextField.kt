@@ -1,25 +1,20 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
 import android.content.res.Configuration
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.umutsaydam.zenfocus.presentation.Dimens.BORDER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 
 @Composable
@@ -28,7 +23,13 @@ fun FormTextField(
     value: String,
     onValueChanged: (String) -> Unit,
     placeHolder: String,
-    keyboardOptions: KeyboardOptions
+    keyboardOptions: KeyboardOptions,
+    colors: TextFieldColors = TextFieldDefaults.colors(
+        focusedIndicatorColor = Color.Transparent,
+        unfocusedIndicatorColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.White
+    )
 ) {
     Text(
         text = formTitle
@@ -39,18 +40,12 @@ fun FormTextField(
             .fillMaxWidth(),
         value = value,
         onValueChange = { onValueChanged(value) },
-        label = { Text(formTitle) },
         placeholder = { Text(placeHolder) },
         keyboardOptions = keyboardOptions,
         singleLine = true,
         maxLines = 1,
         shape = RoundedCornerShape(CORNER_SMALL),
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.White
-        )
+        colors = colors
     )
 }
 

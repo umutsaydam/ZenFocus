@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
+import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 
@@ -38,7 +38,7 @@ fun CustomFab(
             onClick = {
                 onClick()
             },
-            shape = RoundedCornerShape(CORNER_SMALL),
+            shape = RoundedCornerShape(CORNER_MEDIUM),
             containerColor = containerColor,
             contentColor = contentColor,
         ) {
