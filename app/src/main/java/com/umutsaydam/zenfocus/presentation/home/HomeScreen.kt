@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.umutsaydam.zenfocus.R
@@ -46,12 +45,12 @@ fun HomeScreen(
                 shape = RectangleShape
             )
     ) {
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = painterResource(R.drawable.lofi1),
-            contentDescription = "Selected theme",
-            contentScale = ContentScale.Fit
-        )
+//        Image(
+//            modifier = Modifier.fillMaxSize(),
+//            painter = painterResource(R.drawable.lofi1),
+//            contentDescription = "Selected theme",
+//            contentScale = ContentScale.Fit
+//        )
 
         Scaffold(
             modifier = modifier,
@@ -110,7 +109,10 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(SPACE_MEDIUM))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(PADDING_SMALL, Alignment.CenterHorizontally)
+                    horizontalArrangement = Arrangement.spacedBy(
+                        PADDING_SMALL,
+                        Alignment.CenterHorizontally
+                    )
                 ) {
                     FocusControlButtons(
                         onClick = {
@@ -133,6 +135,31 @@ fun HomeScreen(
                         painterResource = painterResource(R.drawable.ic_music),
                         contentDescription = stringResource(R.string.pomodoro_sounds)
                     )
+                }
+
+                val toDoList = listOf(
+                    "Study Algorithm",
+                    "Read a book",
+                    "Review the codes"
+                )
+                LazyToDoList(
+                    toDoList = toDoList
+                ) { index ->
+                    ToDoListItem(
+                        toDoTitle = toDoList[index],
+                        onClick = {
+
+                        }
+                    )
+                }
+
+                CustomFab(
+                    alignment = Alignment.BottomEnd,
+                    containerColor = MaterialTheme.colorScheme.outlineVariant,
+                    fabIcon = painterResource(R.drawable.ic_add),
+                    contentDescription = stringResource(R.string.add_to_do_button)
+                ) {
+                    //TODO perform click
                 }
             }
         }
