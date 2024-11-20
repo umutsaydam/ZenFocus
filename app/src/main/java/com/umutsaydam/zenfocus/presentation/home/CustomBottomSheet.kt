@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
+import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
