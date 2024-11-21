@@ -4,4 +4,5 @@ sealed class BottomSheetContent {
     data object PomodoroTimes : BottomSheetContent()
     data object PomodoroSounds : BottomSheetContent()
     data object AddToDo : BottomSheetContent()
+    data object FocusMode : BottomSheetContent()
 }

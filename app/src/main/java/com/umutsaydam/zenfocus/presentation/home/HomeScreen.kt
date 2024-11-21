@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,16 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
-import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_XLARGE
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
-import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
 
@@ -137,20 +132,9 @@ fun HomeScreen(
                 Box(
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(SIZE_XLARGE),
-                        progress = {
-                            0.6f
-                        },
-                        color = MaterialTheme.colorScheme.onBackground,
-                        strokeWidth = STROKE_MEDIUM,
-                        trackColor = MaterialTheme.colorScheme.outlineVariant,
-                        strokeCap = StrokeCap.Round,
-                    )
-                    Text(
-                        text = "25:00",
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium
+                    CircularProgressWithText(
+                        progress = 0.6f,
+                        text = "25:00"
                     )
                 }
                 Spacer(modifier = Modifier.height(SPACE_MEDIUM))
@@ -171,7 +155,8 @@ fun HomeScreen(
                     )
                     FocusControlButtons(
                         onClick = {
-                            //TODO perform click
+                            currentSheetContent = BottomSheetContent.FocusMode
+                            bottomSheetState = true
                         },
                         painterResource = painterResource(R.drawable.ic_play_arrow),
                         contentDescription = stringResource(R.string.pomodoro_start)
@@ -268,6 +253,10 @@ fun HomeScreen(
                                     ) { newSliderPosition ->
                                         sliderPosition = newSliderPosition
                                     }
+                                }
+
+                                BottomSheetContent.FocusMode -> {
+
                                 }
 
                                 null -> Unit

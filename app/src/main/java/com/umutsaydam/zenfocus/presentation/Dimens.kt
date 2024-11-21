@@ -24,7 +24,8 @@ object Dimens {
     val SIZE_SMALL = 17.dp
     val SIZE_MEDIUM = 25.dp
     val SIZE_LARGE = 30.dp
-    val SIZE_XLARGE = 100.dp
+    val SIZE_LARGE1 = 100.dp
+    val SIZE_LARGE2 = 200.dp
 
     val BORDER_SMALL = 1.dp
     val STROKE_SMALL = 2.dp
