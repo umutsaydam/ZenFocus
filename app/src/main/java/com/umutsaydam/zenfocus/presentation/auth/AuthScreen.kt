@@ -37,6 +37,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BORDER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
@@ -51,7 +53,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier) {
+fun AuthScreen(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val currPage = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
@@ -63,7 +68,7 @@ fun AuthScreen(modifier: Modifier = Modifier) {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            //:TODO perform click
+                            navController.popBackStack()
                         }
                     ) {
                         Icon(
@@ -227,5 +232,5 @@ fun AuthSection(
 )
 @Composable
 fun AuthScreenPreview(modifier: Modifier = Modifier) {
-    AuthScreen()
+    AuthScreen(navController = rememberNavController())
 }

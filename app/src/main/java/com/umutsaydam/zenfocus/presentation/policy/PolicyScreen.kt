@@ -16,6 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.LINE_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
@@ -24,7 +26,8 @@ import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 
 @Composable
 fun PolicyScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     val scrollState = rememberScrollState()
     Scaffold(
@@ -33,7 +36,7 @@ fun PolicyScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            //:TODO perform click
+                            navController.popBackStack()
                         }
                     ) {
                         Icon(
@@ -78,5 +81,5 @@ fun PolicyScreen(
 )
 @Composable
 fun PolicyScreenPreview(modifier: Modifier = Modifier) {
-    PolicyScreen()
+    PolicyScreen(navController = rememberNavController())
 }

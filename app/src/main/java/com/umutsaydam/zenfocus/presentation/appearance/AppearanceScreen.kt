@@ -27,6 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
@@ -34,7 +36,10 @@ import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppearanceScreen(modifier: Modifier = Modifier) {
+fun AppearanceScreen(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.outlineVariant,
@@ -43,7 +48,7 @@ fun AppearanceScreen(modifier: Modifier = Modifier) {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            //:TODO perform click
+                            navController.popBackStack()
                         }
                     ) {
                         Icon(
@@ -142,5 +147,5 @@ fun AppearanceScreen(modifier: Modifier = Modifier) {
 )
 @Composable
 fun AppearanceScreenPreview(modifier: Modifier = Modifier) {
-    AppearanceScreen()
+    AppearanceScreen(navController = rememberNavController())
 }

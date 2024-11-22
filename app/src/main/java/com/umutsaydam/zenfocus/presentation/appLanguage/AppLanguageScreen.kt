@@ -13,13 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
 
 @Composable
 fun AppLanguageScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     val langList = listOf(
         "Türkçe",
@@ -33,7 +36,7 @@ fun AppLanguageScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            //:TODO perform click
+                            navController.popBackStack()
                         }
                     ) {
                         Icon(
@@ -80,5 +83,5 @@ fun AppLanguageScreen(
 )
 @Composable
 fun AppLanguageScreenPreview(modifier: Modifier = Modifier) {
-    AppLanguageScreen()
+    AppLanguageScreen(navController = rememberNavController())
 }

@@ -21,13 +21,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.presentation.navigation.Route
 
 @Composable
 fun SettingsScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     Scaffold(
         modifier = modifier,
@@ -43,7 +47,7 @@ fun SettingsScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            //:TODO perform navigate
+                            navController.popBackStack()
                         }
                     ) {
                         Icon(
@@ -69,13 +73,13 @@ fun SettingsScreen(
                     MenuItem(
                         menuTitle = stringResource(R.string.appearance),
                         onClick = {
-                            //TODO: perform onClick
+                            navController.navigate(Route.Appearance.route)
                         }
                     )
                     MenuItem(
                         menuTitle = stringResource(R.string.change_the_app_language),
                         onClick = {
-                            //TODO: perform onClick
+                            navController.navigate(Route.AppLanguage.route)
                         }
                     )
                     MenuItemSwitch(
@@ -91,7 +95,7 @@ fun SettingsScreen(
                     MenuItem(
                         menuTitle = stringResource(R.string.policy),
                         onClick = {
-                            //TODO: perform onClick
+                            navController.navigate(Route.Policy.route)
                         }
                     )
                     MenuItemDescription(
@@ -109,7 +113,7 @@ fun SettingsScreen(
                         headIcon = R.drawable.ic_account,
                         menuTitle = stringResource(R.string.sign_in_sign_up),
                         onClick = {
-                            //TODO: perform onClick
+                            navController.navigate(Route.Auth.route)
                         }
                     )
                 }
@@ -144,5 +148,5 @@ fun SettingsSection(
 )
 @Composable
 fun SettingsScreenPreview(modifier: Modifier = Modifier) {
-    SettingsScreen()
+    SettingsScreen(navController = rememberNavController())
 }

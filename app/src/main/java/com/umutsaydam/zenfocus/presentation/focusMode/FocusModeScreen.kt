@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.presentation.home
+package com.umutsaydam.zenfocus.presentation.focusMode
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -22,14 +22,17 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM
+import com.umutsaydam.zenfocus.presentation.home.CircularProgressWithText
 import kotlinx.coroutines.delay
 
 @Composable
 fun FocusModeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     var alpha by remember { mutableFloatStateOf(1f) }
     val animatedAlpha by animateFloatAsState(

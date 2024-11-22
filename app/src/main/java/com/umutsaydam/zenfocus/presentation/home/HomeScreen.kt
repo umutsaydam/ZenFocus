@@ -28,18 +28,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
+
     val toDoList = listOf(
         "Study Algorithm",
         "Read a book",
@@ -106,7 +110,7 @@ fun HomeScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                //:TODO perform navigate
+                                navController.navigate(Route.Settings.route)
                             }
                         ) {
                             Icon(
@@ -155,8 +159,7 @@ fun HomeScreen(
                     )
                     FocusControlButtons(
                         onClick = {
-                            currentSheetContent = BottomSheetContent.FocusMode
-                            bottomSheetState = true
+                            navController.navigate(Route.FocusMode.route)
                         },
                         painterResource = painterResource(R.drawable.ic_play_arrow),
                         contentDescription = stringResource(R.string.pomodoro_start)
@@ -253,10 +256,6 @@ fun HomeScreen(
                                     ) { newSliderPosition ->
                                         sliderPosition = newSliderPosition
                                     }
-                                }
-
-                                BottomSheetContent.FocusMode -> {
-
                                 }
 
                                 null -> Unit
