@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
 import android.content.res.Configuration
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
@@ -45,17 +44,16 @@ import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
-import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE
+import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
-import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AuthScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    authViewModel: AuthViewModel = viewModel()
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val currPage = pagerState.currentPage
@@ -121,71 +119,44 @@ fun AuthScreen(
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(horizontal = PADDING_SMALL),
                 ) {
-                    CustomTabButton(
-                        isSelected = currPage == 0,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.scrollToPage(0)
-                            }
-                        },
-                        buttonText = stringResource(R.string.sign_in)
-                    )
-                    Spacer(modifier = Modifier.width(SPACE_SMALL))
-                    CustomTabButton(
-                        isSelected = currPage == 1,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.scrollToPage(1)
-                            }
-                        },
-                        buttonText = stringResource(R.string.sign_up)
-                    )
+                    listOf("sign_in" to 0, "sign_up" to 1).forEach { (text, index) ->
+                        CustomTabButton(
+                            isSelected = currPage == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.scrollToPage(index)
+                                }
+                            },
+                            buttonText = stringResource(if (text == "sign_in") R.string.sign_in else R.string.sign_up)
+                        )
+                    }
                 }
             }
-
-
-            HorizontalPager(
-                state = pagerState
-            ) { page ->
-                when (page) {
-                    0 -> AuthSection(
-                        verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1),
-                        content = {
-                            AuthForm(
-                                buttonText = stringResource(R.string.sign_in),
-                                onClick = { email, password ->
-                                    //:TODO perform click
-
-                                })
-                        }
-                    )
-
-                    1 -> AuthSection(
-                        verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1),
-                        content = {
-                            AuthForm(
-                                buttonText = stringResource(R.string.sign_up),
-                                onClick = { email, password ->
-                                    //:TODO perform click
-
-                                })
-                        }
-                    )
-                }
+            HorizontalPager(state = pagerState) { page ->
+                AuthSection(
+                    verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1),
+                    content = {
+                        AuthForm(
+                            buttonText = stringResource(if (page == 0) R.string.sign_in else R.string.sign_up),
+                            onClick = { email, password ->
+                                if (page == 0) authViewModel.signIn(email, password)
+                                else authViewModel.signUp(email, password)
+                            }
+                        )
+                    }
+                )
             }
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = if (currPage == 0)
-                    stringResource(R.string.or_sign_in_with)
-                else stringResource(R.string.or_sign_up_with),
+                text = stringResource(if (currPage == 0) R.string.or_sign_in_with else R.string.or_sign_up_with),
                 textAlign = TextAlign.Center
             )
 
             TextButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
-
+                    authViewModel.signInWithGoogle()
                 },
                 shape = RoundedCornerShape(CORNER_SMALL),
                 colors = ButtonDefaults.buttonColors().copy(
@@ -195,7 +166,7 @@ fun AuthScreen(
             ) {
                 Image(
                     modifier = Modifier
-                        .size(SIZE_LARGE)
+                        .size(SIZE_MEDIUM2)
                         .padding(horizontal = PADDING_SMALL),
                     painter = painterResource(R.drawable.ic_google),
                     contentDescription = stringResource(R.string.join_with_google)

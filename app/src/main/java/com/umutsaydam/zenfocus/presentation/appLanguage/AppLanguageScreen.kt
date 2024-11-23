@@ -9,10 +9,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
@@ -22,12 +27,12 @@ import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
 @Composable
 fun AppLanguageScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    appLanguageViewModel: AppLanguageViewModel = viewModel()
 ) {
-    val langList = listOf(
-        "Türkçe",
-        "İngilizce"
-    )
+    val langList = appLanguageViewModel.langList.value
+    val selectedLang by appLanguageViewModel.defaultLang.collectAsState()
+
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.outlineVariant,
@@ -58,12 +63,13 @@ fun AppLanguageScreen(
                 )
         ) {
             items(count = langList.size) { index ->
+                val lang = langList[index]
                 RadioButtonWithText(
                     modifier = Modifier.background(MaterialTheme.colorScheme.background),
-                    radioSelected = false,
-                    radioText = langList[index],
+                    radioSelected = lang == selectedLang,
+                    radioText = lang,
                     onClick = {
-                        //:TODO perform onClick
+                        appLanguageViewModel.setDefaultLang(lang)
                     }
                 )
             }

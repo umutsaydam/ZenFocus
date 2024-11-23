@@ -17,7 +17,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
@@ -38,8 +44,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppearanceScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    appearanceViewModel: AppearanceViewModel = viewModel()
 ) {
+    val themeList = appearanceViewModel.themeList.collectAsState()
+    val gridState = rememberLazyGridState()
+    val coroutine = rememberCoroutineScope()
+    var selectedTheme by remember { mutableStateOf(appearanceViewModel.defaultTheme.value) }
+
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.outlineVariant,
@@ -60,11 +72,17 @@ fun AppearanceScreen(
                 },
                 containerColor = Color.Transparent,
                 actions = {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_done),
-                        contentDescription = stringResource(R.string.back_to_settings),
-                        tint = MaterialTheme.colorScheme.outline
-                    )
+                    IconButton(
+                        onClick = {
+                            appearanceViewModel.setDefaultTheme(selectedTheme)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_done),
+                            contentDescription = stringResource(R.string.back_to_settings),
+                            tint = MaterialTheme.colorScheme.outline
+                        )
+                    }
                 }
             )
         }
@@ -84,34 +102,22 @@ fun AppearanceScreen(
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            Image(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(CORNER_MEDIUM))
-                    .width(235.dp)
-                    .height(420.dp),
-                painter = painterResource(R.drawable.lofi1),
-                contentDescription = "Selected theme",
-                contentScale = ContentScale.Fit
-            )
-
-            val themeList = listOf(
-                null,
-                R.drawable.tomato,
-                R.drawable.tomato,
-                R.drawable.tomato,
-                R.drawable.tomato,
-                R.drawable.tomato,
-                R.drawable.tomato,
-                null
-            )
-            val gridState = rememberLazyGridState()
-            val coroutine = rememberCoroutineScope()
-
+            selectedTheme?.let {
+                Image(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(CORNER_MEDIUM))
+                        .width(235.dp)
+                        .height(420.dp),
+                    painter = painterResource(it),
+                    contentDescription = stringResource(R.string.selected_theme),
+                    contentScale = ContentScale.Fit
+                )
+            }
             CenterFocusedCarousel(
-                listOfTheme = themeList,
+                listOfTheme = themeList.value,
                 gridState = gridState,
                 content = { firstVisibleIndex, currentIndex ->
-                    val theme = themeList[currentIndex]
+                    val theme = themeList.value[currentIndex]
 
                     if (theme != null) {
                         Image(
@@ -131,6 +137,8 @@ fun AppearanceScreen(
                             contentDescription = "Selected theme",
                             contentScale = ContentScale.Fit
                         )
+
+                        selectedTheme = theme
                     } else {
                         Spacer(modifier = Modifier.size(80.dp))
                     }

@@ -17,8 +17,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
@@ -41,48 +42,18 @@ import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    homeViewModel: HomeViewModel = viewModel()
 ) {
 
-    val toDoList = listOf(
-        "Study Algorithm",
-        "Read a book",
-        "Review the codes"
-    )
+    val toDoList by homeViewModel.toDoList.collectAsState()
+    val soundList by homeViewModel.soundList.collectAsState()
+    val defaultSound by homeViewModel.defaultSound.collectAsState()
+    var selectedSound by remember { mutableStateOf<String?>(null) }
+    val bottomSheetState = homeViewModel.bottomSheetState.collectAsState()
+    val currentSheetContent by homeViewModel.bottomSheetContent.collectAsState()
+    val sliderPosition = homeViewModel.sliderPosition.value
 
-    val soundList = listOf(
-        "None",
-        "LoFi Rainy",
-        "Lorem Ipsum",
-        "Dolor Lorem",
-        "Param Ipsum",
-        "Donec ut est id color malesuada",
-        "Donec eget maximus elit",
-        "Param Ipsum",
-        "Donec ut est id color malesuada",
-        "Donec eget maximus elit",
-        "Param Ipsum",
-        "Donec ut est id color malesuada",
-        "Donec eget maximus elit1"
-    )
-    var defaultSound by remember {
-        mutableStateOf("None")
-    }
-    var selectedSound by remember {
-        mutableStateOf("None")
-    }
-
-    var bottomSheetState by remember {
-        mutableStateOf(false)
-    }
-
-    var currentSheetContent by remember {
-        mutableStateOf<BottomSheetContent?>(null)
-    }
-
-    var sliderPosition by remember {
-        mutableFloatStateOf(1f)
-    }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -151,8 +122,7 @@ fun HomeScreen(
                 ) {
                     FocusControlButtons(
                         onClick = {
-                            currentSheetContent = BottomSheetContent.PomodoroTimes
-                            bottomSheetState = true
+                            homeViewModel.showPomodoroTimesBottomSheet()
                         },
                         painterResource = painterResource(R.drawable.ic_time),
                         contentDescription = stringResource(R.string.pomodoro_times)
@@ -166,8 +136,7 @@ fun HomeScreen(
                     )
                     FocusControlButtons(
                         onClick = {
-                            currentSheetContent = BottomSheetContent.PomodoroSounds
-                            bottomSheetState = true
+                            homeViewModel.showPomodoroSoundsBottomSheet()
                         },
                         painterResource = painterResource(R.drawable.ic_music),
                         contentDescription = stringResource(R.string.pomodoro_sounds)
@@ -191,15 +160,14 @@ fun HomeScreen(
                     fabIcon = painterResource(R.drawable.ic_add),
                     contentDescription = stringResource(R.string.add_to_do_button),
                     onClick = {
-                        currentSheetContent = BottomSheetContent.AddToDo
-                        bottomSheetState = true
+                        homeViewModel.showAddToDoBottomSheet()
                     }
                 )
 
-                if (bottomSheetState) {
+                if (bottomSheetState.value) {
                     CustomBottomSheet(
                         onDismissRequest = {
-                            bottomSheetState = false
+                            homeViewModel.setBottomSheetState(false)
                         },
                         content = {
                             when (currentSheetContent) {
@@ -235,7 +203,8 @@ fun HomeScreen(
                                                         .fillMaxWidth()
                                                         .height(BUTTON_HEIGHT_MEDIUM),
                                                     onClick = {
-                                                        defaultSound = soundList[index]
+//                                                        defaultSound = soundList[index]
+                                                        selectedSound = soundList[index]
                                                     },
                                                     enabled = defaultSound != selectedSound
                                                 ) {
@@ -250,11 +219,11 @@ fun HomeScreen(
 
                                 BottomSheetContent.PomodoroTimes -> {
                                     PomodoroControlSlider(
-                                        sliderPosition = 1f,
+                                        sliderPosition = sliderPosition,
                                         steps = 2,
                                         valueRange = 1f..4f
                                     ) { newSliderPosition ->
-                                        sliderPosition = newSliderPosition
+                                        homeViewModel.setSliderPosition(newSliderPosition)
                                     }
                                 }
 

@@ -25,7 +25,7 @@ fun LazyToDoList(
             .fillMaxWidth()
             .background(Color.LightGray),
     ) {
-        items(count = toDoList.size) { index ->
+        items(count = toDoList.size, key = { it }) { index ->
             content(index)
         }
     }

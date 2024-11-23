@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -22,8 +23,8 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.home.CircularProgressWithText
@@ -32,8 +33,11 @@ import kotlinx.coroutines.delay
 @Composable
 fun FocusModeScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    focusModeViewModel: FocusModeViewModel = viewModel()
 ) {
+    val remainTime by focusModeViewModel.remainTime.collectAsState()
+
     var alpha by remember { mutableFloatStateOf(1f) }
     val animatedAlpha by animateFloatAsState(
         targetValue = alpha,
@@ -64,7 +68,7 @@ fun FocusModeScreen(
     ) {
         Image(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(R.drawable.lofi1),
+            painter = painterResource(focusModeViewModel.getDefaultTheme()),
             contentDescription = "Selected theme",
             contentScale = ContentScale.Fit
         )
@@ -81,7 +85,7 @@ fun FocusModeScreen(
                 strokeWith = STROKE_MEDIUM,
                 trackColor = MaterialTheme.colorScheme.outlineVariant,
                 strokeCap = StrokeCap.Round,
-                text = "25:00",
+                text = remainTime,
                 textColor = Color.White,
                 style = MaterialTheme.typography.titleLarge
             )
