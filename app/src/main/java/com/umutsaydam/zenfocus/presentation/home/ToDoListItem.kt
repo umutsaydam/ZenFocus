@@ -21,7 +21,7 @@ fun ToDoListItem(
     modifier: Modifier = Modifier,
     toDoTitle: String,
     textColor: Color = MaterialTheme.colorScheme.outline,
-    onClick: () -> Unit,
+    onClick: (Boolean) -> Unit,
     isChecked: Boolean = false
 ) {
     var checkState by remember {
@@ -39,7 +39,7 @@ fun ToDoListItem(
             checked = checkState,
             onCheckedChange = { newState ->
                 checkState = newState
-                onClick()
+                onClick(newState)
             }
         )
 

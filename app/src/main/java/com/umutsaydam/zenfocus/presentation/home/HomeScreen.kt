@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
@@ -38,14 +37,14 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    homeViewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-
     val toDoList by homeViewModel.toDoList.collectAsState()
     val soundList by homeViewModel.soundList.collectAsState()
     val defaultSound by homeViewModel.defaultSound.collectAsState()
@@ -146,11 +145,14 @@ fun HomeScreen(
                 LazyToDoList(
                     toDoList = toDoList
                 ) { index ->
+                    val toDoModel = toDoList[index]
                     ToDoListItem(
-                        toDoTitle = toDoList[index],
-                        onClick = {
-
-                        }
+                        toDoTitle = toDoModel.taskContent,
+                        onClick = { newState ->
+                            toDoModel.isTaskCompleted = newState
+                            homeViewModel.upsertTask(toDoModel)
+                        },
+                        isChecked = toDoModel.isTaskCompleted
                     )
                 }
 
@@ -173,7 +175,7 @@ fun HomeScreen(
                             when (currentSheetContent) {
                                 BottomSheetContent.AddToDo -> {
                                     AddToDo { newTask ->
-                                        //TODO add newTask
+                                        homeViewModel.upsertTask(newTask)
                                     }
                                 }
 

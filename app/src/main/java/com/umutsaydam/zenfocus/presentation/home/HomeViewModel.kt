@@ -1,21 +1,45 @@
 package com.umutsaydam.zenfocus.presentation.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.umutsaydam.zenfocus.domain.model.TaskModel
+import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() : ViewModel() {
-    private val _toDoList = MutableStateFlow<List<String>>(
-        listOf(
-            "Study Algorithm",
-            "Read a book",
-            "Review the codes"
-        )
-    )
-    val toDoList: StateFlow<List<String>> = _toDoList
+class HomeViewModel @Inject constructor(
+    private val toDoUsesCases: ToDoUsesCases
+) : ViewModel() {
+    private val _toDoList = MutableStateFlow<List<TaskModel>>(emptyList())
+    val toDoList: StateFlow<List<TaskModel>> = _toDoList
+
+    init {
+        getTasks()
+    }
+
+    private fun getTasks() {
+        viewModelScope.launch {
+            _toDoList.value = toDoUsesCases.getTasks.invoke()
+        }
+    }
+
+    fun upsertTask(taskModel: TaskModel) {
+        viewModelScope.launch {
+            toDoUsesCases.upsertTask.invoke(taskModel)
+            getTasks()
+        }
+    }
+
+    fun deleteTask(taskModel: TaskModel) {
+        viewModelScope.launch {
+            toDoUsesCases.deleteTask.invoke(taskModel)
+            getTasks()
+        }
+    }
 
     private val _soundList = MutableStateFlow<List<String>>(
         listOf(
@@ -66,12 +90,12 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         _bottomSheetState.value = state
     }
 
-    fun showPomodoroTimesBottomSheet(){
+    fun showPomodoroTimesBottomSheet() {
         setBottomSheetContent(BottomSheetContent.PomodoroTimes)
         setBottomSheetState(true)
     }
 
-    fun showPomodoroSoundsBottomSheet(){
+    fun showPomodoroSoundsBottomSheet() {
         setBottomSheetContent(BottomSheetContent.PomodoroSounds)
         setBottomSheetState(true)
     }

@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
@@ -34,7 +35,7 @@ import kotlinx.coroutines.delay
 fun FocusModeScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    focusModeViewModel: FocusModeViewModel = viewModel()
+    focusModeViewModel: FocusModeViewModel = hiltViewModel()
 ) {
     val remainTime by focusModeViewModel.remainTime.collectAsState()
 

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.umutsaydam.zenfocus.R
+import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
@@ -33,7 +34,7 @@ import com.umutsaydam.zenfocus.presentation.auth.FormTextField
 @Composable
 fun AddToDo(
     modifier: Modifier = Modifier,
-    onClick: (String) -> Unit
+    onClick: (TaskModel) -> Unit
 ) {
     var toDoTask by remember {
         mutableStateOf("")
@@ -76,7 +77,8 @@ fun AddToDo(
                     .fillMaxWidth()
                     .height(BUTTON_HEIGHT_MEDIUM),
                 onClick = {
-                    onClick(toDoTask)
+                    val newTask = TaskModel(taskContent = toDoTask)
+                    onClick(newTask)
                 },
                 enabled = toDoTask.isNotEmpty()
             ) {

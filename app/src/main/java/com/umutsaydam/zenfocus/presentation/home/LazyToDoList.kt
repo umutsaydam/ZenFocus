@@ -9,13 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 
 @Composable
 fun LazyToDoList(
     modifier: Modifier = Modifier,
-    toDoList: List<String>,
+    toDoList: List<TaskModel>,
     content: @Composable (Int) -> Unit
 ) {
     LazyColumn(

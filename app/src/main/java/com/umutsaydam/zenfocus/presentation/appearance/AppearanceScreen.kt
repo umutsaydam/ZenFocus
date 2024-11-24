@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -45,7 +46,7 @@ import kotlinx.coroutines.launch
 fun AppearanceScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    appearanceViewModel: AppearanceViewModel = viewModel()
+    appearanceViewModel: AppearanceViewModel = hiltViewModel()
 ) {
     val themeList = appearanceViewModel.themeList.collectAsState()
     val gridState = rememberLazyGridState()
