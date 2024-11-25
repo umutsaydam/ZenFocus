@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
 import android.content.res.Configuration
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,7 @@ fun FormTextField(
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
         focusedContainerColor = Color.Transparent,
-        unfocusedContainerColor = Color.White
+        unfocusedContainerColor = Color.Transparent
     )
 ) {
     Text(
@@ -36,7 +37,12 @@ fun FormTextField(
     )
     TextField(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = Color.Gray,
+                shape = RoundedCornerShape(CORNER_SMALL)
+            ),
         value = value,
         onValueChange = { onValueChanged(it) },
         placeholder = { Text(placeHolder) },

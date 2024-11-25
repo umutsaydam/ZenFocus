@@ -8,13 +8,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imeNestedScroll
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,7 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
@@ -47,10 +50,12 @@ import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
+import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AuthScreen(
     modifier: Modifier = Modifier,
@@ -82,101 +87,124 @@ fun AuthScreen(
             )
         }
     ) { paddingValues ->
-        val verticalPadding = paddingValues.calculateTopPadding()
-        Column(
+        val topPadding = paddingValues.calculateTopPadding()
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceContainerLow)
                 .padding(
-                    vertical = verticalPadding,
-                    horizontal = PADDING_MEDIUM2
-                ),
+                    top = topPadding,
+                    start = PADDING_MEDIUM2,
+                    end = PADDING_MEDIUM2
+                )
+                .imePadding()
+                .imeNestedScroll(),
             verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM),
         ) {
-            Spacer(modifier = Modifier.height(SPACE_MEDIUM))
-            AuthSection {
-                Text(
-                    text = "Welcome",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
+            item { Spacer(modifier = Modifier.height(SPACE_SMALL)) }
+
+            item {
+                AuthSection {
+                    Text(
+                        text = "Welcome",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
                     )
-                )
-                Text(
-                    text = "Login to access your account",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.outline
-                )
+                    Text(
+                        text = "Login to access your account",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
             }
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(CORNER_SMALL))
-                        .border(
-                            width = BORDER_SMALL,
-                            color = MaterialTheme.colorScheme.primaryContainer
-                        )
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .padding(horizontal = PADDING_SMALL),
+
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    listOf("sign_in" to 0, "sign_up" to 1).forEach { (text, index) ->
-                        CustomTabButton(
-                            isSelected = currPage == index,
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.scrollToPage(index)
-                                }
-                            },
-                            buttonText = stringResource(if (text == "sign_in") R.string.sign_in else R.string.sign_up)
-                        )
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(CORNER_SMALL))
+                            .border(
+                                width = BORDER_SMALL,
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            )
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .padding(horizontal = PADDING_SMALL),
+                    ) {
+                        listOf("sign_in" to 0, "sign_up" to 1).forEach { (text, index) ->
+                            CustomTabButton(
+                                isSelected = currPage == index,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.scrollToPage(index)
+                                    }
+                                },
+                                buttonText = stringResource(if (text == "sign_in") R.string.sign_in else R.string.sign_up)
+                            )
+                        }
                     }
                 }
             }
-            HorizontalPager(state = pagerState) { page ->
-                AuthSection(
-                    verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1),
-                    content = {
-                        AuthForm(
-                            buttonText = stringResource(if (page == 0) R.string.sign_in else R.string.sign_up),
-                            onClick = { email, password ->
-                                if (page == 0) authViewModel.signIn(email, password)
-                                else authViewModel.signUp(email, password)
-                            }
-                        )
-                    }
+
+            item {
+                HorizontalPager(state = pagerState) { page ->
+                    AuthSection(
+                        verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1),
+                        content = {
+                            AuthForm(
+                                buttonText = stringResource(if (page == 0) R.string.sign_in else R.string.sign_up),
+                                onClick = { email, password ->
+                                    if (page == 0) authViewModel.signIn(email, password)
+                                    else authViewModel.signUp(email, password)
+                                }
+                            )
+                        }
+                    )
+                }
+            }
+
+            item {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(if (currPage == 0) R.string.or_sign_in_with else R.string.or_sign_up_with),
+                    textAlign = TextAlign.Center
                 )
             }
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(if (currPage == 0) R.string.or_sign_in_with else R.string.or_sign_up_with),
-                textAlign = TextAlign.Center
-            )
-
-            TextButton(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = {
-                    authViewModel.signInWithGoogle()
-                },
-                shape = RoundedCornerShape(CORNER_SMALL),
-                colors = ButtonDefaults.buttonColors().copy(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground
-                )
-            ) {
-                Image(
+            item {
+                Box(
                     modifier = Modifier
-                        .size(SIZE_MEDIUM2)
-                        .padding(horizontal = PADDING_SMALL),
-                    painter = painterResource(R.drawable.ic_google),
-                    contentDescription = stringResource(R.string.join_with_google)
-                )
-                Text(
-                    text = stringResource(R.string.google),
-                    style = MaterialTheme.typography.titleMedium
-                )
+                        .fillMaxWidth()
+                        .padding(bottom = PADDING_SMALL),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TextButton(
+                        modifier = Modifier,
+                        onClick = {
+                            authViewModel.signInWithGoogle()
+                        },
+                        shape = RoundedCornerShape(CORNER_SMALL),
+                        colors = ButtonDefaults.buttonColors().copy(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            contentColor = MaterialTheme.colorScheme.onBackground
+                        )
+                    ) {
+                        Image(
+                            modifier = Modifier
+                                .size(SIZE_MEDIUM2)
+                                .padding(horizontal = PADDING_SMALL),
+                            painter = painterResource(R.drawable.ic_google),
+                            contentDescription = stringResource(R.string.join_with_google)
+                        )
+                        Text(
+                            text = stringResource(R.string.google),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                }
             }
         }
     }
