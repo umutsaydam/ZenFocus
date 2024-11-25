@@ -40,6 +40,7 @@ import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,7 +62,7 @@ fun AppearanceScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.popBackStack()
+                            navController.popBackStackOrIgnore()
                         }
                     ) {
                         Icon(

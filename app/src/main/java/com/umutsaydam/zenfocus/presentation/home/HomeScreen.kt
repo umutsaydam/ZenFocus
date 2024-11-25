@@ -38,6 +38,7 @@ import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
 fun HomeScreen(
@@ -80,7 +81,7 @@ fun HomeScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navController.navigate(Route.Settings.route)
+                                navController.safeNavigate(Route.Settings.route)
                             }
                         ) {
                             Icon(
@@ -128,7 +129,7 @@ fun HomeScreen(
                     )
                     FocusControlButtons(
                         onClick = {
-                            navController.navigate(Route.FocusMode.route)
+                            navController.safeNavigate(Route.FocusMode.route)
                         },
                         painterResource = painterResource(R.drawable.ic_play_arrow),
                         contentDescription = stringResource(R.string.pomodoro_start)

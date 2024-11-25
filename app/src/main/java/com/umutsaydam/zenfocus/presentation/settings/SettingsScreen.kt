@@ -29,6 +29,8 @@ import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.navigation.Route
+import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
+import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
 fun SettingsScreen(
@@ -36,7 +38,7 @@ fun SettingsScreen(
     navController: NavHostController,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
-    var vibrateState = settingsViewModel.defaultVibrateState.collectAsState()
+    val vibrateState = settingsViewModel.defaultVibrateState.collectAsState()
 
     Scaffold(
         modifier = modifier,
@@ -52,7 +54,7 @@ fun SettingsScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.popBackStack()
+                            navController.popBackStackOrIgnore()
                         }
                     ) {
                         Icon(
@@ -78,13 +80,13 @@ fun SettingsScreen(
                     MenuItem(
                         menuTitle = stringResource(R.string.appearance),
                         onClick = {
-                            navController.navigate(Route.Appearance.route)
+                            navController.safeNavigate(Route.Appearance.route)
                         }
                     )
                     MenuItem(
                         menuTitle = stringResource(R.string.change_the_app_language),
                         onClick = {
-                            navController.navigate(Route.AppLanguage.route)
+                            navController.safeNavigate(Route.AppLanguage.route)
                         }
                     )
                     MenuItemSwitch(
@@ -101,7 +103,7 @@ fun SettingsScreen(
                     MenuItem(
                         menuTitle = stringResource(R.string.policy),
                         onClick = {
-                            navController.navigate(Route.Policy.route)
+                            navController.safeNavigate(Route.Policy.route)
                         }
                     )
                     MenuItemDescription(
@@ -119,7 +121,7 @@ fun SettingsScreen(
                         headIcon = R.drawable.ic_account,
                         menuTitle = stringResource(R.string.sign_in_sign_up),
                         onClick = {
-                            navController.navigate(Route.Auth.route)
+                            navController.safeNavigate(Route.Auth.route)
                         }
                     )
                 }
@@ -127,7 +129,6 @@ fun SettingsScreen(
         }
     }
 }
-
 
 @Composable
 fun SettingsSection(

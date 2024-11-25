@@ -48,6 +48,7 @@ import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.launch
 
 @Composable
@@ -67,7 +68,7 @@ fun AuthScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.popBackStack()
+                            navController.popBackStackOrIgnore()
                         }
                     ) {
                         Icon(

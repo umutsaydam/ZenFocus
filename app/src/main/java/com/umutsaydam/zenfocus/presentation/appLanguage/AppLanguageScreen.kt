@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
+import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
 fun AppLanguageScreen(
@@ -40,7 +41,7 @@ fun AppLanguageScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.popBackStack()
+                            navController.popBackStackOrIgnore()
                         }
                     ) {
                         Icon(

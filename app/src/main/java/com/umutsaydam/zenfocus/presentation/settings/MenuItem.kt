@@ -1,9 +1,11 @@
 package com.umutsaydam.zenfocus.presentation.settings
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
+import com.umutsaydam.zenfocus.presentation.Dimens.THICKNESS_SMALL
 
 @Composable
 fun MenuItem(
@@ -27,28 +30,36 @@ fun MenuItem(
     onClick: () -> Unit,
     isEnable: Boolean = true
 ) {
-    TextButton(
-        modifier = modifier.fillMaxWidth(),
-        onClick = { onClick() },
-        enabled = isEnable,
-        shape = RectangleShape
+    Column(
+        modifier = modifier.fillMaxWidth()
     ) {
-        Row(
+        TextButton(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            onClick = { onClick() },
+            enabled = isEnable,
+            shape = RectangleShape
         ) {
-            if (headIcon != null) {
-                Icon(
-                    painter = painterResource(headIcon),
-                    contentDescription = contentDescription,
-                    tint = iconTint
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (headIcon != null) {
+                    Icon(
+                        painter = painterResource(headIcon),
+                        contentDescription = contentDescription,
+                        tint = iconTint
+                    )
+                    Spacer(modifier = Modifier.width(SPACE_SMALL))
+                }
+                Text(
+                    text = menuTitle,
+                    color = textColor,
                 )
-                Spacer(modifier = Modifier.width(SPACE_SMALL))
             }
-            Text(
-                text = menuTitle,
-                color = textColor,
-            )
         }
+        HorizontalDivider(
+            thickness = THICKNESS_SMALL,
+            color = Color.LightGray
+        )
     }
 }

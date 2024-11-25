@@ -23,6 +23,7 @@ import com.umutsaydam.zenfocus.presentation.Dimens.LINE_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.TEXT_INDENT_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
 fun PolicyScreen(
@@ -37,7 +38,7 @@ fun PolicyScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.popBackStack()
+                            navController.popBackStackOrIgnore()
                         }
                     ) {
                         Icon(
