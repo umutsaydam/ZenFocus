@@ -40,7 +40,7 @@ fun SettingsScreen(
 
     Scaffold(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.outlineVariant,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
             IconWithTopAppBar(
                 title = {

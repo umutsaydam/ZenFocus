@@ -77,7 +77,7 @@ fun AuthScreen(
                         )
                     }
                 },
-                containerColor = MaterialTheme.colorScheme.outlineVariant
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
             )
         }
     ) { paddingValues ->
@@ -85,7 +85,7 @@ fun AuthScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.outlineVariant)
+                .background(MaterialTheme.colorScheme.surfaceContainerLow)
                 .padding(
                     vertical = verticalPadding,
                     horizontal = PADDING_MEDIUM2

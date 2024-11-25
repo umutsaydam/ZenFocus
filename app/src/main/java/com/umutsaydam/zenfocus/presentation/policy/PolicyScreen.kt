@@ -31,6 +31,7 @@ fun PolicyScreen(
 ) {
     val scrollState = rememberScrollState()
     Scaffold(
+        contentColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
             IconWithTopAppBar(
                 navigationIcon = {

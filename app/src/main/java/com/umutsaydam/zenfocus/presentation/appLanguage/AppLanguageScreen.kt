@@ -34,7 +34,7 @@ fun AppLanguageScreen(
 
     Scaffold(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.outlineVariant,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
             IconWithTopAppBar(
                 navigationIcon = {
@@ -50,7 +50,7 @@ fun AppLanguageScreen(
                         )
                     }
                 },
-                containerColor = MaterialTheme.colorScheme.outlineVariant
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
             )
         }
     ) { paddingValues ->
