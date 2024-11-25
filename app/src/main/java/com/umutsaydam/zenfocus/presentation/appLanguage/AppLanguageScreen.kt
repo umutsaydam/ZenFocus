@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.appLanguage
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,14 +12,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
@@ -65,6 +63,7 @@ fun AppLanguageScreen(
         ) {
             items(count = langList.size) { index ->
                 val lang = langList[index]
+                Log.d("R/T", "$lang - $selectedLang")
                 RadioButtonWithText(
                     modifier = Modifier.background(MaterialTheme.colorScheme.background),
                     radioSelected = lang == selectedLang,

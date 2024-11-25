@@ -34,4 +34,8 @@
     <string name="select">Select</string>
     <string name="selected_theme">"Selected theme"</string>
 
+    <string-array name="app_langs">
+        <item>Turkish-tr</item>
+        <item>English-en</item>
+    </string-array>
 </resources>

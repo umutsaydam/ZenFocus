@@ -16,11 +16,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
@@ -31,8 +33,11 @@ import com.umutsaydam.zenfocus.presentation.navigation.Route
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
+    var vibrateState = settingsViewModel.defaultVibrateState.collectAsState()
+
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.outlineVariant,
@@ -84,9 +89,10 @@ fun SettingsScreen(
                     )
                     MenuItemSwitch(
                         menuTitle = stringResource(R.string.vibrate),
-                        onClick = {
-                            //TODO: perform onClick
+                        onClick = { newState ->
+                            settingsViewModel.setVibrateState(newState)
                         },
+                        isChecked = vibrateState.value
                     )
                 }
             )

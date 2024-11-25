@@ -25,17 +25,16 @@ fun MenuItemSwitch(
     modifier: Modifier = Modifier,
     menuTitle: String,
     textColor: Color = MaterialTheme.colorScheme.outline,
-    onClick: () -> Unit,
+    onClick: (Boolean) -> Unit,
     isChecked: Boolean = true
 ) {
     TextButton(
         modifier = modifier.fillMaxWidth(),
-        onClick = { onClick() },
+        onClick = {
+            onClick(!isChecked)
+        },
         shape = RectangleShape
     ) {
-        var checkState by remember {
-            mutableStateOf(isChecked)
-        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -51,10 +50,9 @@ fun MenuItemSwitch(
                 modifier = Modifier
                     .scale(0.7f)
                     .weight(0.2f),
-                checked = checkState,
+                checked = isChecked,
                 onCheckedChange = { newState ->
-                    checkState = newState
-                    onClick()
+                    onClick(newState)
                 },
 
                 )

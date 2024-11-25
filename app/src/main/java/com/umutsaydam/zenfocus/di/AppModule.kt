@@ -2,10 +2,19 @@ package com.umutsaydam.zenfocus.di
 
 import android.app.Application
 import androidx.room.Room
-import com.umutsaydam.zenfocus.data.TasksDao
-import com.umutsaydam.zenfocus.data.TasksDatabase
-import com.umutsaydam.zenfocus.data.ToDoRepositoryImpl
+import com.umutsaydam.zenfocus.data.local.TasksDao
+import com.umutsaydam.zenfocus.data.local.TasksDatabase
+import com.umutsaydam.zenfocus.data.local.ToDoRepositoryImpl
+import com.umutsaydam.zenfocus.data.manager.LocalUserManagerImpl
+import com.umutsaydam.zenfocus.domain.localUserManager.LocalUserManager
 import com.umutsaydam.zenfocus.domain.repository.ToDoRepository
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.LocalUserCases
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.ReadAppEntry
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.ReadAppLang
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.ReadVibrateState
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.SaveAppEntry
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.SaveAppLang
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.SaveVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.tasks.DeleteTask
 import com.umutsaydam.zenfocus.domain.usecases.tasks.GetTasks
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
@@ -22,11 +31,32 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideLocalUserCases(
+        localUserManager: LocalUserManager
+    ): LocalUserCases {
+        return LocalUserCases(
+            saveAppEntry = SaveAppEntry(localUserManager),
+            readAppEntry = ReadAppEntry(localUserManager),
+            saveVibrateState = SaveVibrateState(localUserManager),
+            readVibrateState = ReadVibrateState(localUserManager),
+            saveAppLang = SaveAppLang(localUserManager),
+            readAppLang = ReadAppLang(localUserManager)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun localUserManager(
+        application: Application
+    ): LocalUserManager = LocalUserManagerImpl(application)
+
+    @Provides
+    @Singleton
     fun provideToDoUsesCases(
         toDoRepository: ToDoRepository,
         tasksDao: TasksDao
     ): ToDoUsesCases {
-        return  ToDoUsesCases(
+        return ToDoUsesCases(
             getTasks = GetTasks(toDoRepository),
             upsertTask = UpsertTask(toDoRepository),
             deleteTask = DeleteTask(toDoRepository)
