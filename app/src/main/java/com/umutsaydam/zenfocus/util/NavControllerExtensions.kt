@@ -1,6 +1,5 @@
 package com.umutsaydam.zenfocus.util
 
-// NavControllerExtensions.kt
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 
