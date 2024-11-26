@@ -150,7 +150,10 @@ fun AuthScreen(
             }
 
             item {
-                HorizontalPager(state = pagerState) { page ->
+                HorizontalPager(
+                    state = pagerState,
+                    userScrollEnabled = false
+                ) { page ->
                     AuthSection(
                         modifier = Modifier.padding(horizontal = PADDING_SMALL),
                         verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1),
