@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-*.json
+/app/src/main/res/raw/amplifyconfiguration.json
