@@ -73,4 +73,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     // DataStore
     implementation(libs.androidx.datastore.preferences)
+    // Amplify
+    implementation(libs.amplifyframework.core)
+    implementation(libs.amplifyframework.aws.auth.cognito)
+    implementation(libs.aws.storage.s3)
 }

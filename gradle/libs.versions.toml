@@ -1,6 +1,9 @@
 [versions]
 accompanistNavigationAnimation = "0.35.1-alpha"
 agp = "8.7.0-alpha08"
+awsAuthCognito = "1.28.3"
+awsStorageS3 = "1.28.3"
+core = "1.28.3"
 datastorePreferences = "1.1.1"
 hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
@@ -21,6 +24,8 @@ constraintlayout = "2.2.0"
 
 [libraries]
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
+amplifyframework-aws-auth-cognito = { module = "com.amplifyframework:aws-auth-cognito", version.ref = "awsAuthCognito" }
+amplifyframework-core = { module = "com.amplifyframework:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
@@ -28,6 +33,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
+aws-storage-s3 = { module = "com.amplifyframework:aws-storage-s3", version.ref = "awsStorageS3" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
