@@ -1,7 +1,7 @@
-package com.umutsaydam.zenfocus.domain.usecases.tasks
+package com.umutsaydam.zenfocus.domain.usecases.tasks.cases
 
 import com.umutsaydam.zenfocus.domain.model.TaskModel
-import com.umutsaydam.zenfocus.domain.repository.ToDoRepository
+import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 
 class GetTasks(
     private val toDoRepository: ToDoRepository

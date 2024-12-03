@@ -1,7 +1,7 @@
 package com.umutsaydam.zenfocus.data.local
 
 import com.umutsaydam.zenfocus.domain.model.TaskModel
-import com.umutsaydam.zenfocus.domain.repository.ToDoRepository
+import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 
 class ToDoRepositoryImpl(
     private val tasksDao: TasksDao

@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.domain.repository
+package com.umutsaydam.zenfocus.domain.repository.local
 
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 

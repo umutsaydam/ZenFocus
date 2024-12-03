@@ -1,6 +1,8 @@
 package com.umutsaydam.zenfocus.presentation.navigation
 
 import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 sealed class Route(
     val route: String,
@@ -13,4 +15,8 @@ sealed class Route(
     data object Home : Route("Home")
     data object Policy : Route("Policy")
     data object Settings : Route("Settings")
+    data object AccountConfirm : Route(
+        route = "AccountConfirm/{email}",
+        arguments = listOf(navArgument("email") { type = NavType.StringType })
+    )
 }

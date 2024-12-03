@@ -53,6 +53,42 @@ class LocalUserManagerImpl(
             preferences[PreferencesKeys.APP_LANG] ?: APP_LANG_ENGLISH
         }
     }
+
+    override suspend fun saveUserId(userId: String) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.USER_ID] = userId
+        }
+    }
+
+    override fun readUserId(): Flow<String> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.USER_ID] ?: ""
+        }
+    }
+
+    override suspend fun deleteUserId() {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.USER_ID] = ""
+        }
+    }
+
+    override suspend fun saveUserType(userType: String) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.USER_TYPE] = userType
+        }
+    }
+
+    override fun readUserType(): Flow<String> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.USER_TYPE] ?: ""
+        }
+    }
+
+    override suspend fun deleteUserType() {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.USER_TYPE] = ""
+        }
+    }
 }
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = APP_ENTRY)
@@ -61,4 +97,6 @@ private object PreferencesKeys {
     val APP_ENTRY = booleanPreferencesKey(name = Constants.APP_ENTRY)
     val VIBRATE_STATE = booleanPreferencesKey(name = Constants.VIBRATE_STATE)
     val APP_LANG = stringPreferencesKey(name = Constants.APP_LANG)
+    val USER_ID = stringPreferencesKey(name = Constants.USER_ID)
+    val USER_TYPE = stringPreferencesKey(name = Constants.USER_TYPE)
 }

@@ -11,4 +11,12 @@ interface LocalUserManager {
 
     suspend fun saveAppLang(appLang: String)
     fun readAppLang(): Flow<String>
+
+    suspend fun saveUserId(userId: String)
+    fun readUserId(): Flow<String>
+    suspend fun deleteUserId()
+
+    suspend fun saveUserType(userType: String)
+    fun readUserType(): Flow<String>
+    suspend fun deleteUserType()
 }

@@ -1,10 +1,16 @@
 [versions]
 accompanistNavigationAnimation = "0.35.1-alpha"
 agp = "8.7.0-alpha08"
-awsAuthCognito = "1.28.3"
-awsStorageS3 = "1.28.3"
-core = "1.28.3"
+awsAndroidSdkDdb = "2.22.1"
+awsAndroidSdkDynamodb = "2.22.1"
+awsAndroidSdkMobileClient = "2.35.0"
+awsApi = "2.25.0"
+awsAuthCognito = "2.25.0"
+awsDatastore = "1.41.1"
+awsStorageS3 = "2.25.0"
+core = "2.25.0"
 datastorePreferences = "1.1.1"
+desugar_jdk_libs = "2.1.3"
 hiltAndroid = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.0.0"
@@ -24,6 +30,7 @@ constraintlayout = "2.2.0"
 
 [libraries]
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
+amazonaws-aws-android-sdk-ddb = { module = "com.amazonaws:aws-android-sdk-ddb", version.ref = "awsAndroidSdkDdb" }
 amplifyframework-aws-auth-cognito = { module = "com.amplifyframework:aws-auth-cognito", version.ref = "awsAuthCognito" }
 amplifyframework-core = { module = "com.amplifyframework:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,7 +40,12 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
+aws-android-sdk-dynamodb = { module = "com.amazonaws:aws-android-sdk-dynamodb", version.ref = "awsAndroidSdkDynamodb" }
+aws-android-sdk-mobile-client = { module = "com.amazonaws:aws-android-sdk-mobile-client", version.ref = "awsAndroidSdkMobileClient" }
+aws-api = { module = "com.amplifyframework:aws-api", version.ref = "awsApi" }
+aws-datastore = { module = "com.amplifyframework:aws-datastore", version.ref = "awsDatastore" }
 aws-storage-s3 = { module = "com.amplifyframework:aws-storage-s3", version.ref = "awsStorageS3" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

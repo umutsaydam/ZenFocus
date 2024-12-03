@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +40,7 @@ fun SettingsScreen(
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
     val vibrateState = settingsViewModel.defaultVibrateState.collectAsState()
+    val isSignedInState = settingsViewModel.isSignedInState.collectAsState()
 
     Scaffold(
         modifier = modifier,
@@ -117,13 +119,24 @@ fun SettingsScreen(
             )
             SettingsSection(
                 content = {
-                    MenuItem(
-                        headIcon = R.drawable.ic_account,
-                        menuTitle = stringResource(R.string.sign_in_sign_up),
-                        onClick = {
-                            navController.safeNavigate(Route.Auth.route)
-                        }
-                    )
+                    if (isSignedInState.value) {
+                        MenuItem(
+                            headIcon = R.drawable.ic_log_out,
+                            menuTitle = stringResource(R.string.log_out),
+                            onClick = {
+                                settingsViewModel.signOut()
+                                navController.popBackStackOrIgnore()
+                            }
+                        )
+                    } else {
+                        MenuItem(
+                            headIcon = R.drawable.ic_account,
+                            menuTitle = stringResource(R.string.sign_in_sign_up),
+                            onClick = {
+                                navController.safeNavigate(Route.Auth.route)
+                            }
+                        )
+                    }
                 }
             )
         }

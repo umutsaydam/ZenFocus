@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +31,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +46,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.amplifyframework.auth.result.step.AuthSignInStep
+import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BORDER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
@@ -52,7 +58,9 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
+import com.umutsaydam.zenfocus.util.safeNavigate
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -65,6 +73,58 @@ fun AuthScreen(
     val pagerState = rememberPagerState(pageCount = { 2 })
     val currPage = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
+    val signUpStep = authViewModel.signUpStep.collectAsState()
+    val signInStep = authViewModel.signInStep.collectAsState()
+
+    LaunchedEffect(signInStep.value) {
+        when (signInStep.value) {
+            AuthSignInStep.DONE -> {
+                navController.popBackStackOrIgnore()
+            }
+
+            AuthSignInStep.CONFIRM_SIGN_UP -> {
+                Log.i("R/T", "launchedEffected")
+                val email = "codewithumut@gmail.com"
+                val confirmRoute = "AccountConfirm/$email"
+                navController.safeNavigate(confirmRoute)
+            }
+
+            else -> {
+                Log.i("R/T", "${signInStep.value} : Error: ${authViewModel.errorMessage.value}")
+            }
+        }
+    }
+
+    LaunchedEffect(signUpStep.value) {
+//        if (signUpStep.value == AuthSignUpStep.CONFIRM_SIGN_UP_STEP) {
+//            Log.i("R/T", "launchedEffected")
+//            val email = "codewithumut@gmail.com"
+//            val confirmRoute = "AccountConfirm/$email"
+//            navController.safeNavigate(confirmRoute)
+//        }
+        when (signUpStep.value) {
+            AuthSignUpStep.CONFIRM_SIGN_UP_STEP -> {
+                Log.i("R/T", "launchedEffected")
+                val email = "codewithumut@gmail.com"
+                val confirmRoute = "AccountConfirm/$email"
+                navController.safeNavigate(confirmRoute)
+            }
+
+            AuthSignUpStep.DONE -> {
+                Log.i("R/T", "sign up is done")
+            }
+
+            AuthSignUpStep.COMPLETE_AUTO_SIGN_IN -> {
+                Log.i("R/T", "complete auto sign in")
+            }
+
+            null -> {
+                if (authViewModel.errorMessage.value.isNullOrEmpty()) {
+                    Log.i("R/T", "error message is null")
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -161,8 +221,11 @@ fun AuthScreen(
                             AuthForm(
                                 buttonText = stringResource(if (page == 0) R.string.sign_in else R.string.sign_up),
                                 onClick = { email, password ->
-                                    if (page == 0) authViewModel.signIn(email, password)
-                                    else authViewModel.signUp(email, password)
+                                    if (page == 0) {
+                                        authViewModel.signIn(email, password)
+                                    } else {
+                                        authViewModel.signUp(email, password)
+                                    }
                                 }
                             )
                         }

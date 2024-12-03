@@ -1,11 +1,13 @@
 package com.umutsaydam.zenfocus.presentation.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.presentation.appLanguage.AppLanguageScreen
 import com.umutsaydam.zenfocus.presentation.appearance.AppearanceScreen
+import com.umutsaydam.zenfocus.presentation.auth.AccountConfirmScreen
 import com.umutsaydam.zenfocus.presentation.auth.AuthScreen
 import com.umutsaydam.zenfocus.presentation.focusMode.FocusModeScreen
 import com.umutsaydam.zenfocus.presentation.home.HomeScreen
@@ -118,6 +120,25 @@ fun MainNavHost() {
             }
         ) {
             FocusModeScreen(navController = navController)
+        }
+
+        composable(
+            route = Route.AccountConfirm.route,
+            arguments = Route.AccountConfirm.arguments,
+            enterTransition = {
+                val fromRoute = navController.previousBackStackEntry?.destination?.route
+                navTransitionManager.getEnterTransition(Route.FocusMode.route, fromRoute)
+            },
+            exitTransition = {
+                val fromRoute = navController.previousBackStackEntry?.destination?.route
+                navTransitionManager.getExitTransition(Route.FocusMode.route, fromRoute)
+            }
+        ) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            Log.i("R/T", "$email")
+            if (!email.isNullOrEmpty()) {
+                AccountConfirmScreen(email = email, navController = navController)
+            }
         }
     }
 }

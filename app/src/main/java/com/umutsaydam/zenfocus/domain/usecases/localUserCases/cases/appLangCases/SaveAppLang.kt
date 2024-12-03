@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.domain.usecases.localUserCases
+package com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.appLangCases
 
 import com.umutsaydam.zenfocus.domain.localUserManager.LocalUserManager
 

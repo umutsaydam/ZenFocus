@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -30,6 +32,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -75,6 +78,15 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     // Amplify
     implementation(libs.amplifyframework.core)
+    // Cognito auth
     implementation(libs.amplifyframework.aws.auth.cognito)
+    // S3 storage
     implementation(libs.aws.storage.s3)
+    // AWS dynamo
+    implementation(libs.amazonaws.aws.android.sdk.ddb)
+    // AWS api
+    implementation(libs.aws.api)
+    // AWS SDK
+    implementation(libs.aws.android.sdk.mobile.client)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }

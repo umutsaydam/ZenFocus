@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.domain.usecases.localUserCases
+package com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.vibrateCases
 
 import com.umutsaydam.zenfocus.domain.localUserManager.LocalUserManager
 import kotlinx.coroutines.flow.Flow
