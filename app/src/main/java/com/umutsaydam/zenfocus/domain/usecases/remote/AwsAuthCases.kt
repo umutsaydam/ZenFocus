@@ -1,11 +1,11 @@
 package com.umutsaydam.zenfocus.domain.usecases.remote
 
-import com.umutsaydam.zenfocus.domain.usecases.remote.cases.AwsReadUserInfo
-import com.umutsaydam.zenfocus.domain.usecases.remote.cases.AwsSignOut
-import com.umutsaydam.zenfocus.domain.usecases.remote.cases.AwsUserGetUserId
-import com.umutsaydam.zenfocus.domain.usecases.remote.cases.AwsUserSignIn
-import com.umutsaydam.zenfocus.domain.usecases.remote.cases.AwsUserSignUp
-import com.umutsaydam.zenfocus.domain.usecases.remote.cases.AwsUserSignUpConfirm
+import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsReadUserInfo
+import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignOut
+import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserGetUserId
+import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserSignIn
+import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserSignUp
+import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserSignUpConfirm
 
 data class AwsAuthCases(
     val userSignIn: AwsUserSignIn,

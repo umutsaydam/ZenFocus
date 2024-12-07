@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.data.remote
+package com.umutsaydam.zenfocus.data.remote.service
 
 import android.util.Log
 import com.amplifyframework.api.rest.RestOptions
@@ -6,19 +6,18 @@ import com.amplifyframework.auth.AuthException
 import com.amplifyframework.auth.AuthUserAttribute
 import com.amplifyframework.auth.AuthUserAttributeKey
 import com.amplifyframework.auth.options.AuthSignUpOptions
-import com.amplifyframework.auth.result.AuthSignOutResult
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.amplifyframework.core.Amplify
 import com.google.gson.Gson
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
-import com.umutsaydam.zenfocus.domain.service.AwsService
+import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
 import com.umutsaydam.zenfocus.util.Resource
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-class AwsServiceImpl : AwsService {
+class AwsAuthServiceImpl : AwsAuthService {
 
     override suspend fun signIn(email: String, password: String): AwsAuthSignInResult {
         return suspendCancellableCoroutine { continuation ->

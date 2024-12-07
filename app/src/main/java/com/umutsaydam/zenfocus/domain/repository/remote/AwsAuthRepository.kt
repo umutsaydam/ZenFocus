@@ -1,11 +1,12 @@
-package com.umutsaydam.zenfocus.domain.service
+package com.umutsaydam.zenfocus.domain.repository.remote
 
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
 import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
 import com.umutsaydam.zenfocus.util.Resource
 
-interface AwsService {
+interface AwsAuthRepository {
+
     suspend fun signIn(email: String, password: String): AwsAuthSignInResult
 
     suspend fun signUp(email: String, password: String): AwsAuthSignUpResult
@@ -14,7 +15,9 @@ interface AwsService {
 
     suspend fun getCurrentUserId(): Resource<String>
 
-    suspend fun getUserInfo(userId: String): Resource<UserInfo>
+    fun signUpOrInWithGoogle()
+
+    suspend fun getUserInfo(userID: String): Resource<UserInfo>
 
     suspend fun signOut()
 }
