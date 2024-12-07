@@ -9,5 +9,7 @@ object Constants {
     const val APP_LANG_ENGLISH = "English-en"
     const val USER_ID = "User_Id"
     const val USER_TYPE = "User_Type"
-
+    const val FOCUS_THEME = "Focus_Theme"
+    const val DEFAULT_THEME = "default_theme.jpg"
+    const val DOWNLOADED_FOCUS_THEMES = "Downloaded_Focus_Themes"
 }
