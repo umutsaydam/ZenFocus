@@ -18,11 +18,12 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
 
 @Composable
 fun CenterFocusedCarousel(
     modifier: Modifier = Modifier,
-    listOfTheme: List<Int?>,
+    listOfTheme: List<ThemeInfo?>,
     gridState: LazyGridState,
     content: @Composable (Int, Int) -> Unit
 ) {
@@ -45,7 +46,10 @@ fun CenterFocusedCarousel(
             .background(Color.Yellow),
         rows = GridCells.Fixed(1),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
+        contentPadding = PaddingValues(
+            horizontal = 16.dp,
+            vertical = 8.dp
+            )
     ) {
         items(listOfTheme.size) { currentIndex ->
             content(visibleIndex, currentIndex)
