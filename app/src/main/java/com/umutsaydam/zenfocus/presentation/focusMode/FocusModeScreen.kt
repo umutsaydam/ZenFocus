@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +38,7 @@ fun FocusModeScreen(
     navController: NavHostController,
     focusModeViewModel: FocusModeViewModel = hiltViewModel()
 ) {
+    val defaultTheme by focusModeViewModel.defaultTheme.collectAsState()
     val remainTime by focusModeViewModel.remainTime.collectAsState()
 
     var alpha by remember { mutableFloatStateOf(1f) }
@@ -67,12 +69,14 @@ fun FocusModeScreen(
                 alpha = 1f
             }
     ) {
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = painterResource(focusModeViewModel.getDefaultTheme()),
-            contentDescription = "Selected theme",
-            contentScale = ContentScale.Fit
-        )
+        defaultTheme?.let {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                bitmap = it.asImageBitmap(),
+                contentDescription = "Selected theme",
+                contentScale = ContentScale.Fit
+            )
+        }
         Box(
             modifier = modifier
                 .fillMaxSize(),

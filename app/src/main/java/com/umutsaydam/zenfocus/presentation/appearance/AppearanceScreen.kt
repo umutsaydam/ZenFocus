@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.appearance
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -33,9 +34,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil3.compose.AsyncImage
+import coil3.compose.rememberAsyncImagePainter
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
@@ -104,17 +106,20 @@ fun AppearanceScreen(
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
-            selectedTheme?.let {
-                Image(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(CORNER_MEDIUM))
-                        .width(235.dp)
-                        .height(420.dp),
-                    painter = painterResource(it),
-                    contentDescription = stringResource(R.string.selected_theme),
-                    contentScale = ContentScale.Fit
-                )
-            }
+            Image(
+                modifier = Modifier
+                    .width(215.dp)
+                    .height(385.dp)
+                    .clip(RoundedCornerShape(CORNER_MEDIUM)),
+                painter = if (selectedTheme != null) {
+                    rememberAsyncImagePainter(selectedTheme!!.themeUrl)
+                } else {
+                    painterResource(R.drawable.tomato)
+                },
+                contentDescription = stringResource(R.string.selected_theme),
+                contentScale = ContentScale.Crop
+            )
+
             CenterFocusedCarousel(
                 listOfTheme = themeList.value,
                 gridState = gridState,
@@ -122,11 +127,14 @@ fun AppearanceScreen(
                     val theme = themeList.value[currentIndex]
 
                     if (theme != null) {
-                        Image(
+                        val isBigger = firstVisibleIndex + 1 == currentIndex
+                        Log.i("R/T", "Have to be loaded image: $theme")
+                        AsyncImage(
                             modifier = Modifier
                                 .size(
-                                    if (firstVisibleIndex + 1 == currentIndex) 100.dp else 80.dp
+                                    if (isBigger) 100.dp else 80.dp
                                 )
+                                .padding(if (isBigger) 0.dp else 5.dp)
                                 .clip(RoundedCornerShape(CORNER_MEDIUM))
                                 .clickable {
                                     coroutine.launch {
@@ -135,14 +143,15 @@ fun AppearanceScreen(
                                         )
                                     }
                                 },
-                            painter = painterResource(theme),
-                            contentDescription = "Selected theme",
-                            contentScale = ContentScale.Fit
+                            model = theme.themeUrl,
+                            contentDescription = theme.themeName,
+                            contentScale = ContentScale.Crop
                         )
-
-                        selectedTheme = theme
+                        if (isBigger) {
+                            selectedTheme = theme
+                        }
                     } else {
-                        Spacer(modifier = Modifier.size(80.dp))
+                        Spacer(modifier = Modifier.width(80.dp))
                     }
                 }
             )

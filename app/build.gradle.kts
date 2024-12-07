@@ -89,4 +89,7 @@ dependencies {
     // AWS SDK
     implementation(libs.aws.android.sdk.mobile.client)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+    // Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }
