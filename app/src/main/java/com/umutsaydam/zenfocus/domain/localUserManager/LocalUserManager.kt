@@ -19,4 +19,7 @@ interface LocalUserManager {
     suspend fun saveUserType(userType: String)
     fun readUserType(): Flow<String>
     suspend fun deleteUserType()
+
+    suspend fun saveTheme(themeName: String)
+    fun readTheme(): Flow<String>
 }

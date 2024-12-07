@@ -89,6 +89,18 @@ class LocalUserManagerImpl(
             settings[PreferencesKeys.USER_TYPE] = ""
         }
     }
+
+    override suspend fun saveTheme(themeName: String) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.FOCUS_THEME] = themeName
+        }
+    }
+
+    override fun readTheme(): Flow<String> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.FOCUS_THEME] ?: Constants.DEFAULT_THEME
+        }
+    }
 }
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = APP_ENTRY)
@@ -99,4 +111,5 @@ private object PreferencesKeys {
     val APP_LANG = stringPreferencesKey(name = Constants.APP_LANG)
     val USER_ID = stringPreferencesKey(name = Constants.USER_ID)
     val USER_TYPE = stringPreferencesKey(name = Constants.USER_TYPE)
+    val FOCUS_THEME = stringPreferencesKey(name = Constants.FOCUS_THEME)
 }

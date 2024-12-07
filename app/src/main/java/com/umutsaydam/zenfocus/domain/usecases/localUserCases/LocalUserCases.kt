@@ -9,6 +9,8 @@ import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userTypeCase
 import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.vibrateCases.ReadVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.appEntryCases.SaveAppEntry
 import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.appLangCases.SaveAppLang
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.themeCases.ReadTheme
+import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.themeCases.SaveTheme
 import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userIdCases.SaveUserId
 import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userTypeCases.SaveUserType
 import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.vibrateCases.SaveVibrateState
@@ -25,5 +27,7 @@ data class LocalUserCases(
     val deleteUserId: DeleteUserId,
     val readUserType: ReadUserType,
     val saveUserType: SaveUserType,
-    val deleteUserType: DeleteUserType
+    val deleteUserType: DeleteUserType,
+    val saveTheme: SaveTheme,
+    val readTheme: ReadTheme
 )
