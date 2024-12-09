@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.data.remote.repository
 
+import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
@@ -28,7 +29,7 @@ class AwsAuthRepositoryImpl @Inject constructor(
         return awsAuthService.getCurrentUserId()
     }
 
-    override fun signUpOrInWithGoogle() {
+    override suspend fun signUpOrInWithGoogle(): Resource<AWSCognitoAuthSession> {
         TODO("Not yet implemented")
     }
 

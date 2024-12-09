@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.domain.repository.remote
 
+import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
 import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
@@ -15,7 +16,7 @@ interface AwsAuthRepository {
 
     suspend fun getCurrentUserId(): Resource<String>
 
-    fun signUpOrInWithGoogle()
+    suspend fun signUpOrInWithGoogle(): Resource<AWSCognitoAuthSession>
 
     suspend fun getUserInfo(userID: String): Resource<UserInfo>
 

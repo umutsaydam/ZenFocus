@@ -1,16 +1,26 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
+import android.app.Activity
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amazonaws.mobile.auth.core.signin.AuthException
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession
+import com.amplifyframework.auth.AuthProvider
+import com.amplifyframework.auth.AuthSession
+import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
+import com.amplifyframework.auth.result.AuthSignUpResult
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
+import com.amplifyframework.core.Amplify
 import com.umutsaydam.zenfocus.domain.usecases.localUserCases.LocalUserCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
 import com.umutsaydam.zenfocus.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val awsAuthCases: AwsAuthCases,
-    private val localUserCases: LocalUserCases
+    private val localUserCases: LocalUserCases,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _signUpStep: MutableStateFlow<AuthSignUpStep?> = MutableStateFlow(null)
     var signUpStep: StateFlow<AuthSignUpStep?> = _signUpStep
@@ -148,7 +159,44 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun signInWithGoogle() {
-        //TODO perform sign in with google
+    // Will become optimized
+    fun signInWithGoogle(activity: Activity) {
+        Amplify.Auth.signInWithSocialWebUI(
+            AuthProvider.google(),
+            activity,
+            {
+                Log.i("R/T", "Sign in OK: $it")
+                Amplify.Auth.fetchAuthSession(
+                    { result ->
+                        Log.d("R/T", "Result -->: $result")
+                        val cognitoAuthSession = result as AWSCognitoAuthSession
+
+                        if (cognitoAuthSession.isSignedIn) {
+                            val userId = cognitoAuthSession.userSubResult.value
+                            if (!userId.isNullOrEmpty()) {
+                                Log.d("R/T", "userId --> : $userId")
+                                viewModelScope.launch {
+                                    localUserCases.saveUserId(userId)
+                                    Log.i("R/T", "id saved $userId")
+
+                                    getUserInfo(userId)
+                                    _userId.value = userId
+                                    _signInStep.value = AuthSignInStep.DONE
+                                }
+                            } else {
+                                Log.d("R/T", "userId NULL OR EMPTY: $userId")
+                            }
+                        } else {
+                            Log.d("R/T", "User is not signed in")
+                        }
+                    },
+                    { error ->
+                        // Hata durumunda
+                        Log.e("R/T", "Failed to fetch auth session: $error")
+                    }
+                )
+            },
+            { Log.e("R/T", "Sign in failed", it) }
+        )
     }
 }
