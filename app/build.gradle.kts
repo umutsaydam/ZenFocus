@@ -92,4 +92,6 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    // Google Credentials Play Services
+    implementation(libs.androidx.credentials.play.services.auth)
 }

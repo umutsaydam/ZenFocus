@@ -2,37 +2,59 @@ package com.umutsaydam.zenfocus.di
 
 import android.app.Application
 import androidx.room.Room
-import com.umutsaydam.zenfocus.data.local.TasksDao
-import com.umutsaydam.zenfocus.data.local.TasksDatabase
-import com.umutsaydam.zenfocus.data.local.ThemeRepositoryImpl
-import com.umutsaydam.zenfocus.data.local.ToDoRepositoryImpl
-import com.umutsaydam.zenfocus.data.manager.LocalUserManagerImpl
+import com.umutsaydam.zenfocus.data.local.db.TasksDao
+import com.umutsaydam.zenfocus.data.local.db.TasksDatabase
+import com.umutsaydam.zenfocus.data.local.repository.ThemeRepositoryImpl
+import com.umutsaydam.zenfocus.data.local.repository.ToDoRepositoryImpl
+import com.umutsaydam.zenfocus.data.local.manager.LocalUserManagerImpl
+import com.umutsaydam.zenfocus.data.local.manager.PomodoroManagerImpl
+import com.umutsaydam.zenfocus.data.local.manager.PomodoroServiceManagerImpl
+import com.umutsaydam.zenfocus.data.local.manager.SoundManagerImpl
+import com.umutsaydam.zenfocus.data.local.manager.VibrationManagerImpl
 import com.umutsaydam.zenfocus.data.remote.repository.AwsAuthRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.repository.AwsStorageServiceRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.service.AwsAuthServiceImpl
 import com.umutsaydam.zenfocus.data.remote.service.AwsStorageServiceImpl
-import com.umutsaydam.zenfocus.domain.localUserManager.LocalUserManager
+import com.umutsaydam.zenfocus.data.local.repository.RingerModeRepositoryImpl
+import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
+import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
+import com.umutsaydam.zenfocus.domain.manager.PomodoroServiceManager
+import com.umutsaydam.zenfocus.domain.repository.RingerModeRepository
+import com.umutsaydam.zenfocus.domain.manager.SoundManager
+import com.umutsaydam.zenfocus.domain.manager.VibrationManager
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 import com.umutsaydam.zenfocus.domain.service.AwsStorageService
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.LocalUserCases
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userIdCases.DeleteUserId
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userTypeCases.DeleteUserType
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.appEntryCases.ReadAppEntry
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.appLangCases.ReadAppLang
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userIdCases.ReadUserId
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userTypeCases.ReadUserType
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.vibrateCases.ReadVibrateState
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.appEntryCases.SaveAppEntry
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.appLangCases.SaveAppLang
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.themeCases.ReadTheme
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.themeCases.SaveTheme
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userIdCases.SaveUserId
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userTypeCases.SaveUserType
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.vibrateCases.SaveVibrateState
+import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
+import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
+import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCaseImpl
+import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCasesImpl
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.DeleteUserId
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.DeleteUserType
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.ReadAppEntry
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.appLangCases.ReadAppLang
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.ReadUserId
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.ReadUserType
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.ReadVibrateState
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.SaveAppEntry
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.appLangCases.SaveAppLang
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.ReadPomodoroBreakDuration
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.SavePomodoroBreakDuration
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroCycleCases.ReadPomodoroCycle
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroCycleCases.SavePomodoroCycle
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroWorkDurationCases.ReadPomodoroWorkDuration
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroWorkDurationCases.SavePomodoroWorkDuration
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.ringerModeCases.ReadRingerMode
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.themeCases.ReadTheme
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.themeCases.SaveTheme
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.SaveUserId
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.SaveUserType
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsReadUserInfo
@@ -61,8 +83,8 @@ object AppModule {
     @Singleton
     fun provideLocalUserCases(
         localUserManager: LocalUserManager
-    ): LocalUserCases {
-        return LocalUserCases(
+    ): LocalUserDataStoreCases {
+        return LocalUserDataStoreCases(
             saveAppEntry = SaveAppEntry(localUserManager),
             readAppEntry = ReadAppEntry(localUserManager),
             saveVibrateState = SaveVibrateState(localUserManager),
@@ -76,7 +98,35 @@ object AppModule {
             readUserType = ReadUserType(localUserManager),
             deleteUserType = DeleteUserType(localUserManager),
             saveTheme = SaveTheme(localUserManager),
-            readTheme = ReadTheme(localUserManager)
+            readTheme = ReadTheme(localUserManager),
+            savePomodoroCycle = SavePomodoroCycle(localUserManager),
+            readPomodoroCycle = ReadPomodoroCycle(localUserManager),
+            savePomodoroBreakDuration = SavePomodoroBreakDuration(localUserManager),
+            readPomodoroBreakDuration = ReadPomodoroBreakDuration(localUserManager),
+            savePomodoroWorkDuration = SavePomodoroWorkDuration(localUserManager),
+            readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun providePomodoroManagerUseCases(
+        pomodoroManager: PomodoroManager
+    ): PomodoroManagerUseCase = PomodoroManagerUseCaseImpl(pomodoroManager)
+
+    @Provides
+    @Singleton
+    fun providePomodoroServiceUseCases(
+        pomodoroServiceManager: PomodoroServiceManager
+    ): PomodoroServiceUseCases = PomodoroServiceUseCasesImpl(pomodoroServiceManager)
+
+    @Provides
+    @Singleton
+    fun provideDeviceRingerModeCases(
+        ringerModeRepository: RingerModeRepository
+    ): DeviceRingerModeCases {
+        return DeviceRingerModeCases(
+            readRingerMode = ReadRingerMode(ringerModeRepository)
         )
     }
 
@@ -114,6 +164,33 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providePomodoroServiceManager(
+        application: Application
+    ): PomodoroServiceManager = PomodoroServiceManagerImpl(application)
+
+    @Provides
+    @Singleton
+    fun providePomodoroManager(
+        soundManager: SoundManager,
+        vibrationManager: VibrationManager
+    ): PomodoroManager = PomodoroManagerImpl(soundManager, vibrationManager)
+
+    @Provides
+    @Singleton
+    fun provideVibrationManager(
+        ringerModeCases: DeviceRingerModeCases,
+        application: Application
+    ): VibrationManager = VibrationManagerImpl(ringerModeCases, application)
+
+    @Provides
+    @Singleton
+    fun provideSoundManager(
+        deviceRingerModeCases: DeviceRingerModeCases,
+        application: Application
+    ): SoundManager = SoundManagerImpl(deviceRingerModeCases, application)
+
+    @Provides
+    @Singleton
     fun provideToDoUsesCases(
         toDoRepository: ToDoRepository,
         tasksDao: TasksDao
@@ -148,6 +225,12 @@ object AppModule {
     fun provideThemeRepository(
         application: Application
     ): ThemeRepository = ThemeRepositoryImpl(application)
+
+    @Provides
+    @Singleton
+    fun provideRingerModeRepository(
+        application: Application
+    ): RingerModeRepository = RingerModeRepositoryImpl(application)
 
     @Provides
     @Singleton

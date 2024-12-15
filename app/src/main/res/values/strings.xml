@@ -30,6 +30,8 @@
     <string name="open_side_menu">Open side menu</string>
     <string name="pomodoro_times">Select pomodoro times</string>
     <string name="pomodoro_start">Start pomodoro</string>
+    <string name="pomodoro_pause">Pause pomodoro</string>
+    <string name="back_to_focus_mode">Back to focus mode</string>
     <string name="pomodoro_sounds">Pomodoro sounds</string>
     <string name="add_to_do_button">Add to do button</string>
     <string name="select">Select</string>

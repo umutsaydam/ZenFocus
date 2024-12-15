@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +39,9 @@ import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
@@ -46,13 +50,37 @@ fun HomeScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+    val remainingTime by homeViewModel.remainingTime.collectAsState()
+    val remainingPercent by homeViewModel.remainingPercent.collectAsState()
     val toDoList by homeViewModel.toDoList.collectAsState()
+    val isTimerRunning by homeViewModel.isTimerRunning.collectAsState()
     val soundList by homeViewModel.soundList.collectAsState()
     val defaultSound by homeViewModel.defaultSound.collectAsState()
     var selectedSound by remember { mutableStateOf<String?>(null) }
     val bottomSheetState = homeViewModel.bottomSheetState.collectAsState()
     val currentSheetContent by homeViewModel.bottomSheetContent.collectAsState()
-    val sliderPosition = homeViewModel.sliderPosition.value
+    val sliderPosition by homeViewModel.sliderPosition.collectAsState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START -> {
+                    homeViewModel.setTimer()
+                }
+
+                Lifecycle.Event.ON_STOP -> {
+                    homeViewModel.startPomodoroService()
+                }
+
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Box(
         modifier = modifier
@@ -108,8 +136,8 @@ fun HomeScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressWithText(
-                        progress = 0.6f,
-                        text = "25:00"
+                        progress = remainingPercent,
+                        text = remainingTime
                     )
                 }
                 Spacer(modifier = Modifier.height(SPACE_MEDIUM))
@@ -127,13 +155,23 @@ fun HomeScreen(
                         painterResource = painterResource(R.drawable.ic_time),
                         contentDescription = stringResource(R.string.pomodoro_times)
                     )
-                    FocusControlButtons(
-                        onClick = {
-                            navController.safeNavigate(Route.FocusMode.route)
-                        },
-                        painterResource = painterResource(R.drawable.ic_play_arrow),
-                        contentDescription = stringResource(R.string.pomodoro_start)
-                    )
+                    if (isTimerRunning) {
+                        FocusControlButtons(
+                            onClick = {
+                                homeViewModel.pauseTimer()
+                            },
+                            painterResource = painterResource(R.drawable.ic_pause_black),
+                            contentDescription = stringResource(R.string.pomodoro_pause)
+                        )
+                    } else {
+                        FocusControlButtons(
+                            onClick = {
+                                homeViewModel.playOrResumeTimer()
+                            },
+                            painterResource = painterResource(R.drawable.ic_play_arrow_black),
+                            contentDescription = stringResource(R.string.pomodoro_start)
+                        )
+                    }
                     FocusControlButtons(
                         onClick = {
                             homeViewModel.showPomodoroSoundsBottomSheet()
@@ -141,6 +179,15 @@ fun HomeScreen(
                         painterResource = painterResource(R.drawable.ic_music),
                         contentDescription = stringResource(R.string.pomodoro_sounds)
                     )
+                    if (isTimerRunning) {
+                        FocusControlButtons(
+                            onClick = {
+                                navController.safeNavigate(Route.FocusMode.route)
+                            },
+                            painterResource = painterResource(R.drawable.ic_focus_black),
+                            contentDescription = stringResource(R.string.back_to_focus_mode)
+                        )
+                    }
                 }
 
                 LazyToDoList(
