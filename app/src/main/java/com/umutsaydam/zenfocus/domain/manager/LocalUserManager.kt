@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.domain.localUserManager
+package com.umutsaydam.zenfocus.domain.manager
 
 import kotlinx.coroutines.flow.Flow
 
@@ -22,4 +22,13 @@ interface LocalUserManager {
 
     suspend fun saveTheme(themeName: String)
     fun readTheme(): Flow<String>
+
+    suspend fun savePomodoroCycle(pomodoroCycle: Int)
+    fun readPomodoroCycle(): Flow<Int>
+
+    suspend fun savePomodoroWorkDuration(workDuration: Int)
+    fun readPomodoroWorkDuration(): Flow<Int>
+
+    suspend fun savePomodoroBreakDuration(breakDuration: Int)
+    fun readPomodoroBreakDuration(): Flow<Int>
 }

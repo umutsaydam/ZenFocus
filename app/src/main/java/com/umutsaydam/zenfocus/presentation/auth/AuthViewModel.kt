@@ -5,16 +5,12 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amazonaws.mobile.auth.core.signin.AuthException
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession
 import com.amplifyframework.auth.AuthProvider
-import com.amplifyframework.auth.AuthSession
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
-import com.amplifyframework.auth.result.AuthSignUpResult
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.amplifyframework.core.Amplify
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.LocalUserCases
+import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
@@ -29,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val awsAuthCases: AwsAuthCases,
-    private val localUserCases: LocalUserCases,
+    private val localUserDataStoreCases: LocalUserDataStoreCases,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _signUpStep: MutableStateFlow<AuthSignUpStep?> = MutableStateFlow(null)
@@ -100,7 +96,7 @@ class AuthViewModel @Inject constructor(
 
     private fun saveUserId(userId: String) {
         viewModelScope.launch {
-            localUserCases.saveUserId(userId)
+            localUserDataStoreCases.saveUserId(userId)
             Log.i("R/T", "id saved $userId")
 
             getUserInfo(userId)
@@ -132,7 +128,7 @@ class AuthViewModel @Inject constructor(
 
     private fun saveUserType(userType: String) {
         viewModelScope.launch {
-            localUserCases.saveUserType(userType)
+            localUserDataStoreCases.saveUserType(userType)
             Log.i("R/T", "Saved userType.")
         }
     }
@@ -176,7 +172,7 @@ class AuthViewModel @Inject constructor(
                             if (!userId.isNullOrEmpty()) {
                                 Log.d("R/T", "userId --> : $userId")
                                 viewModelScope.launch {
-                                    localUserCases.saveUserId(userId)
+                                    localUserDataStoreCases.saveUserId(userId)
                                     Log.i("R/T", "id saved $userId")
 
                                     getUserInfo(userId)

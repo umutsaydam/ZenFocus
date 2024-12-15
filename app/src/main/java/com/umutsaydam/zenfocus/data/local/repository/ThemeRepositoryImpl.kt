@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.data.local
+package com.umutsaydam.zenfocus.data.local.repository
 
 import android.content.Context
 import android.graphics.Bitmap

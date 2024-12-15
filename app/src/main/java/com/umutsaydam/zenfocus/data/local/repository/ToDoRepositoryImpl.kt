@@ -1,5 +1,6 @@
-package com.umutsaydam.zenfocus.data.local
+package com.umutsaydam.zenfocus.data.local.repository
 
+import com.umutsaydam.zenfocus.data.local.db.TasksDao
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 

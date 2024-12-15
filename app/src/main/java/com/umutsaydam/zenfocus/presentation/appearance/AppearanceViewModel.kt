@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.data.remote.dto.APIResponse
 import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.LocalUserCases
+import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 import com.umutsaydam.zenfocus.util.FileNameFromUrl
 import com.umutsaydam.zenfocus.util.Resource
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppearanceViewModel @Inject constructor(
     private val awsStorageCases: AwsStorageCases,
-    private val localUserCases: LocalUserCases,
+    private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
@@ -44,7 +44,7 @@ class AppearanceViewModel @Inject constructor(
             if (themeRepository.isThemeAvailableInLocalStorage(newThemeName)) {
                 Log.i("R/T", "Selected theme is already downloaded.")
                 viewModelScope.launch {
-                    localUserCases.saveTheme(newThemeName)
+                    localUserDataStoreCases.saveTheme(newThemeName)
                 }
             } else {
                 downloadSelectedTheme(selectedThemeUrl = newTheme.themeUrl)
@@ -87,7 +87,7 @@ class AppearanceViewModel @Inject constructor(
             when (themeResource) {
                 is Resource.Success -> {
                     themeResource.data?.let { themeName ->
-                        localUserCases.saveTheme(themeName)
+                        localUserDataStoreCases.saveTheme(themeName)
                     }
                 }
 

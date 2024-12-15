@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.data.local
+package com.umutsaydam.zenfocus.data.local.db
 
 import androidx.room.Dao
 import androidx.room.Delete

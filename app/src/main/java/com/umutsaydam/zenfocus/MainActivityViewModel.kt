@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.LocalUserCases
+import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -13,10 +13,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val localUserCases: LocalUserCases,
+    private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
-    private val readAppEntry: Flow<Boolean> = localUserCases.readAppEntry.invoke()
+    private val readAppEntry: Flow<Boolean> = localUserDataStoreCases.readAppEntry.invoke()
 
     init {
         startInitialSetupIfFirstEntry()
@@ -37,13 +37,13 @@ class MainActivityViewModel @Inject constructor(
 
     private fun saveAppEntry() {
         viewModelScope.launch {
-            localUserCases.saveAppEntry()
+            localUserDataStoreCases.saveAppEntry()
         }
     }
 
     private fun setDefaultTheme() {
         viewModelScope.launch {
-            localUserCases.saveTheme(Constants.DEFAULT_THEME)
+            localUserDataStoreCases.saveTheme(Constants.DEFAULT_THEME)
         }
     }
 }

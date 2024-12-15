@@ -1,6 +1,6 @@
-package com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.userIdCases
+package com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases
 
-import com.umutsaydam.zenfocus.domain.localUserManager.LocalUserManager
+import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 
 class DeleteUserId(
     private val localUserManager: LocalUserManager

@@ -1,6 +1,6 @@
-package com.umutsaydam.zenfocus.domain.usecases.localUserCases.cases.vibrateCases
+package com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases
 
-import com.umutsaydam.zenfocus.domain.localUserManager.LocalUserManager
+import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 import kotlinx.coroutines.flow.Flow
 
 class ReadVibrateState(

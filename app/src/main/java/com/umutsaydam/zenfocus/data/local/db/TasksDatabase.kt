@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.data.local
+package com.umutsaydam.zenfocus.data.local.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

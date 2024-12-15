@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.R
-import com.umutsaydam.zenfocus.domain.usecases.localUserCases.LocalUserCases
+import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AppLanguageViewModel @Inject constructor(
-    private val localUserCases: LocalUserCases,
+    private val localUserDataStoreCases: LocalUserDataStoreCases,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _langList = MutableStateFlow<Array<String>>(
@@ -29,7 +29,7 @@ class AppLanguageViewModel @Inject constructor(
 
     private fun getDefaultAppLang() {
         viewModelScope.launch {
-            localUserCases.readAppLang.invoke().collect { lang ->
+            localUserDataStoreCases.readAppLang.invoke().collect { lang ->
                 _defaultLang.value = lang
             }
         }
@@ -50,7 +50,7 @@ class AppLanguageViewModel @Inject constructor(
 
     private fun saveAppLang(lang: String) {
         viewModelScope.launch {
-            localUserCases.saveAppLang.invoke(lang)
+            localUserDataStoreCases.saveAppLang.invoke(lang)
         }
     }
 }
