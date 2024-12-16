@@ -3,15 +3,15 @@ package com.umutsaydam.zenfocus.data.local.manager
 import android.content.Context
 import android.media.MediaPlayer
 import android.util.Log
-import com.umutsaydam.zenfocus.domain.manager.SoundManager
+import com.umutsaydam.zenfocus.domain.manager.TimeOutRingerManager
 import com.umutsaydam.zenfocus.domain.model.RingerModeEnum
 import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
 import dagger.hilt.android.qualifiers.ApplicationContext
 
-class SoundManagerImpl(
+class TimeOutRingerManagerImpl(
     private val ringerModeCases: DeviceRingerModeCases,
     @ApplicationContext private val context: Context
-) : SoundManager {
+) : TimeOutRingerManager {
     private var mediaPlayer: MediaPlayer? = null
 
     override fun playSound(soundResource: Int) {

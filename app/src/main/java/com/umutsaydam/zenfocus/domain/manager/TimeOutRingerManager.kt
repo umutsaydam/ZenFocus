@@ -1,6 +1,6 @@
 package com.umutsaydam.zenfocus.domain.manager
 
-interface SoundManager {
+interface TimeOutRingerManager {
     fun playSound(soundResource: Int)
 
     fun stopSound()

@@ -10,6 +10,7 @@ object Constants {
     const val USER_ID = "User_Id"
     const val USER_TYPE = "User_Type"
     const val FOCUS_THEME = "Focus_Theme"
+    const val FOCUS_SOUND = "FOCUS_SOUND"
     const val POMODORO_CYCLE = "Pomodoro_Cycle"
     const val POMODORO_WORK_DURATION = "Pomodoro_Work_Duration"
     const val POMODORO_BREAK_DURATION = "Pomodoro_Break_Duration"
@@ -17,6 +18,7 @@ object Constants {
     const val DOWNLOADED_FOCUS_THEMES = "Downloaded_Focus_Themes"
     const val POMODORO_SERVICE_CHANNEL_ID = "Pomodoro_Foreground_Service"
     const val POMODORO_NOTIFICATION_ID = 1
+    const val NONE = "None"
 
     // POMODORO DEFAULT SETTINGS
     const val DEFAULT_POMODORO_CYCLE = 4 // 1

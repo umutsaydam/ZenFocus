@@ -3,15 +3,17 @@ package com.umutsaydam.zenfocus.data.local.manager
 import android.os.CountDownTimer
 import android.util.Log
 import com.umutsaydam.zenfocus.R
+import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
-import com.umutsaydam.zenfocus.domain.manager.SoundManager
+import com.umutsaydam.zenfocus.domain.manager.TimeOutRingerManager
 import com.umutsaydam.zenfocus.domain.manager.VibrationManager
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_VIBRATION_DURATION
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class PomodoroManagerImpl(
-    private val soundManager: SoundManager,
+    private val focusSoundManager: FocusSoundManager,
+    private val timeOutRingerManager: TimeOutRingerManager,
     private val vibrationManager: VibrationManager
 ) : PomodoroManager {
     private var _initTime = 0L
@@ -96,6 +98,9 @@ class PomodoroManagerImpl(
                 timer.cancel()
             }
 
+            if (_isWorkingSession.value) {
+                focusSoundManager.playSoundIfAvailable()
+            }
             _isTimerRunning.value = true
             timer = object : CountDownTimer(_remainingTime.value, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
@@ -133,7 +138,7 @@ class PomodoroManagerImpl(
                             Log.i("R/T", "********* Pomodoro is completely complete *********")
                             stopTimer()
                             vibrateIfAvailable()
-                            soundManager.playSound(R.raw.completed_all_sessions)
+                            timeOutRingerManager.playSound(R.raw.completed_all_sessions)
                             Log.i("R/T", "timer finished")
                         }
                     } else {
@@ -154,6 +159,7 @@ class PomodoroManagerImpl(
     override fun switchBreakSession() {
         Log.i("R/t", "Switching break session...")
         stopTimer()
+        focusSoundManager.stopSound()
         notifyIfAvailable(R.raw.start_break_session)
         _isWorkingSession.value = false
         setPomodoroTimeAsMilli(_breakDuration.value)
@@ -163,6 +169,7 @@ class PomodoroManagerImpl(
     override fun switchWorkSession() {
         Log.i("R/t", "Switching work session...")
         stopTimer()
+        focusSoundManager.playSoundIfAvailable()
         notifyIfAvailable(R.raw.start_work_session)
         _isWorkingSession.value = true
         setPomodoroTimeAsMilli(_workDuration.value)
@@ -184,13 +191,14 @@ class PomodoroManagerImpl(
     }
 
     override fun notifyIfAvailable(soundResource: Int) {
-        soundManager.playSound(soundResource)
+        timeOutRingerManager.playSound(soundResource)
     }
 
     override fun pauseTimer() {
         if (_isTimerRunning.value) {
             Log.i("R/T", "Pause Timer func started...")
             _isTimerRunning.value = false
+            focusSoundManager.stopSound()
             timer.cancel()
             Log.i("R/T", "${_remainingTime.value}")
         } else {
@@ -208,6 +216,7 @@ class PomodoroManagerImpl(
         if (_isTimerRunning.value) {
             Log.i("R/T", "timer stopped")
             _isTimerRunning.value = false
+            focusSoundManager.stopSound()
             timer.cancel()
         } else {
             Log.i("R/T", "timer could not stopped. It is not initialized!")

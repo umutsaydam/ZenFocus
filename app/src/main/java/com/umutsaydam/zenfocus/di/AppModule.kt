@@ -9,19 +9,21 @@ import com.umutsaydam.zenfocus.data.local.repository.ToDoRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.manager.LocalUserManagerImpl
 import com.umutsaydam.zenfocus.data.local.manager.PomodoroManagerImpl
 import com.umutsaydam.zenfocus.data.local.manager.PomodoroServiceManagerImpl
-import com.umutsaydam.zenfocus.data.local.manager.SoundManagerImpl
+import com.umutsaydam.zenfocus.data.local.manager.TimeOutRingerManagerImpl
 import com.umutsaydam.zenfocus.data.local.manager.VibrationManagerImpl
 import com.umutsaydam.zenfocus.data.remote.repository.AwsAuthRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.repository.AwsStorageServiceRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.service.AwsAuthServiceImpl
 import com.umutsaydam.zenfocus.data.remote.service.AwsStorageServiceImpl
 import com.umutsaydam.zenfocus.data.local.repository.RingerModeRepositoryImpl
+import com.umutsaydam.zenfocus.data.local.manager.FocusSoundManagerImpl
 import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroServiceManager
 import com.umutsaydam.zenfocus.domain.repository.RingerModeRepository
-import com.umutsaydam.zenfocus.domain.manager.SoundManager
+import com.umutsaydam.zenfocus.domain.manager.TimeOutRingerManager
 import com.umutsaydam.zenfocus.domain.manager.VibrationManager
+import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
@@ -29,6 +31,8 @@ import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceReposit
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 import com.umutsaydam.zenfocus.domain.service.AwsStorageService
 import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
+import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCaseImpl
@@ -43,6 +47,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.ReadUse
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.ReadVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.SaveAppEntry
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appLangCases.SaveAppLang
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.ReadFocusSound
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.SaveFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.ReadPomodoroBreakDuration
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.SavePomodoroBreakDuration
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroCycleCases.ReadPomodoroCycle
@@ -91,6 +97,8 @@ object AppModule {
             readVibrateState = ReadVibrateState(localUserManager),
             saveAppLang = SaveAppLang(localUserManager),
             readAppLang = ReadAppLang(localUserManager),
+            saveFocusSound = SaveFocusSound(localUserManager),
+            readFocusSound = ReadFocusSound(localUserManager),
             saveUserId = SaveUserId(localUserManager),
             readUserId = ReadUserId(localUserManager),
             deleteUserId = DeleteUserId(localUserManager),
@@ -107,6 +115,12 @@ object AppModule {
             readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager)
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideFocusSoundUseCases(
+        focusSoundManager: FocusSoundManager
+    ): FocusSoundUseCases = FocusSoundUseCasesImpl(focusSoundManager)
 
     @Provides
     @Singleton
@@ -158,6 +172,19 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideToDoUsesCases(
+        toDoRepository: ToDoRepository,
+        tasksDao: TasksDao
+    ): ToDoUsesCases {
+        return ToDoUsesCases(
+            getTasks = GetTasks(toDoRepository),
+            upsertTask = UpsertTask(toDoRepository),
+            deleteTask = DeleteTask(toDoRepository)
+        )
+    }
+
+    @Provides
+    @Singleton
     fun localUserManager(
         application: Application
     ): LocalUserManager = LocalUserManagerImpl(application)
@@ -171,9 +198,11 @@ object AppModule {
     @Provides
     @Singleton
     fun providePomodoroManager(
-        soundManager: SoundManager,
+        focusSoundManager: FocusSoundManager,
+        timeOutRingerManager: TimeOutRingerManager,
         vibrationManager: VibrationManager
-    ): PomodoroManager = PomodoroManagerImpl(soundManager, vibrationManager)
+    ): PomodoroManager =
+        PomodoroManagerImpl(focusSoundManager, timeOutRingerManager, vibrationManager)
 
     @Provides
     @Singleton
@@ -187,20 +216,13 @@ object AppModule {
     fun provideSoundManager(
         deviceRingerModeCases: DeviceRingerModeCases,
         application: Application
-    ): SoundManager = SoundManagerImpl(deviceRingerModeCases, application)
+    ): TimeOutRingerManager = TimeOutRingerManagerImpl(deviceRingerModeCases, application)
 
     @Provides
     @Singleton
-    fun provideToDoUsesCases(
-        toDoRepository: ToDoRepository,
-        tasksDao: TasksDao
-    ): ToDoUsesCases {
-        return ToDoUsesCases(
-            getTasks = GetTasks(toDoRepository),
-            upsertTask = UpsertTask(toDoRepository),
-            deleteTask = DeleteTask(toDoRepository)
-        )
-    }
+    fun provideSoundRepository(
+        application: Application
+    ): FocusSoundManager = FocusSoundManagerImpl(application)
 
     @Provides
     @Singleton

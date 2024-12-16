@@ -5,10 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
 import com.umutsaydam.zenfocus.domain.model.TaskModel
+import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
+import com.umutsaydam.zenfocus.util.Constants.NONE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +24,7 @@ class HomeViewModel @Inject constructor(
     private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val pomodoroManagerUseCase: PomodoroManagerUseCase,
     private val pomodoroServiceUseCases: PomodoroServiceUseCases,
+    private val focusSoundUseCases: FocusSoundUseCases
 ) : ViewModel() {
     private val _remainingTime = MutableStateFlow<String>("00:00")
     val remainingTime: StateFlow<String> = _remainingTime
@@ -47,33 +50,58 @@ class HomeViewModel @Inject constructor(
     private val _bottomSheetState = MutableStateFlow<Boolean>(false)
     val bottomSheetState: StateFlow<Boolean> = _bottomSheetState
 
-    private val _soundList = MutableStateFlow<List<String>>(
-        listOf(
-            "None",
-            "LoFi Rainy",
-            "Lorem Ipsum",
-            "Dolor Lorem",
-            "Param Ipsum",
-            "Donec ut est id color malesuada",
-            "Donec eget maximus elit",
-            "Param Ipsum",
-            "Donec ut est id color malesuada",
-            "Donec eget maximus elit",
-            "Param Ipsum",
-            "Donec ut est id color malesuada",
-            "Donec eget maximus elit1"
-        )
-    )
+    private val _focusSoundList = MutableStateFlow<Array<String>>(emptyArray())
+    val focusSoundList: StateFlow<Array<String>> = _focusSoundList
 
-    val soundList: StateFlow<List<String>> = _soundList
-
-    private val _defaultSound = MutableStateFlow<String>("defaultSound")
+    private val _defaultSound = MutableStateFlow<String>(NONE)
     val defaultSound = _defaultSound
 
     init {
         getTasks()
         isTimerRunning()
         setTimer()
+        getSoundList()
+        getDefaultFocusSound()
+    }
+
+    private fun getSoundList() {
+        _focusSoundList.value = focusSoundUseCases.readSoundList()
+    }
+
+    private fun getDefaultFocusSound() {
+        viewModelScope.launch {
+            localUserDataStoreCases.readFocusSound().collectLatest { fileName ->
+                _defaultSound.value = fileName
+                setSound(fileName)
+            }
+        }
+    }
+
+    fun setDefaultSoundAndPlay(newSound: String) {
+        if (_defaultSound.value != newSound) {
+            _defaultSound.value = newSound
+            saveDefaultSound(newSound)
+        }
+    }
+
+    private fun saveDefaultSound(newSound: String) {
+        viewModelScope.launch {
+            localUserDataStoreCases.saveFocusSound(newSound)
+            setSound(newSound)
+            playSound()
+        }
+    }
+
+    private fun setSound(newSound: String) {
+        focusSoundUseCases.setSound(newSound)
+    }
+
+    private fun playSound() {
+        focusSoundUseCases.playSoundIfAvailable()
+    }
+
+    fun stopSound() {
+        focusSoundUseCases.stopSound()
     }
 
     fun setTimer() {
@@ -224,12 +252,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             toDoUsesCases.deleteTask.invoke(taskModel)
             getTasks()
-        }
-    }
-
-    fun setDefaultSound(newSound: String) {
-        if (_defaultSound.value != newSound) {
-            _defaultSound.value = newSound
         }
     }
 

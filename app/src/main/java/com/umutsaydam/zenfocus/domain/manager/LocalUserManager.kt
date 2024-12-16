@@ -12,6 +12,9 @@ interface LocalUserManager {
     suspend fun saveAppLang(appLang: String)
     fun readAppLang(): Flow<String>
 
+    suspend fun saveFocusSound(fileName: String)
+    fun readFocusSound(): Flow<String>
+
     suspend fun saveUserId(userId: String)
     fun readUserId(): Flow<String>
     suspend fun deleteUserId()

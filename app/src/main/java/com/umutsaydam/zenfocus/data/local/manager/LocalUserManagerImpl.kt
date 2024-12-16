@@ -15,6 +15,7 @@ import com.umutsaydam.zenfocus.util.Constants.APP_LANG_ENGLISH
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_POMODORO_BREAK_DURATION
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_POMODORO_CYCLE
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_POMODORO_WORK_DURATION
+import com.umutsaydam.zenfocus.util.Constants.NONE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -54,6 +55,18 @@ class LocalUserManagerImpl(
     override fun readAppLang(): Flow<String> {
         return context.dataStore.data.map { preferences ->
             preferences[PreferencesKeys.APP_LANG] ?: APP_LANG_ENGLISH
+        }
+    }
+
+    override suspend fun saveFocusSound(fileName: String) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.FOCUS_SOUND] = fileName
+        }
+    }
+
+    override fun readFocusSound(): Flow<String> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.FOCUS_SOUND] ?: NONE
         }
     }
 
@@ -150,6 +163,7 @@ private object PreferencesKeys {
     val APP_LANG = stringPreferencesKey(name = Constants.APP_LANG)
     val USER_ID = stringPreferencesKey(name = Constants.USER_ID)
     val USER_TYPE = stringPreferencesKey(name = Constants.USER_TYPE)
+    val FOCUS_SOUND = stringPreferencesKey(name = Constants.FOCUS_SOUND)
     val FOCUS_THEME = stringPreferencesKey(name = Constants.FOCUS_THEME)
     val POMODORO_CYCLE = intPreferencesKey(name = Constants.POMODORO_CYCLE)
     val POMODORO_WORK_DURATION = intPreferencesKey(name = Constants.POMODORO_WORK_DURATION)

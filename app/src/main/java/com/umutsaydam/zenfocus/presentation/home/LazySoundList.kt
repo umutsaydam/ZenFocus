@@ -21,7 +21,7 @@ import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 @Composable
 fun LazySoundList(
     modifier: Modifier = Modifier,
-    soundList: List<String>,
+    soundList: Array<String>,
     content: @Composable (Int) -> Unit,
     fixedContent: @Composable (Int) -> Unit
 ) {

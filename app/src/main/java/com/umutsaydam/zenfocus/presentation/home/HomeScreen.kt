@@ -10,19 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,8 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
-import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
-import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
@@ -54,9 +47,8 @@ fun HomeScreen(
     val remainingPercent by homeViewModel.remainingPercent.collectAsState()
     val toDoList by homeViewModel.toDoList.collectAsState()
     val isTimerRunning by homeViewModel.isTimerRunning.collectAsState()
-    val soundList by homeViewModel.soundList.collectAsState()
+    val soundList by homeViewModel.focusSoundList.collectAsState()
     val defaultSound by homeViewModel.defaultSound.collectAsState()
-    var selectedSound by remember { mutableStateOf<String?>(null) }
     val bottomSheetState = homeViewModel.bottomSheetState.collectAsState()
     val currentSheetContent by homeViewModel.bottomSheetContent.collectAsState()
     val sliderPosition by homeViewModel.sliderPosition.collectAsState()
@@ -218,6 +210,9 @@ fun HomeScreen(
                     CustomBottomSheet(
                         onDismissRequest = {
                             homeViewModel.setBottomSheetState(false)
+                            if (!isTimerRunning) {
+                                homeViewModel.stopSound()
+                            }
                         },
                         content = {
                             when (currentSheetContent) {
@@ -231,38 +226,38 @@ fun HomeScreen(
                                     LazySoundList(
                                         soundList = soundList,
                                         content = { index ->
+                                            val sound = soundList[index]
                                             RadioButtonWithText(
                                                 modifier = Modifier.background(MaterialTheme.colorScheme.background),
-                                                radioSelected = false,
-                                                radioText = soundList[index],
+                                                radioSelected = sound == defaultSound,
+                                                radioText = sound,
                                                 onClick = {
-                                                    selectedSound = soundList[index]
-                                                    //:TODO play sound
+                                                    homeViewModel.setDefaultSoundAndPlay(sound)
                                                 }
                                             )
                                         },
                                         fixedContent = { index ->
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .padding(horizontal = PADDING_MEDIUM2),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Button(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .height(BUTTON_HEIGHT_MEDIUM),
-                                                    onClick = {
-//                                                        defaultSound = soundList[index]
-                                                        selectedSound = soundList[index]
-                                                    },
-                                                    enabled = defaultSound != selectedSound
-                                                ) {
-                                                    Text(
-                                                        text = stringResource(R.string.select)
-                                                    )
-                                                }
-                                            }
+//                                            Box(
+//                                                modifier = Modifier
+//                                                    .fillMaxWidth()
+//                                                    .padding(horizontal = PADDING_MEDIUM2),
+//                                                contentAlignment = Alignment.Center
+//                                            ) {
+//                                                Button(
+//                                                    modifier = Modifier
+//                                                        .fillMaxWidth()
+//                                                        .height(BUTTON_HEIGHT_MEDIUM),
+//                                                    onClick = {
+////                                                        defaultSound = soundList[index]
+//                                                        selectedSound = soundList[index]
+//                                                    },
+//                                                    enabled = defaultSound != selectedSound
+//                                                ) {
+//                                                    Text(
+//                                                        text = stringResource(R.string.select)
+//                                                    )
+//                                                }
+//                                            }
                                         }
                                     )
                                 }
