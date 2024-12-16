@@ -17,6 +17,7 @@ import com.umutsaydam.zenfocus.data.remote.service.AwsAuthServiceImpl
 import com.umutsaydam.zenfocus.data.remote.service.AwsStorageServiceImpl
 import com.umutsaydam.zenfocus.data.local.repository.RingerModeRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.manager.FocusSoundManagerImpl
+import com.umutsaydam.zenfocus.data.local.repository.NetworkCheckerRepositoryImpl
 import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroServiceManager
@@ -24,6 +25,7 @@ import com.umutsaydam.zenfocus.domain.repository.RingerModeRepository
 import com.umutsaydam.zenfocus.domain.manager.TimeOutRingerManager
 import com.umutsaydam.zenfocus.domain.manager.VibrationManager
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
+import com.umutsaydam.zenfocus.domain.repository.local.NetworkCheckerRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
@@ -34,6 +36,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCaseImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
@@ -146,6 +150,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideNetworkCheckerUseCases(
+        networkCheckerRepository: NetworkCheckerRepository
+    ): NetworkCheckerUseCases = NetworkCheckerUseCasesImpl(networkCheckerRepository)
+
+    @Provides
+    @Singleton
     fun provideAwsAuthUsesCases(
         awsAuthRepository: AwsAuthRepository
     ): AwsAuthCases {
@@ -217,6 +227,12 @@ object AppModule {
         deviceRingerModeCases: DeviceRingerModeCases,
         application: Application
     ): TimeOutRingerManager = TimeOutRingerManagerImpl(deviceRingerModeCases, application)
+
+    @Provides
+    @Singleton
+    fun provideNetworkChecker(
+        application: Application
+    ): NetworkCheckerRepository = NetworkCheckerRepositoryImpl(application)
 
     @Provides
     @Singleton
