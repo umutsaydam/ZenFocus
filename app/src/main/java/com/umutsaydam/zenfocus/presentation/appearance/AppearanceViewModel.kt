@@ -7,6 +7,7 @@ import com.umutsaydam.zenfocus.data.remote.dto.APIResponse
 import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 import com.umutsaydam.zenfocus.util.FileNameFromUrl
 import com.umutsaydam.zenfocus.util.Resource
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class AppearanceViewModel @Inject constructor(
     private val awsStorageCases: AwsStorageCases,
     private val localUserDataStoreCases: LocalUserDataStoreCases,
-    private val themeRepository: ThemeRepository
+    private val themeRepository: ThemeRepository,
+    private val networkCheckerUseCases: NetworkCheckerUseCases
 ) : ViewModel() {
 
     private val _themeList = MutableStateFlow<List<ThemeInfo?>>(listOf(null))
@@ -29,12 +31,16 @@ class AppearanceViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _defaultTheme = MutableStateFlow<ThemeInfo?>(null)
+    val defaultTheme: StateFlow<ThemeInfo?> = _defaultTheme
+
     init {
         getThemeList()
     }
 
-    private val _defaultTheme = MutableStateFlow<ThemeInfo?>(null)
-    val defaultTheme: StateFlow<ThemeInfo?> = _defaultTheme
+    fun isConnected(): Boolean {
+        return networkCheckerUseCases.isConnected()
+    }
 
     fun setDefaultTheme(newTheme: ThemeInfo?) {
         if (newTheme != null && defaultTheme.value != newTheme) {
@@ -53,25 +59,28 @@ class AppearanceViewModel @Inject constructor(
     }
 
     private fun getThemeList() {
-        viewModelScope.launch {
-            when (val themesResult: Resource<APIResponse> =
-                awsStorageCases.readThemeList.invoke()) {
-                is Resource.Success -> {
-                    Log.i("R/T", "_themeList = $themesResult in viewmodel")
-                    themesResult.data?.let {
-                        val updatedThemeList = listOf(null) + it.body.items + listOf(null)
-                        _themeList.value = updatedThemeList
+        Log.i("R/T", "network state: ${networkCheckerUseCases.isConnected()}")
+        if (isConnected()) {
+            viewModelScope.launch {
+                when (val themesResult: Resource<APIResponse> =
+                    awsStorageCases.readThemeList.invoke()) {
+                    is Resource.Success -> {
+                        Log.i("R/T", "_themeList = $themesResult in viewmodel")
+                        themesResult.data?.let {
+                            val updatedThemeList = listOf(null) + it.body.items + listOf(null)
+                            _themeList.value = updatedThemeList
+                        }
                     }
-                }
 
-                is Resource.Error -> {
-                    _themeList.value = listOf(null)
-                    _errorMessage.value = themesResult.message
-                    Log.i("R/T", "Error in viewmodel: ${themesResult.message}")
-                }
+                    is Resource.Error -> {
+                        _themeList.value = listOf(null)
+                        _errorMessage.value = themesResult.message
+                        Log.i("R/T", "Error in viewmodel: ${themesResult.message}")
+                    }
 
-                is Resource.Loading -> {
-                    Log.i("R/T", "loading...")
+                    is Resource.Loading -> {
+                        Log.i("R/T", "loading...")
+                    }
                 }
             }
         }

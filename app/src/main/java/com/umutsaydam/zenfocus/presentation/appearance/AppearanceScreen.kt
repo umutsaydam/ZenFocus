@@ -42,6 +42,7 @@ import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.presentation.common.NotConnectedMessage
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.launch
 
@@ -93,68 +94,71 @@ fun AppearanceScreen(
     ) { paddingValues ->
         val topPadding = paddingValues.calculateTopPadding()
         val bottomPadding = paddingValues.calculateBottomPadding()
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    top = topPadding,
-                    bottom = bottomPadding,
-                    start = PADDING_MEDIUM2,
-                    end = PADDING_MEDIUM2
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-            Image(
+        if (appearanceViewModel.isConnected()) {
+            Column(
                 modifier = Modifier
-                    .width(215.dp)
-                    .height(385.dp)
-                    .clip(RoundedCornerShape(CORNER_MEDIUM)),
-                painter = if (selectedTheme != null) {
-                    rememberAsyncImagePainter(selectedTheme!!.themeUrl)
-                } else {
-                    painterResource(R.drawable.tomato)
-                },
-                contentDescription = stringResource(R.string.selected_theme),
-                contentScale = ContentScale.Crop
-            )
+                    .fillMaxSize()
+                    .padding(
+                        top = topPadding,
+                        bottom = bottomPadding,
+                        start = PADDING_MEDIUM2,
+                        end = PADDING_MEDIUM2
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
 
-            CenterFocusedCarousel(
-                listOfTheme = themeList.value,
-                gridState = gridState,
-                content = { firstVisibleIndex, currentIndex ->
-                    val theme = themeList.value[currentIndex]
-
-                    if (theme != null) {
-                        val isBigger = firstVisibleIndex + 1 == currentIndex
-                        Log.i("R/T", "Have to be loaded image: $theme")
-                        AsyncImage(
-                            modifier = Modifier
-                                .size(
-                                    if (isBigger) 100.dp else 80.dp
-                                )
-                                .padding(if (isBigger) 0.dp else 5.dp)
-                                .clip(RoundedCornerShape(CORNER_MEDIUM))
-                                .clickable {
-                                    coroutine.launch {
-                                        gridState.animateScrollToItem(
-                                            index = maxOf(0, currentIndex - 1)
-                                        )
-                                    }
-                                },
-                            model = theme.themeUrl,
-                            contentDescription = theme.themeName,
-                            contentScale = ContentScale.Crop
-                        )
-                        if (isBigger) {
-                            selectedTheme = theme
-                        }
+            ) {
+                Image(
+                    modifier = Modifier
+                        .width(215.dp)
+                        .height(385.dp)
+                        .clip(RoundedCornerShape(CORNER_MEDIUM)),
+                    painter = if (selectedTheme != null) {
+                        rememberAsyncImagePainter(selectedTheme!!.themeUrl)
                     } else {
-                        Spacer(modifier = Modifier.width(80.dp))
+                        painterResource(R.drawable.tomato)
+                    },
+                    contentDescription = stringResource(R.string.selected_theme),
+                    contentScale = ContentScale.Crop
+                )
+
+                CenterFocusedCarousel(
+                    listOfTheme = themeList.value,
+                    gridState = gridState,
+                    content = { firstVisibleIndex, currentIndex ->
+                        val theme = themeList.value[currentIndex]
+
+                        if (theme != null) {
+                            val isBigger = firstVisibleIndex + 1 == currentIndex
+                            Log.i("R/T", "Have to be loaded image: $theme")
+                            AsyncImage(
+                                modifier = Modifier
+                                    .size(
+                                        if (isBigger) 100.dp else 80.dp
+                                    )
+                                    .padding(if (isBigger) 0.dp else 5.dp)
+                                    .clip(RoundedCornerShape(CORNER_MEDIUM))
+                                    .clickable {
+                                        coroutine.launch {
+                                            gridState.animateScrollToItem(
+                                                index = maxOf(0, currentIndex - 1)
+                                            )
+                                        }
+                                    },
+                                model = theme.themeUrl,
+                                contentDescription = theme.themeName,
+                                contentScale = ContentScale.Crop
+                            )
+                            if (isBigger) {
+                                selectedTheme = theme
+                            }
+                        } else {
+                            Spacer(modifier = Modifier.width(80.dp))
+                        }
                     }
-                }
-            )
+                )
+            }
+        } else {
+            NotConnectedMessage()
         }
     }
 }
