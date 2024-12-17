@@ -105,21 +105,28 @@ fun AppearanceScreen(
                         end = PADDING_MEDIUM2
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
-
             ) {
-                Image(
-                    modifier = Modifier
-                        .width(215.dp)
-                        .height(385.dp)
-                        .clip(RoundedCornerShape(CORNER_MEDIUM)),
-                    painter = if (selectedTheme != null) {
-                        rememberAsyncImagePainter(selectedTheme!!.themeUrl)
-                    } else {
-                        painterResource(R.drawable.tomato)
-                    },
-                    contentDescription = stringResource(R.string.selected_theme),
-                    contentScale = ContentScale.Crop
-                )
+                if (selectedTheme != null) {
+                    Image(
+                        modifier = Modifier
+                            .width(215.dp)
+                            .height(385.dp)
+                            .clip(RoundedCornerShape(CORNER_MEDIUM)),
+                        painter = rememberAsyncImagePainter(selectedTheme!!.themeUrl),
+                        contentDescription = stringResource(R.string.selected_theme),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Icon(
+                        modifier = Modifier
+                            .width(215.dp)
+                            .height(385.dp)
+                            .clip(RoundedCornerShape(CORNER_MEDIUM)),
+                        painter = painterResource(R.drawable.ic_image),
+                        contentDescription = stringResource(R.string.selected_theme),
+                        tint = Color.LightGray
+                    )
+                }
 
                 CenterFocusedCarousel(
                     listOfTheme = themeList.value,
