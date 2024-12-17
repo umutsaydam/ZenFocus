@@ -25,7 +25,7 @@ fun LazySoundList(
     content: @Composable (Int) -> Unit,
     fixedContent: @Composable (Int) -> Unit
 ) {
-    var selectedSoundIndex by remember {
+    val selectedSoundIndex by remember {
         mutableStateOf(0)
     }
     Box(

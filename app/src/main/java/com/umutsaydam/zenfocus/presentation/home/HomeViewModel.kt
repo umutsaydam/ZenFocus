@@ -29,9 +29,6 @@ class HomeViewModel @Inject constructor(
     private val _remainingTime = MutableStateFlow<String>("00:00")
     val remainingTime: StateFlow<String> = _remainingTime
 
-    private val _remainingTimeMilli = MutableStateFlow<Long>(0L)
-    val remainingTimeMilli: StateFlow<Long> = _remainingTimeMilli
-
     private val _remainingPercent = MutableStateFlow<Float>(0f)
     val remainingPercent: StateFlow<Float> = _remainingPercent
 
@@ -121,7 +118,6 @@ class HomeViewModel @Inject constructor(
             setDefaultPomodoroWorkDuration()
         }
         getRemainingTime()
-        getRemainingTimeMilli()
         getRemainingPercent()
     }
 
@@ -151,14 +147,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             workDuration.collectLatest { duration ->
                 pomodoroManagerUseCase.setWorkDurationAsMinute(duration)
-            }
-        }
-    }
-
-    private fun getRemainingTimeMilli() {
-        viewModelScope.launch {
-            pomodoroManagerUseCase.getRemainingTimeMilli().collect { timeMilli ->
-                _remainingTimeMilli.value = timeMilli
             }
         }
     }

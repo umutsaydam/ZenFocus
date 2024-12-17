@@ -1,11 +1,9 @@
 package com.umutsaydam.zenfocus.presentation.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -13,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
-import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
-import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

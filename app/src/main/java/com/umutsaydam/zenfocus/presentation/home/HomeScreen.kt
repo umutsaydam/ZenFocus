@@ -236,29 +236,7 @@ fun HomeScreen(
                                                 }
                                             )
                                         },
-                                        fixedContent = { index ->
-//                                            Box(
-//                                                modifier = Modifier
-//                                                    .fillMaxWidth()
-//                                                    .padding(horizontal = PADDING_MEDIUM2),
-//                                                contentAlignment = Alignment.Center
-//                                            ) {
-//                                                Button(
-//                                                    modifier = Modifier
-//                                                        .fillMaxWidth()
-//                                                        .height(BUTTON_HEIGHT_MEDIUM),
-//                                                    onClick = {
-////                                                        defaultSound = soundList[index]
-//                                                        selectedSound = soundList[index]
-//                                                    },
-//                                                    enabled = defaultSound != selectedSound
-//                                                ) {
-//                                                    Text(
-//                                                        text = stringResource(R.string.select)
-//                                                    )
-//                                                }
-//                                            }
-                                        }
+                                        fixedContent = { index -> }
                                     )
                                 }
 
