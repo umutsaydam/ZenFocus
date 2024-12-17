@@ -6,5 +6,5 @@ import com.umutsaydam.zenfocus.util.Resource
 interface AwsStorageService {
     suspend fun getThemeList(): Resource<APIResponse>
 
-    suspend fun downloadSelectedTheme(selectedTheme: String): Resource<String>
+    suspend fun downloadSelectedTheme(selectedThemeUrl: String): Resource<String>
 }
