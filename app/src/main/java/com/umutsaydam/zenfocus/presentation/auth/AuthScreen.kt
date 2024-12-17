@@ -35,6 +35,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -79,6 +82,9 @@ fun AuthScreen(
     val context = LocalContext.current
     val activity = context as? Activity
 
+    val email by remember { mutableStateOf("") }
+    val password by remember { mutableStateOf("") }
+
     val networkErrorMessage = stringResource(R.string.no_connection)
     val completedSignUpMessage = stringResource(R.string.signed_up)
     val confirmYourAccountMessage = stringResource(R.string.confirm_account)
@@ -91,7 +97,6 @@ fun AuthScreen(
 
             AuthSignInStep.CONFIRM_SIGN_UP -> {
                 Toast.makeText(context, confirmYourAccountMessage, Toast.LENGTH_SHORT).show()
-                val email = "codewithumut@gmail.com"
                 val confirmRoute = "AccountConfirm/$email"
                 navController.safeNavigate(confirmRoute)
             }
@@ -106,7 +111,6 @@ fun AuthScreen(
         when (signUpStep.value) {
             AuthSignUpStep.CONFIRM_SIGN_UP_STEP -> {
                 Toast.makeText(context, confirmYourAccountMessage, Toast.LENGTH_SHORT).show()
-                val email = "codewithumut@gmail.com"
                 val confirmRoute = "AccountConfirm/$email"
                 navController.safeNavigate(confirmRoute)
             }
@@ -222,8 +226,10 @@ fun AuthScreen(
                         content = {
                             val isSignInSection = page == 0
                             AuthForm(
+                                authEmail = email,
+                                authPassword = password,
                                 buttonText = stringResource(if (isSignInSection) R.string.sign_in else R.string.sign_up),
-                                onClick = { email, password ->
+                                onClick = {
                                     if (authViewModel.isConnected()) {
                                         if (isSignInSection) {
                                             authViewModel.signIn(email, password)

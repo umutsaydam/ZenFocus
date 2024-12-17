@@ -21,11 +21,13 @@ import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 
 @Composable
 fun AuthForm(
+    authEmail: String,
+    authPassword: String,
     buttonText: String,
-    onClick: (String, String) -> Unit
+    onClick: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf(authEmail) }
+    var password by remember { mutableStateOf(authPassword) }
 
     FormTextField(
         formTitle = stringResource(R.string.email),
@@ -57,7 +59,9 @@ fun AuthForm(
             .fillMaxWidth()
             .height(BUTTON_HEIGHT_MEDIUM),
         onClick = {
-            onClick(email, password)
+            email = email.trim()
+            password = password.trim()
+            onClick()
         },
         shape = RoundedCornerShape(CORNER_SMALL),
         enabled = email.isNotEmpty() && password.isNotEmpty()
