@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,6 +34,8 @@ fun AccountConfirmScreen(
     navController: NavHostController,
     authConfirmViewModel: AuthConfirmViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val networkErrorMessage = stringResource(R.string.no_connection)
     var confirmCode by remember { mutableStateOf("") }
     Log.i("R/T", email)
 
@@ -58,7 +62,11 @@ fun AccountConfirmScreen(
                 .fillMaxWidth()
                 .height(BUTTON_HEIGHT_MEDIUM),
             onClick = {
-                authConfirmViewModel.accountConfirm(email, confirmCode)
+                if (authConfirmViewModel.isConnected()) {
+                    authConfirmViewModel.accountConfirm(email, confirmCode)
+                } else {
+                    Toast.makeText(context, networkErrorMessage, Toast.LENGTH_SHORT).show()
+                }
             },
             shape = RoundedCornerShape(CORNER_SMALL),
             enabled = confirmCode.length >= 4

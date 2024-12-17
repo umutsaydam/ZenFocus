@@ -3,6 +3,7 @@ package com.umutsaydam.zenfocus.presentation.auth
 import android.app.Activity
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,7 +35,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +60,6 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
-import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import com.umutsaydam.zenfocus.util.safeNavigate
 import kotlinx.coroutines.launch
@@ -80,6 +79,10 @@ fun AuthScreen(
     val context = LocalContext.current
     val activity = context as? Activity
 
+    val networkErrorMessage = stringResource(R.string.no_connection)
+    val completedSignUpMessage = stringResource(R.string.signed_up)
+    val confirmYourAccountMessage = stringResource(R.string.confirm_account)
+
     LaunchedEffect(signInStep.value) {
         when (signInStep.value) {
             AuthSignInStep.DONE -> {
@@ -87,7 +90,7 @@ fun AuthScreen(
             }
 
             AuthSignInStep.CONFIRM_SIGN_UP -> {
-                Log.i("R/T", "launchedEffected")
+                Toast.makeText(context, confirmYourAccountMessage, Toast.LENGTH_SHORT).show()
                 val email = "codewithumut@gmail.com"
                 val confirmRoute = "AccountConfirm/$email"
                 navController.safeNavigate(confirmRoute)
@@ -100,15 +103,9 @@ fun AuthScreen(
     }
 
     LaunchedEffect(signUpStep.value) {
-//        if (signUpStep.value == AuthSignUpStep.CONFIRM_SIGN_UP_STEP) {
-//            Log.i("R/T", "launchedEffected")
-//            val email = "codewithumut@gmail.com"
-//            val confirmRoute = "AccountConfirm/$email"
-//            navController.safeNavigate(confirmRoute)
-//        }
         when (signUpStep.value) {
             AuthSignUpStep.CONFIRM_SIGN_UP_STEP -> {
-                Log.i("R/T", "launchedEffected")
+                Toast.makeText(context, confirmYourAccountMessage, Toast.LENGTH_SHORT).show()
                 val email = "codewithumut@gmail.com"
                 val confirmRoute = "AccountConfirm/$email"
                 navController.safeNavigate(confirmRoute)
@@ -116,6 +113,7 @@ fun AuthScreen(
 
             AuthSignUpStep.DONE -> {
                 Log.i("R/T", "sign up is done")
+                Toast.makeText(context, completedSignUpMessage, Toast.LENGTH_SHORT).show()
             }
 
             AuthSignUpStep.COMPLETE_AUTO_SIGN_IN -> {
@@ -222,13 +220,22 @@ fun AuthScreen(
                         modifier = Modifier.padding(horizontal = PADDING_SMALL),
                         verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1),
                         content = {
+                            val isSignInSection = page == 0
                             AuthForm(
-                                buttonText = stringResource(if (page == 0) R.string.sign_in else R.string.sign_up),
+                                buttonText = stringResource(if (isSignInSection) R.string.sign_in else R.string.sign_up),
                                 onClick = { email, password ->
-                                    if (page == 0) {
-                                        authViewModel.signIn(email, password)
+                                    if (authViewModel.isConnected()) {
+                                        if (isSignInSection) {
+                                            authViewModel.signIn(email, password)
+                                        } else {
+                                            authViewModel.signUp(email, password)
+                                        }
                                     } else {
-                                        authViewModel.signUp(email, password)
+                                        Toast.makeText(
+                                            context,
+                                            networkErrorMessage,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                 }
                             )
@@ -256,7 +263,15 @@ fun AuthScreen(
                         modifier = Modifier,
                         onClick = {
                             activity?.let {
-                                authViewModel.signInWithGoogle(it)
+                                if (authViewModel.isConnected()) {
+                                    authViewModel.signInWithGoogle(it)
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        networkErrorMessage,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         },
                         shape = RoundedCornerShape(CORNER_SMALL),

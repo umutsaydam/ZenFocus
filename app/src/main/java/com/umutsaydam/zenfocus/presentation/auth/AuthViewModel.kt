@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
 import android.app.Activity
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,12 +10,12 @@ import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.amplifyframework.core.Amplify
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
 import com.umutsaydam.zenfocus.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -26,7 +25,7 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val awsAuthCases: AwsAuthCases,
     private val localUserDataStoreCases: LocalUserDataStoreCases,
-    @ApplicationContext private val context: Context
+    private val networkCheckerUseCases: NetworkCheckerUseCases
 ) : ViewModel() {
     private val _signUpStep: MutableStateFlow<AuthSignUpStep?> = MutableStateFlow(null)
     var signUpStep: StateFlow<AuthSignUpStep?> = _signUpStep
@@ -35,10 +34,13 @@ class AuthViewModel @Inject constructor(
     val signInStep: StateFlow<AuthSignInStep?> = _signInStep
 
     private val _userId: MutableStateFlow<String?> = MutableStateFlow(null)
-    var userId: StateFlow<String?> = _userId
 
     private val _errorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
     val errorMessage: StateFlow<String?> = _errorMessage
+
+    fun isConnected(): Boolean {
+        return networkCheckerUseCases.isConnected()
+    }
 
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
