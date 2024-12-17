@@ -11,7 +11,6 @@ interface PomodoroManagerUseCase {
     fun setWorkCycle(workCycle: Int)
     fun setBreakDurationAsMinute(minute: Int)
     fun setWorkDurationAsMinute(minute: Int)
-    fun getRemainingTimeMilli(): StateFlow<Long>
     fun getRemainingTimeAsTextFormat(): StateFlow<String>
     fun getRemainingPercent(): StateFlow<Float>
     fun isTimerRunning(): StateFlow<Boolean>
@@ -47,10 +46,6 @@ class PomodoroManagerUseCaseImpl(
 
     override fun setWorkDurationAsMinute(minute: Int) {
         pomodoroManager.setPomodoroWorkDurationAsMinute(minute)
-    }
-
-    override fun getRemainingTimeMilli(): StateFlow<Long> {
-        return pomodoroManager.remainingTimeMilli
     }
 
     override fun getRemainingTimeAsTextFormat(): StateFlow<String> {
