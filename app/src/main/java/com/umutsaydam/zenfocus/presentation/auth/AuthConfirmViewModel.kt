@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
-import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
+import com.umutsaydam.zenfocus.domain.model.AwsAuthSignUpResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

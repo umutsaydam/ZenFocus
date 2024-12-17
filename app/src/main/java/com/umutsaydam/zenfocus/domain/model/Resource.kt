@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.util
+package com.umutsaydam.zenfocus.domain.model
 
 sealed class Resource<T>(
     val data: T? = null,

@@ -10,7 +10,7 @@ import com.google.gson.Gson
 import com.umutsaydam.zenfocus.data.remote.dto.APIResponse
 import com.umutsaydam.zenfocus.domain.service.AwsStorageService
 import com.umutsaydam.zenfocus.util.FileNameFromUrl
-import com.umutsaydam.zenfocus.util.Resource
+import com.umutsaydam.zenfocus.domain.model.Resource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File

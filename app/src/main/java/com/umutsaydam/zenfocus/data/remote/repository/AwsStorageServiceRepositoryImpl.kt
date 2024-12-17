@@ -3,7 +3,7 @@ package com.umutsaydam.zenfocus.data.remote.repository
 import com.umutsaydam.zenfocus.data.remote.dto.APIResponse
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
 import com.umutsaydam.zenfocus.domain.service.AwsStorageService
-import com.umutsaydam.zenfocus.util.Resource
+import com.umutsaydam.zenfocus.domain.model.Resource
 
 class AwsStorageServiceRepositoryImpl(
     private val awsStorageService: AwsStorageService

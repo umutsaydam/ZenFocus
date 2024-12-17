@@ -12,9 +12,9 @@ import com.amplifyframework.core.Amplify
 import com.google.gson.Gson
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
-import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
-import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
-import com.umutsaydam.zenfocus.util.Resource
+import com.umutsaydam.zenfocus.domain.model.AwsAuthSignInResult
+import com.umutsaydam.zenfocus.domain.model.AwsAuthSignUpResult
+import com.umutsaydam.zenfocus.domain.model.Resource
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 class AwsAuthServiceImpl : AwsAuthService {

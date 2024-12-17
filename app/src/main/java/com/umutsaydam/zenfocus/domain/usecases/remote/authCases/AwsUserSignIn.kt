@@ -1,7 +1,7 @@
 package com.umutsaydam.zenfocus.domain.usecases.remote.authCases
 
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
-import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
+import com.umutsaydam.zenfocus.domain.model.AwsAuthSignInResult
 import javax.inject.Inject
 
 class AwsUserSignIn @Inject constructor(

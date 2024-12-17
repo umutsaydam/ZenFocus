@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.util
+package com.umutsaydam.zenfocus.domain.model
 
 import com.amplifyframework.auth.AuthException
 import com.amplifyframework.auth.result.step.AuthSignInStep

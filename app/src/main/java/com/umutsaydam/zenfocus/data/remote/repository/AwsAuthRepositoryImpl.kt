@@ -4,9 +4,9 @@ import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
-import com.umutsaydam.zenfocus.util.AwsAuthSignInResult
-import com.umutsaydam.zenfocus.util.AwsAuthSignUpResult
-import com.umutsaydam.zenfocus.util.Resource
+import com.umutsaydam.zenfocus.domain.model.AwsAuthSignInResult
+import com.umutsaydam.zenfocus.domain.model.AwsAuthSignUpResult
+import com.umutsaydam.zenfocus.domain.model.Resource
 import javax.inject.Inject
 
 class AwsAuthRepositoryImpl @Inject constructor(

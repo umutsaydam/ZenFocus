@@ -1,7 +1,7 @@
 package com.umutsaydam.zenfocus.domain.service
 
 import com.umutsaydam.zenfocus.data.remote.dto.APIResponse
-import com.umutsaydam.zenfocus.util.Resource
+import com.umutsaydam.zenfocus.domain.model.Resource
 
 interface AwsStorageService {
     suspend fun getThemeList(): Resource<APIResponse>
