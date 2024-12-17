@@ -12,7 +12,6 @@ import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,9 +27,6 @@ class FocusModeViewModel @Inject constructor(
 
     private val _remainingTime = MutableStateFlow<String>("00:00")
     val remainingTime: StateFlow<String> = _remainingTime
-
-    private val _remainingTimeMilli = MutableStateFlow<Long>(0L)
-    val remainingTimeMilli: StateFlow<Long> = _remainingTimeMilli
 
     private val _remainingPercent = MutableStateFlow<Float>(0f)
     val remainingPercent: StateFlow<Float> = _remainingPercent
@@ -52,25 +48,8 @@ class FocusModeViewModel @Inject constructor(
         getRemainingPercent()
     }
 
-    private fun getRemainingTimeMilli() {
-        viewModelScope.launch {
-            pomodoroManagerUseCase.getRemainingTimeMilli().collect { timeMilli ->
-                _remainingTimeMilli.value = timeMilli
-            }
-        }
-    }
-
-    private fun playTimer() {
-        Log.i("R/T", "playTimer fun was started. in viewmodel")
-        pomodoroManagerUseCase.startPomodoro()
-    }
-
     private fun isTimerRunning(): Boolean {
         return pomodoroManagerUseCase.isTimerRunning().value
-    }
-
-    fun stopTimer() {
-        pomodoroManagerUseCase.stopPomodoro()
     }
 
     private fun getRemainingTime() {
