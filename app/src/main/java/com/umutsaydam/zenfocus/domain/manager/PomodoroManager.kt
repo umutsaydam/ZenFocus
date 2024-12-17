@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.StateFlow
 interface PomodoroManager {
     val remainingPercent: StateFlow<Float>
     val remainingTimeText: StateFlow<String>
-    val remainingTimeMilli: StateFlow<Long>
     val isTimerRunning: StateFlow<Boolean>
     val workDuration: StateFlow<Long>
     val breakDuration: StateFlow<Long>

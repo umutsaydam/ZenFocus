@@ -18,16 +18,12 @@ class PomodoroManagerImpl(
 ) : PomodoroManager {
     private var _initTime = 0L
     private val _remainingTime = MutableStateFlow<Long>(0)
-    val remainingTime: StateFlow<Long> = _remainingTime
 
     private val _remainingPercent = MutableStateFlow<Float>(0f)
     override val remainingPercent: StateFlow<Float> = _remainingPercent
 
     private val _remainingTimeText = MutableStateFlow<String>("00:00")
     override val remainingTimeText: StateFlow<String> = _remainingTimeText
-
-    private val _remainingTimeMilli = MutableStateFlow<Long>(0L)
-    override val remainingTimeMilli: StateFlow<Long> = _remainingTime
 
     private lateinit var timer: CountDownTimer
 
@@ -53,7 +49,6 @@ class PomodoroManagerImpl(
         Log.i("R/T", "setTime was started as minute")
         val convertedTime = TimeConverter.minuteToMilli(minute)
         _remainingTime.value = convertedTime
-        _remainingTimeMilli.value = convertedTime
         _initTime = convertedTime
     }
 
@@ -104,8 +99,6 @@ class PomodoroManagerImpl(
             _isTimerRunning.value = true
             timer = object : CountDownTimer(_remainingTime.value, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
-                    _remainingTimeMilli.value = millisUntilFinished
-
                     val divided = millisUntilFinished / 1000
                     val minutes = divided / 60
                     val seconds = divided % 60
@@ -117,9 +110,7 @@ class PomodoroManagerImpl(
 
                     _remainingTime.value = millisUntilFinished
 
-//                    Log.d("R/T", "millisUntilFinished: $millisUntilFinished $_initTime")
                     _remainingPercent.value = millisUntilFinished.toFloat() / _initTime.toFloat()
-//                    Log.d("R/T", "_remainingPercent.value: ${_remainingPercent.value}")
                 }
 
                 override fun onFinish() {
