@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,6 +42,7 @@ import coil3.compose.rememberAsyncImagePainter
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
+import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.NotConnectedMessage
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
@@ -104,13 +106,14 @@ fun AppearanceScreen(
                         start = PADDING_MEDIUM2,
                         end = PADDING_MEDIUM2
                     ),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM)
             ) {
                 if (selectedTheme != null) {
                     Image(
                         modifier = Modifier
-                            .width(215.dp)
-                            .height(385.dp)
+                            .width(205.dp)
+                            .height(375.dp)
                             .clip(RoundedCornerShape(CORNER_MEDIUM)),
                         painter = rememberAsyncImagePainter(selectedTheme!!.themeUrl),
                         contentDescription = stringResource(R.string.selected_theme),
@@ -119,16 +122,16 @@ fun AppearanceScreen(
                 } else {
                     Icon(
                         modifier = Modifier
-                            .width(215.dp)
-                            .height(385.dp)
+                            .width(205.dp)
+                            .height(375.dp)
                             .clip(RoundedCornerShape(CORNER_MEDIUM)),
                         painter = painterResource(R.drawable.ic_image),
                         contentDescription = stringResource(R.string.selected_theme),
                         tint = Color.LightGray
                     )
                 }
-
                 CenterFocusedCarousel(
+                    modifier = Modifier.align(Alignment.End),
                     listOfTheme = themeList.value,
                     gridState = gridState,
                     content = { firstVisibleIndex, currentIndex ->
