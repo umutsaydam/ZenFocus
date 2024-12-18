@@ -5,12 +5,15 @@ import android.content.res.AssetManager
 import android.media.MediaPlayer
 import android.util.Log
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
+import com.umutsaydam.zenfocus.domain.model.RingerModeEnum
+import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
 import com.umutsaydam.zenfocus.util.Constants.NONE
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class FocusSoundManagerImpl(
+    private val ringerModeCases: DeviceRingerModeCases,
     @ApplicationContext private val context: Context
 ) : FocusSoundManager {
     private val _currentSoundName = MutableStateFlow<String>(NONE)
@@ -35,7 +38,7 @@ class FocusSoundManagerImpl(
     }
 
     override fun playSoundIfAvailable() {
-        if (_currentSoundName.value != NONE) {
+        if (deviceRingerModeAvailable() && _currentSoundName.value != NONE) {
             try {
                 if (_isPlaying.value) {
                     Log.i("R/T", "Media player is playing another sound so it is stopped...")
@@ -65,6 +68,10 @@ class FocusSoundManagerImpl(
         } else {
             Log.i("R/T", "sound name not found.")
         }
+    }
+
+    override fun deviceRingerModeAvailable(): Boolean {
+        return ringerModeCases.readRingerMode() == RingerModeEnum.NORMAL
     }
 
     override fun stopSound() {

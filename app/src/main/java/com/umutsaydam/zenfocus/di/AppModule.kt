@@ -237,8 +237,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSoundRepository(
+        deviceRingerModeCases: DeviceRingerModeCases,
         application: Application
-    ): FocusSoundManager = FocusSoundManagerImpl(application)
+    ): FocusSoundManager = FocusSoundManagerImpl(deviceRingerModeCases, application)
 
     @Provides
     @Singleton

@@ -8,5 +8,6 @@ interface FocusSoundManager {
     fun readSoundList(): Array<String>
     fun setSound(fileName: String)
     fun playSoundIfAvailable()
+    fun deviceRingerModeAvailable(): Boolean
     fun stopSound()
 }
