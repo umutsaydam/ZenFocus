@@ -160,13 +160,6 @@ fun HomeScreen(
                         Alignment.CenterHorizontally
                     )
                 ) {
-                    FocusControlButtons(
-                        onClick = {
-                            homeViewModel.showPomodoroTimesBottomSheet()
-                        },
-                        painterResource = painterResource(R.drawable.ic_time),
-                        contentDescription = stringResource(R.string.pomodoro_times)
-                    )
                     if (isTimerRunning) {
                         FocusControlButtons(
                             onClick = {
@@ -183,6 +176,13 @@ fun HomeScreen(
                             contentDescription = stringResource(R.string.pomodoro_stop)
                         )
                     } else {
+                        FocusControlButtons(
+                            onClick = {
+                                homeViewModel.showPomodoroTimesBottomSheet()
+                            },
+                            painterResource = painterResource(R.drawable.ic_time),
+                            contentDescription = stringResource(R.string.pomodoro_times)
+                        )
                         FocusControlButtons(
                             onClick = {
                                 homeViewModel.playOrResumeTimer()
