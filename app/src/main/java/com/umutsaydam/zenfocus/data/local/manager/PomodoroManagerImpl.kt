@@ -209,6 +209,9 @@ class PomodoroManagerImpl(
             _isTimerRunning.value = false
             focusSoundManager.stopSound()
             timer.cancel()
+            _remainingTime.value = 0
+            _remainingPercent.value = 0f
+            _remainingTimeText.value = "00:00"
         } else {
             Log.i("R/T", "timer could not stopped. It is not initialized!")
         }

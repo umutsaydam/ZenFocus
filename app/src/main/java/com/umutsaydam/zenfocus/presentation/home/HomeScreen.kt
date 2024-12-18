@@ -18,6 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
@@ -52,6 +56,7 @@ fun HomeScreen(
     val bottomSheetState = homeViewModel.bottomSheetState.collectAsState()
     val currentSheetContent by homeViewModel.bottomSheetContent.collectAsState()
     val sliderPosition by homeViewModel.sliderPosition.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -116,6 +121,21 @@ fun HomeScreen(
                 }
             }
         ) { paddingValues ->
+
+            if (showDialog) {
+                CustomAlertDialog(
+                    icon = painterResource(R.drawable.ic_timer_off),
+                    title = "Title",
+                    text = "Content",
+                    isConfirmed = { confirmedState ->
+                        if (confirmedState) {
+                            homeViewModel.stopTimer()
+                        }
+                        showDialog = false
+                    }
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -154,6 +174,13 @@ fun HomeScreen(
                             },
                             painterResource = painterResource(R.drawable.ic_pause_black),
                             contentDescription = stringResource(R.string.pomodoro_pause)
+                        )
+                        FocusControlButtons(
+                            onClick = {
+                                showDialog = true
+                            },
+                            painterResource = painterResource(R.drawable.ic_timer_off),
+                            contentDescription = stringResource(R.string.pomodoro_stop)
                         )
                     } else {
                         FocusControlButtons(
