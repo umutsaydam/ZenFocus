@@ -1,5 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.focusMode
 
+import android.app.Activity
+import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -26,6 +28,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -78,6 +81,8 @@ fun FocusModeScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+
+    KeepScreenOn()
 
     var alpha by remember { mutableFloatStateOf(1f) }
     val animatedAlpha by animateFloatAsState(
@@ -132,6 +137,20 @@ fun FocusModeScreen(
                 textColor = Color.White,
                 style = MaterialTheme.typography.titleLarge
             )
+        }
+    }
+}
+
+@Composable
+fun KeepScreenOn() {
+    val context = LocalContext.current
+    val activity = context as? Activity
+
+    DisposableEffect(Unit) {
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        onDispose {
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 }
