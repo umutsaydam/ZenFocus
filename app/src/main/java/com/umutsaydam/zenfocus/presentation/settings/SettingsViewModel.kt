@@ -56,6 +56,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = localUserDataStoreCases.readUserId.invoke()
             userId.collect { value ->
+                Log.i("R/T", "value $value")
                 _isSignedInState.value = value.isNotEmpty()
             }
         }

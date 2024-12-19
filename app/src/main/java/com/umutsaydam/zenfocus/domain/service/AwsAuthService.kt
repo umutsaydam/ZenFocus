@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.domain.service
 
+import android.app.Activity
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
 import com.umutsaydam.zenfocus.domain.model.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.domain.model.AwsAuthSignUpResult
@@ -15,6 +16,10 @@ interface AwsAuthService {
     suspend fun getCurrentUserId(): Resource<String>
 
     suspend fun getUserInfo(userId: String): Resource<UserInfo>
+
+    suspend fun fetchAuthSession(): Resource<String>
+
+    suspend fun signUpOrInWithGoogle(activity: Activity): Resource<String>
 
     suspend fun signOut()
 }

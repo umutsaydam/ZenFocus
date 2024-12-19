@@ -1,10 +1,13 @@
 package com.umutsaydam.zenfocus.data.remote.service
 
+import android.app.Activity
 import android.util.Log
 import com.amplifyframework.api.rest.RestOptions
 import com.amplifyframework.auth.AuthException
+import com.amplifyframework.auth.AuthProvider
 import com.amplifyframework.auth.AuthUserAttribute
 import com.amplifyframework.auth.AuthUserAttributeKey
+import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.amplifyframework.auth.options.AuthSignUpOptions
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
@@ -15,6 +18,9 @@ import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 import com.umutsaydam.zenfocus.domain.model.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.domain.model.AwsAuthSignUpResult
 import com.umutsaydam.zenfocus.domain.model.Resource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 class AwsAuthServiceImpl : AwsAuthService {
@@ -223,15 +229,82 @@ class AwsAuthServiceImpl : AwsAuthService {
         }
     }
 
+    override suspend fun fetchAuthSession(): Resource<String> {
+        return suspendCancellableCoroutine { continuation ->
+            Amplify.Auth.fetchAuthSession(
+                { result ->
+                    Log.d("R/T", "Result -->: $result")
+                    val cognitoAuthSession = result as AWSCognitoAuthSession
+
+                    if (cognitoAuthSession.isSignedIn) {
+                        val userId = cognitoAuthSession.userSubResult.value
+
+                        if (!userId.isNullOrEmpty()) {
+                            Log.d("R/T", "userId --> : $userId")
+
+                            continuation.resume(Resource.Success(userId)) { cause, _, _ ->
+                                Log.e("R/T", "Coroutine cancelled onSuccess: $cause")
+                            }
+                        } else {
+                            Log.d("R/T", "userId NULL OR EMPTY: $userId")
+                            continuation.resume(Resource.Error()) { cause, _, _ ->
+                                Log.e("R/T", "Coroutine cancelled onError: $cause")
+                            }
+                        }
+                    } else {
+                        Log.d("R/T", "User is not signed in")
+                        continuation.resume(Resource.Error()) { cause, _, _ ->
+                            Log.e("R/T", "Coroutine cancelled onError: $cause")
+                        }
+                    }
+                },
+                { error ->
+                    Log.e("R/T", "Failed to fetch auth session: $error")
+                    continuation.resume(Resource.Error(message = error.message)) { cause, _, _ ->
+                        Log.e("R/T", "Coroutine cancelled onError: $cause")
+                    }
+                }
+            )
+        }
+    }
+
+    override suspend fun signUpOrInWithGoogle(activity: Activity): Resource<String> {
+        return suspendCancellableCoroutine { continuation ->
+            Amplify.Auth.signInWithSocialWebUI(
+                AuthProvider.google(),
+                activity,
+                {
+                    Log.i("R/T", "Sign in OK: $it")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val result = fetchAuthSession()
+                        Log.e("R/T", "result $result")
+                        if (result is Resource.Success && result.data != null) {
+                            val userId = result.data
+                            Log.e("R/T", "userId $userId")
+
+                            continuation.resume(Resource.Success(data = userId)) { cause, _, _ ->
+                                Log.e("R/T", "Coroutine cancelled onSuccess: $cause")
+                            }
+                        } else {
+                            continuation.resume(Resource.Error()) { cause, _, _ ->
+                                Log.e("R/T", "Coroutine cancelled onError: $cause")
+                            }
+                        }
+                    }
+                },
+                { error ->
+                    Log.e("R/T", "Coroutine cancelled onError: ${error.message}")
+                    continuation.resume(Resource.Error(message = error.message)) { cause, _, _ ->
+                        Log.e("R/T", "Coroutine cancelled onError: $cause")
+                    }
+                }
+            )
+        }
+    }
+
     override suspend fun signOut() {
         Amplify.Auth.signOut {
             Log.i("AuthSignOut", "Signed out successfully")
         }
     }
-
-    /*
-        fun signUpOrInWithGoogle() {
-            TODO("Not yet implemented")
-        }
-     */
 }

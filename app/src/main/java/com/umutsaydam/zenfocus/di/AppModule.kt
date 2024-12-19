@@ -68,6 +68,7 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibr
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsReadUserInfo
+import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignInWithGoogle
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignOut
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserGetUserId
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserSignIn
@@ -165,6 +166,7 @@ object AppModule {
             userSignUpConfirm = AwsUserSignUpConfirm(awsAuthRepository),
             userGetId = AwsUserGetUserId(awsAuthRepository),
             readUserInfo = AwsReadUserInfo(awsAuthRepository),
+            signInWithGoogle = AwsSignInWithGoogle(awsAuthRepository),
             signOut = AwsSignOut(awsAuthRepository)
         )
     }

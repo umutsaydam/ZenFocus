@@ -4,11 +4,8 @@ import android.app.Activity
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amplifyframework.auth.AuthProvider
-import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
-import com.amplifyframework.core.Amplify
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
@@ -157,44 +154,30 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    // Will become optimized
     fun signInWithGoogle(activity: Activity) {
-        Amplify.Auth.signInWithSocialWebUI(
-            AuthProvider.google(),
-            activity,
-            {
-                Log.i("R/T", "Sign in OK: $it")
-                Amplify.Auth.fetchAuthSession(
-                    { result ->
-                        Log.d("R/T", "Result -->: $result")
-                        val cognitoAuthSession = result as AWSCognitoAuthSession
+        viewModelScope.launch {
+            val result = awsAuthCases.signInWithGoogle(activity)
+            Log.i("R/T", "resu in viewmodel:  $result")
 
-                        if (cognitoAuthSession.isSignedIn) {
-                            val userId = cognitoAuthSession.userSubResult.value
-                            if (!userId.isNullOrEmpty()) {
-                                Log.d("R/T", "userId --> : $userId")
-                                viewModelScope.launch {
-                                    localUserDataStoreCases.saveUserId(userId)
-                                    Log.i("R/T", "id saved $userId")
-
-                                    getUserInfo(userId)
-                                    _userId.value = userId
-                                    _signInStep.value = AuthSignInStep.DONE
-                                }
-                            } else {
-                                Log.d("R/T", "userId NULL OR EMPTY: $userId")
-                            }
-                        } else {
-                            Log.d("R/T", "User is not signed in")
-                        }
-                    },
-                    { error ->
-                        // Hata durumunda
-                        Log.e("R/T", "Failed to fetch auth session: $error")
+            when (result) {
+                is Resource.Success -> {
+                    val currUserId = result.data
+                    currUserId?.let { id ->
+                        saveUserId(id)
+                        getUserInfo(id)
+                        _userId.value = id
+                        _signInStep.value = AuthSignInStep.DONE
                     }
-                )
-            },
-            { Log.e("R/T", "Sign in failed", it) }
-        )
+                }
+
+                is Resource.Error -> {
+                    Log.e("R/T", "error in viewmodel: ${result.message}")
+                }
+
+                is Resource.Loading -> {
+
+                }
+            }
+        }
     }
 }

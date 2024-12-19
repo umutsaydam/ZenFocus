@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.data.remote.repository
 
+import android.app.Activity
 import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
@@ -29,8 +30,8 @@ class AwsAuthRepositoryImpl @Inject constructor(
         return awsAuthService.getCurrentUserId()
     }
 
-    override suspend fun signUpOrInWithGoogle(): Resource<AWSCognitoAuthSession> {
-        TODO("Not yet implemented")
+    override suspend fun signUpOrInWithGoogle(activity: Activity): Resource<String> {
+        return awsAuthService.signUpOrInWithGoogle(activity)
     }
 
     override suspend fun getUserInfo(userID: String): Resource<UserInfo> {
