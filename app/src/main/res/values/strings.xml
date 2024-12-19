@@ -4,6 +4,8 @@
     <string name="back_to_home">Back</string>
     <string name="appearance">Appearance</string>
     <string name="change_the_app_language">Change the app language</string>
+    <string name="working_time">Working time</string>
+    <string name="break_time">Break time</string>
     <string name="vibrate">Vibrate</string>
     <string name="policy">Policy</string>
     <string name="version">Version</string>
@@ -38,6 +40,7 @@
     <string name="pomodoro_sounds">Pomodoro sounds</string>
     <string name="add_to_do_button">Add to do button</string>
     <string name="select">Select</string>
+    <string name="save">Save</string>
     <string name="selected_theme">"Selected theme"</string>
     <string name="no_connection">"Internet connection unavailable!"</string>
 

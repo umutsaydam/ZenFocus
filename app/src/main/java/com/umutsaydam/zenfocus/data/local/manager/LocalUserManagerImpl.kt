@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
@@ -132,6 +133,7 @@ class LocalUserManagerImpl(
 
     override suspend fun savePomodoroWorkDuration(workDuration: Int) {
         context.dataStore.edit { settings ->
+            Log.i("R/T", "Working workDur: $workDuration")
             settings[PreferencesKeys.POMODORO_WORK_DURATION] = workDuration
         }
     }
