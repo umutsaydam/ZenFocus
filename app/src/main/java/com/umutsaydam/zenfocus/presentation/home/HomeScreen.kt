@@ -125,8 +125,8 @@ fun HomeScreen(
             if (showDialog) {
                 CustomAlertDialog(
                     icon = painterResource(R.drawable.ic_timer_off),
-                    title = "Title",
-                    text = "Content",
+                    title = stringResource(R.string.stop_pomodoro),
+                    text = stringResource(R.string.pomodoro_will_stop),
                     isConfirmed = { confirmedState ->
                         if (confirmedState) {
                             homeViewModel.stopTimer()

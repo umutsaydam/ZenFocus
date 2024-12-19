@@ -6,6 +6,8 @@
     <string name="change_the_app_language">Change the app language</string>
     <string name="working_time">Working time</string>
     <string name="break_time">Break time</string>
+    <string name="stop_pomodoro">Stop pomodoro</string>
+    <string name="pomodoro_will_stop">Are you sure the pomodoro will end?</string>
     <string name="vibrate">Vibrate</string>
     <string name="policy">Policy</string>
     <string name="version">Version</string>

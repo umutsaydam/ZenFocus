@@ -24,7 +24,7 @@ fun CustomAlertDialog(
             Icon(
                 painter = icon,
                 contentDescription = "Desc",
-                tint = Color.LightGray
+                tint = Color.Gray
             )
         },
         title = {
@@ -34,7 +34,8 @@ fun CustomAlertDialog(
         },
         text = {
             Text(
-                text
+                text,
+                color = Color.Gray
             )
         },
         onDismissRequest = { isConfirmed(false) },
