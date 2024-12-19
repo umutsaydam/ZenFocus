@@ -1,10 +1,17 @@
 package com.umutsaydam.zenfocus.presentation.home
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -26,14 +33,31 @@ fun CircularProgressWithText(
     strokeCap: StrokeCap = StrokeCap.Round,
     text: String,
     textColor: Color = MaterialTheme.colorScheme.background,
-    style: TextStyle = MaterialTheme.typography.titleMedium
+    style: TextStyle = MaterialTheme.typography.titleMedium,
+    durationMillis: Int = 1000,
+    delayMillis: Int = 0
 ) {
+    var animationPlayed by remember { mutableStateOf(false) }
+
+    val currPercentage = animateFloatAsState(
+        targetValue = if (animationPlayed) progress else 0f,
+        animationSpec = tween(
+            durationMillis = durationMillis,
+            delayMillis = delayMillis
+        ),
+        label = ""
+    )
+
+    LaunchedEffect(key1 = true) {
+        animationPlayed = true
+    }
+
     CircularProgressIndicator(
         modifier = modifier
             .size(size)
             .alpha(animatedAlpha),
         progress = {
-            progress
+            currPercentage.value
         },
         color = color,
         strokeWidth = strokeWith,
