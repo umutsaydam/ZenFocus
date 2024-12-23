@@ -1,5 +1,10 @@
 package com.umutsaydam.zenfocus.presentation.home
 
+import android.app.Activity
+import android.content.Context
+import android.os.Build
+import android.util.Log
+import android.view.WindowMetrics
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,8 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
@@ -38,7 +45,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
+import com.umutsaydam.zenfocus.util.Constants.AD_UNIT_ID
 import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
@@ -57,6 +70,10 @@ fun HomeScreen(
     val currentSheetContent by homeViewModel.bottomSheetContent.collectAsState()
     val sliderPosition by homeViewModel.sliderPosition.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    var isFirstAdRequested by remember { mutableStateOf(false) }
+    var isAdLoaded by remember { mutableStateOf(false) }
+    val adSize: AdSize = getAdSize(context)
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -223,15 +240,80 @@ fun HomeScreen(
                     )
                 }
 
-                CustomFab(
-                    alignment = Alignment.BottomEnd,
-                    containerColor = MaterialTheme.colorScheme.outlineVariant,
-                    fabIcon = painterResource(R.drawable.ic_add),
-                    contentDescription = stringResource(R.string.add_to_do_button),
-                    onClick = {
-                        homeViewModel.showAddToDoBottomSheet()
+                Box(
+                    modifier = if (isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    CustomFab(
+                        alignment = Alignment.BottomEnd,
+                        containerColor = MaterialTheme.colorScheme.outlineVariant,
+                        fabIcon = painterResource(R.drawable.ic_add),
+                        contentDescription = stringResource(R.string.add_to_do_button),
+                        onClick = {
+                            homeViewModel.showAddToDoBottomSheet()
+                        }
+                    )
+                }
+
+                if (isAdLoaded || !isFirstAdRequested) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Yellow),
+                        contentAlignment = Alignment.BottomEnd
+                    ) {
+                        AndroidView(
+                            modifier = Modifier.fillMaxWidth(),
+                            factory = { context ->
+                                AdView(context).apply {
+                                    setAdSize(adSize)
+                                    adUnitId = AD_UNIT_ID
+                                    loadAd(AdRequest.Builder().build())
+
+                                    adListener = object : AdListener() {
+                                        override fun onAdClicked() {
+                                            Log.i("A/D", "onAdClicked")
+                                        }
+
+                                        override fun onAdClosed() {
+                                            super.onAdClosed()
+                                            Log.i("A/D", "onAdClosed")
+                                        }
+
+                                        override fun onAdFailedToLoad(p0: LoadAdError) {
+                                            super.onAdFailedToLoad(p0)
+                                            Log.i("A/D", "onAdFailedToLoad $p0")
+                                            isAdLoaded = false
+                                            isFirstAdRequested = true
+                                        }
+
+                                        override fun onAdImpression() {
+                                            super.onAdImpression()
+                                            Log.i("A/D", "onAdImpression")
+                                        }
+
+                                        override fun onAdLoaded() {
+                                            super.onAdLoaded()
+                                            Log.i("A/D", "onAdLoaded")
+                                            isAdLoaded = true
+                                            isFirstAdRequested = true
+                                        }
+
+                                        override fun onAdOpened() {
+                                            super.onAdOpened()
+                                            Log.i("A/D", "onAdOpened")
+                                        }
+
+                                        override fun onAdSwipeGestureClicked() {
+                                            super.onAdSwipeGestureClicked()
+                                            Log.i("A/D", "onAdSwipeGestureClicked")
+                                        }
+                                    }
+                                }
+                            }
+                        )
                     }
-                )
+                }
 
                 if (bottomSheetState.value) {
                     CustomBottomSheet(
@@ -285,4 +367,22 @@ fun HomeScreen(
             }
         }
     }
+}
+
+private fun getAdSize(context: Context): AdSize {
+    val activity = context as? Activity
+    activity?.let {
+        val displayMetrics = context.resources.displayMetrics
+        val adWithPixels =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val windowMetrics: WindowMetrics = it.window.windowManager.currentWindowMetrics
+                windowMetrics.bounds.width()
+            } else {
+                displayMetrics.widthPixels
+            }
+        val density = displayMetrics.density
+        val adWidth = (adWithPixels / density).toInt()
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
+    }
+    return AdSize.BANNER
 }

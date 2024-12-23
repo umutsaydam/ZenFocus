@@ -1,7 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.home
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
-import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 
 @Composable
@@ -28,8 +27,8 @@ fun CustomFab(
 ) {
     Box(
         modifier = modifier
-            .fillMaxSize()
-            .padding(PADDING_MEDIUM1)
+            .fillMaxWidth()
+            .padding(PADDING_SMALL)
     ) {
         FloatingActionButton(
             modifier = Modifier

@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.Packaging
+import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -19,6 +20,17 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val properties: Properties = Properties()
+        properties.load(
+            project.rootProject.file("local.properties").inputStream()
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "GOOGLE_ADS_APP_ID",
+            value = "\"${properties.getProperty("GOOGLE_ADS_APP_ID")}\""
+        )
+        manifestPlaceholders["GOOGLE_ADS_APP_ID"] = properties.getProperty("GOOGLE_ADS_APP_ID")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -42,6 +54,7 @@ android {
     buildFeatures {
         compose = true
     }
+    android.buildFeatures.buildConfig = true
 }
 
 dependencies {
@@ -94,4 +107,6 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     // Google Credentials Play Services
     implementation(libs.androidx.credentials.play.services.auth)
+    // Google Mobile Ads SDK
+    implementation(libs.play.services.ads)
 }

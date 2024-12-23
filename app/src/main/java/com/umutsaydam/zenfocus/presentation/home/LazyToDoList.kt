@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,6 +25,7 @@ fun LazyToDoList(
             .padding(PADDING_MEDIUM1)
             .clip(RoundedCornerShape(CORNER_SMALL))
             .fillMaxWidth()
+            .fillMaxHeight(0.6f)
             .background(Color.LightGray),
     ) {
         items(count = toDoList.size, key = { it }) { index ->
