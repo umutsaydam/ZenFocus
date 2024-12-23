@@ -27,7 +27,4 @@ object Constants {
 
     // VIBRATION
     const val DEFAULT_VIBRATION_DURATION = 500L
-
-    // Google Ads Banner ID
-    const val AD_UNIT_ID = "ca-app-pub-3940256099942544/9214589741"
 }

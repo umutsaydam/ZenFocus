@@ -30,7 +30,22 @@ android {
             name = "GOOGLE_ADS_APP_ID",
             value = "\"${properties.getProperty("GOOGLE_ADS_APP_ID")}\""
         )
+
+        buildConfigField(
+            type = "String",
+            name = "AD_BANNER_UNIT_ID",
+            value = "\"${properties.getProperty("AD_BANNER_UNIT_ID")}\""
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "AD_REWARD_THEME_UNIT_ID",
+            value = "\"${properties.getProperty("AD_REWARD_THEME_UNIT_ID")}\""
+        )
+
         manifestPlaceholders["GOOGLE_ADS_APP_ID"] = properties.getProperty("GOOGLE_ADS_APP_ID")
+        manifestPlaceholders["AD_BANNER_UNIT_ID"] = properties.getProperty("AD_BANNER_UNIT_ID")
+        manifestPlaceholders["AD_REWARD_THEME_UNIT_ID"] = properties.getProperty("AD_REWARD_THEME_UNIT_ID")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

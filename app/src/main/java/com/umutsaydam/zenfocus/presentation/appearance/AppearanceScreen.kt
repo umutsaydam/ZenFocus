@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.appearance
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -19,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +42,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.umutsaydam.zenfocus.BuildConfig
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
@@ -58,6 +66,27 @@ fun AppearanceScreen(
     val gridState = rememberLazyGridState()
     val coroutine = rememberCoroutineScope()
     var selectedTheme by remember { mutableStateOf(appearanceViewModel.defaultTheme.value) }
+    val context = LocalContext.current
+    var rewardedAd: RewardedAd? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(rewardedAd) {
+        rewardedAd?.let { rewardAd ->
+            val activity = context as? Activity
+            activity?.let {
+                rewardAd.show(
+                    it
+                ) { rewardItem ->
+                    val rewardAmount = rewardItem.amount
+                    val rewardType = rewardItem.type
+                    Log.i("A/D", "user earned the reward")
+                    Log.i("A/D", "$rewardAmount, $rewardType")
+                    appearanceViewModel.setDefaultTheme(selectedTheme)
+                }
+            } ?: run {
+                Log.i("A/D", "activity is null")
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -81,7 +110,25 @@ fun AppearanceScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            appearanceViewModel.setDefaultTheme(selectedTheme)
+                            val adRequest = AdRequest.Builder().build()
+                            RewardedAd.load(
+                                context,
+                                BuildConfig.AD_REWARD_THEME_UNIT_ID,
+                                adRequest,
+                                object : RewardedAdLoadCallback() {
+                                    override fun onAdLoaded(p0: RewardedAd) {
+                                        super.onAdLoaded(p0)
+                                        Log.i("A/D", "Reward Ad loaded")
+                                        rewardedAd = p0
+                                    }
+
+                                    override fun onAdFailedToLoad(p0: LoadAdError) {
+                                        super.onAdFailedToLoad(p0)
+                                        Log.i("A/D", "Reward Ad failed to load")
+                                        rewardedAd = null
+                                    }
+                                }
+                            )
                         }
                     ) {
                         Icon(

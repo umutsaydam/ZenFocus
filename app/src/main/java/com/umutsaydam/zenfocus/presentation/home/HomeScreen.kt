@@ -50,8 +50,8 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
+import com.umutsaydam.zenfocus.BuildConfig
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
-import com.umutsaydam.zenfocus.util.Constants.AD_UNIT_ID
 import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
@@ -267,7 +267,7 @@ fun HomeScreen(
                             factory = { context ->
                                 AdView(context).apply {
                                     setAdSize(adSize)
-                                    adUnitId = AD_UNIT_ID
+                                    adUnitId = BuildConfig.AD_BANNER_UNIT_ID
                                     loadAd(AdRequest.Builder().build())
 
                                     adListener = object : AdListener() {
