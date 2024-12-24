@@ -45,6 +45,7 @@
     <string name="save">Save</string>
     <string name="selected_theme">"Selected theme"</string>
     <string name="no_connection">"Internet connection unavailable!"</string>
+    <string name="remove_ad">"Remove Ad"</string>
 
     <string-array name="app_langs">
         <item>Turkish-tr</item>

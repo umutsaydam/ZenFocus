@@ -124,4 +124,6 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     // Google Mobile Ads SDK
     implementation(libs.play.services.ads)
+    // Google Billing
+    implementation(libs.billing)
 }
