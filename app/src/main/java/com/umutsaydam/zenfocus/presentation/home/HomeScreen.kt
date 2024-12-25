@@ -284,19 +284,21 @@ fun HomeScreen(
                     }
                 }
 
-                LazyToDoList(
-                    toDoList = toDoList
-                ) { index ->
-                    val toDoModel = toDoList[index]
-                    ToDoListItem(
-                        toDoTitle = toDoModel.taskContent,
-                        onClick = { newState ->
-                            toDoModel.isTaskCompleted = newState
-                            homeViewModel.upsertTask(toDoModel)
-                        },
-                        isChecked = toDoModel.isTaskCompleted
-                    )
-                }
+//                if (toDoList.isNotEmpty()) {
+                    LazyToDoList(
+                        toDoList = toDoList
+                    ) { index ->
+                        val toDoModel = toDoList[index]
+                        ToDoListItem(
+                            toDoTitle = toDoModel.taskContent,
+                            onClick = { newState ->
+                                toDoModel.isTaskCompleted = newState
+                                homeViewModel.upsertTask(toDoModel)
+                            },
+                            isChecked = toDoModel.isTaskCompleted
+                        )
+                    }
+//                }
 
                 Box(
                     modifier = if (isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
