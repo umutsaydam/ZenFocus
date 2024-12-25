@@ -333,7 +333,7 @@ fun HomeScreen(
                     )
                 }
 
-                if (isAdLoaded || !isFirstAdRequested) {
+                if (homeViewModel.isNetworkConnected() && (isAdLoaded || !isFirstAdRequested)) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()

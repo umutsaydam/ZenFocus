@@ -7,6 +7,7 @@ import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
@@ -24,7 +25,8 @@ class HomeViewModel @Inject constructor(
     private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val pomodoroManagerUseCase: PomodoroManagerUseCase,
     private val pomodoroServiceUseCases: PomodoroServiceUseCases,
-    private val focusSoundUseCases: FocusSoundUseCases
+    private val focusSoundUseCases: FocusSoundUseCases,
+    private val checkerUseCases: NetworkCheckerUseCases
 ) : ViewModel() {
     private val _remainingTime = MutableStateFlow<String>("00:00")
     val remainingTime: StateFlow<String> = _remainingTime
@@ -253,6 +255,10 @@ class HomeViewModel @Inject constructor(
                 Log.i("R/T", "newCycle -> $newCycle")
             }
         }
+    }
+
+    fun isNetworkConnected(): Boolean{
+        return checkerUseCases.isConnected()
     }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {
