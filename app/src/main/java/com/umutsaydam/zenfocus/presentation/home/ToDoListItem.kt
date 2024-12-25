@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.home
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,25 +20,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
+import com.umutsaydam.zenfocus.domain.model.TaskModel
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToDoListItem(
     modifier: Modifier = Modifier,
-    toDoTitle: String,
+    taskModel: TaskModel,
     textColor: Color = MaterialTheme.colorScheme.outline,
     onClick: (Boolean) -> Unit,
-    isChecked: Boolean = false
+    onLongClick: (TaskModel) -> Unit
 ) {
     var checkState by remember {
-        mutableStateOf(isChecked)
+        mutableStateOf(taskModel.isTaskCompleted)
     }
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable {
-                checkState = !checkState
-                onClick(checkState)
-            },
+            .combinedClickable(
+                onClick = {
+                    checkState = !checkState
+                    onClick(checkState)
+                },
+                onLongClick = {
+                    onLongClick(taskModel)
+                }
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -54,7 +62,7 @@ fun ToDoListItem(
 
         Text(
             modifier = Modifier.weight(0.8f),
-            text = toDoTitle,
+            text = taskModel.taskContent,
             color = textColor,
             style = TextStyle(
                 fontStyle = if (checkState) FontStyle.Italic else FontStyle.Normal,

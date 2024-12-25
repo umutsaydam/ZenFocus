@@ -41,6 +41,8 @@
     <string name="back_to_focus_mode">Back to focus mode</string>
     <string name="pomodoro_sounds">Pomodoro sounds</string>
     <string name="add_to_do_button">Add to do button</string>
+    <string name="delete_task">Delete selected task</string>
+    <string name="task_will_delete">Are you sure the task will delete?</string>
     <string name="select">Select</string>
     <string name="save">Save</string>
     <string name="selected_theme">"Selected theme"</string>

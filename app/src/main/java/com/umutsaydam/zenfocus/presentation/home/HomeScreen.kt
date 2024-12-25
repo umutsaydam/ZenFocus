@@ -64,6 +64,7 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.umutsaydam.zenfocus.BuildConfig
+import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.util.safeNavigate
 
@@ -83,6 +84,8 @@ fun HomeScreen(
     val currentSheetContent by homeViewModel.bottomSheetContent.collectAsState()
     val sliderPosition by homeViewModel.sliderPosition.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    var showDeleteTaskDialog by remember { mutableStateOf(false) }
+    var selectedTaskModel: TaskModel? = null
     val context = LocalContext.current
     var isFirstAdRequested by remember { mutableStateOf(false) }
     var isAdLoaded by remember { mutableStateOf(false) }
@@ -211,6 +214,20 @@ fun HomeScreen(
                 )
             }
 
+            if (showDeleteTaskDialog && selectedTaskModel != null) {
+                CustomAlertDialog(
+                    icon = painterResource(R.drawable.ic_delete),
+                    title = stringResource(R.string.delete_task),
+                    text = stringResource(R.string.task_will_delete),
+                    isConfirmed = { confirmedState ->
+                        if (confirmedState) {
+                            homeViewModel.deleteTask(selectedTaskModel!!)
+                        }
+                        showDeleteTaskDialog = false
+                    }
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -284,21 +301,22 @@ fun HomeScreen(
                     }
                 }
 
-//                if (toDoList.isNotEmpty()) {
-                    LazyToDoList(
-                        toDoList = toDoList
-                    ) { index ->
-                        val toDoModel = toDoList[index]
-                        ToDoListItem(
-                            toDoTitle = toDoModel.taskContent,
-                            onClick = { newState ->
-                                toDoModel.isTaskCompleted = newState
-                                homeViewModel.upsertTask(toDoModel)
-                            },
-                            isChecked = toDoModel.isTaskCompleted
-                        )
-                    }
-//                }
+                LazyToDoList(
+                    toDoList = toDoList
+                ) { index ->
+                    val toDoModel = toDoList[index]
+                    ToDoListItem(
+                        taskModel = toDoModel,
+                        onClick = { newState ->
+                            toDoModel.isTaskCompleted = newState
+                            homeViewModel.upsertTask(toDoModel)
+                        },
+                        onLongClick = { taskModel ->
+                            selectedTaskModel = taskModel
+                            showDeleteTaskDialog = true
+                        }
+                    )
+                }
 
                 Box(
                     modifier = if (isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
