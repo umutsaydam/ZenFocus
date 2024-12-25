@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextDecoration
 
 @Composable
 fun ToDoListItem(
@@ -28,7 +32,12 @@ fun ToDoListItem(
         mutableStateOf(isChecked)
     }
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                checkState = !checkState
+                onClick(checkState)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -47,6 +56,10 @@ fun ToDoListItem(
             modifier = Modifier.weight(0.8f),
             text = toDoTitle,
             color = textColor,
+            style = TextStyle(
+                fontStyle = if (checkState) FontStyle.Italic else FontStyle.Normal,
+                textDecoration = if (checkState) TextDecoration.LineThrough else TextDecoration.None
+            )
         )
     }
 }
