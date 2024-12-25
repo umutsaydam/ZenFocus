@@ -66,6 +66,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.umutsaydam.zenfocus.BuildConfig
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
+import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
@@ -129,6 +130,8 @@ fun HomeScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+
+    StatusBarSwitcher(false)
 
     Box(
         modifier = modifier
