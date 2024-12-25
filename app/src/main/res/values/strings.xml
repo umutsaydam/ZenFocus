@@ -14,13 +14,6 @@
     <string name="sign_in_sign_up">Sign in | Sign up</string>
     <string name="log_out">Log out</string>
     <string name="back_to_settings">Back to the Settings</string>
-    <string name="lorem_ipsum">
-        "Lorem ipsum odor amet, consectetuer adipiscing elit. Porta laoreet morbi ullamcorper tortor pulvinar est enim amet. Curae tincidunt congue venenatis ante scelerisque porttitor fermentum. Malesuada mauris tempus rutrum; nostra amet varius. Nullam donec amet urna morbi eros. Proin non nam litora maecenas fusce varius. Quisque tristique lorem; luctus vulputate primis est.\n"
-                    "\n"
-                    "Dictumst ligula gravida augue eros natoque aenean. Ipsum fusce porttitor volutpat nascetur ridiculus consectetur. Purus habitasse sapien integer; ad habitant faucibus. Netus curae libero ultricies penatibus class penatibus duis pharetra. Sed leo praesent ullamcorper; mi phasellus gravida ligula semper. Mollis vestibulum hendrerit torquent dolor a auctor. Augue lectus penatibus vitae tellus condimentum natoque turpis phasellus. Tempor ullamcorper faucibus cras fringilla, curae pulvinar sit purus. Neque aliquam nunc ultricies est elementum cras risus leo.\n"
-                    "\n"
-                    "Elementum nam himenaeos parturient; dignissim sodales purus libero. Dapibus hac penatibus ultricies pretium; iaculis quis sit tincidunt. Penatibus feugiat commodo turpis porta ridiculus hendrerit neque mattis. Pretium integer sagittis ac arcu vivamus luctus dictum. Dapibus cubilia luctus massa tortor mollis tristique diam varius. Nulla ex platea ipsum lectus duis? Pharetra urna morbi leo eget molestie bibendum vestibulum. Conubia tortor convallis netus; efficitur tristique suspendisse aliquet aliquet.",
-    </string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
     <string name="signed_up">You signed up successfully.</string>

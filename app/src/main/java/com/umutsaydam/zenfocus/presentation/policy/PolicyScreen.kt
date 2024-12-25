@@ -1,36 +1,33 @@
 package com.umutsaydam.zenfocus.presentation.policy
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.fillMaxSize
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
-import com.umutsaydam.zenfocus.presentation.Dimens.LINE_HEIGHT_MEDIUM
-import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
-import com.umutsaydam.zenfocus.presentation.Dimens.TEXT_INDENT_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.presentation.common.NotConnectedMessage
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
 fun PolicyScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    policyViewModel: PolicyViewModel = hiltViewModel()
 ) {
-    val scrollState = rememberScrollState()
     Scaffold(
         contentColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
@@ -51,23 +48,19 @@ fun PolicyScreen(
             )
         }
     ) { paddingValues ->
-        Text(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(
-                    state = scrollState
-                )
-                .padding(
-                    vertical = paddingValues.calculateTopPadding(),
-                    horizontal = PADDING_MEDIUM2
-                ),
-            text = stringResource(R.string.lorem_ipsum),
-            color = MaterialTheme.colorScheme.outline,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                textIndent = TextIndent(firstLine = TEXT_INDENT_SMALL),
-                lineHeight = LINE_HEIGHT_MEDIUM
+        if (policyViewModel.isNetworkConnected()){
+            AndroidView(
+                modifier = modifier.padding(paddingValues),
+                factory = {
+                    WebView(it).apply {
+                        webViewClient = WebViewClient()
+                        loadUrl("https://www.privacypolicies.com/live/c96570eb-49c3-4ebb-b14d-421bd0d5edc6")
+                    }
+                }
             )
-        )
+        }else{
+            NotConnectedMessage()
+        }
     }
 }
 
