@@ -68,6 +68,7 @@ fun AddToDo(
                 onClick = {
                     val newTask = TaskModel(taskContent = toDoTask)
                     onClick(newTask)
+                    toDoTask = ""
                 },
                 enabled = toDoTask.isNotEmpty()
             ) {
