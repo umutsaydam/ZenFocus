@@ -31,6 +31,12 @@ android {
             value = "\"${properties.getProperty("GOOGLE_ADS_APP_ID")}\""
         )
 
+        bundle {
+            language {
+                enableSplit = false
+            }
+        }
+
         buildConfigField(
             type = "String",
             name = "AD_BANNER_UNIT_ID",

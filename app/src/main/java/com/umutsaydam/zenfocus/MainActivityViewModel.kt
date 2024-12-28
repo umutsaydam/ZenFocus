@@ -5,9 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.util.Constants.APP_LANG_ENGLISH
+import com.umutsaydam.zenfocus.util.Constants.APP_LANG_TURKISH
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,19 +20,41 @@ class MainActivityViewModel @Inject constructor(
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
     private val readAppEntry: Flow<Boolean> = localUserDataStoreCases.readAppEntry.invoke()
+    val defaultAppLang: MutableStateFlow<String?> = MutableStateFlow(null)
 
     init {
-        startInitialSetupIfFirstEntry()
+        getDefaultAppLang()
     }
 
-    private fun startInitialSetupIfFirstEntry() {
+    fun startInitialSetupIfFirstEntry(currentLocale: Locale) {
         viewModelScope.launch {
             readAppEntry.collect { isEnteredBefore ->
                 Log.i("R/T", "isEnteredBefore: $isEnteredBefore")
                 if (!isEnteredBefore) {
                     themeRepository.copyDefaultThemeToInternalStorage()
                     saveAppEntry()
+
+                    saveAppLang(currentLocale)
                 }
+            }
+        }
+    }
+
+    private fun saveAppLang(currentLocale: Locale) {
+        viewModelScope.launch {
+            when (currentLocale.language) {
+                "tr" -> localUserDataStoreCases.saveAppLang(APP_LANG_TURKISH)
+                "en" -> localUserDataStoreCases.saveAppLang(APP_LANG_ENGLISH)
+                else -> localUserDataStoreCases.saveAppLang(APP_LANG_ENGLISH)
+            }
+        }
+    }
+
+    private fun getDefaultAppLang(){
+        viewModelScope.launch {
+            localUserDataStoreCases.readAppLang().collect{ langWithCode ->
+                val langCode = langWithCode.split("-")[1]
+                defaultAppLang.value = langCode
             }
         }
     }

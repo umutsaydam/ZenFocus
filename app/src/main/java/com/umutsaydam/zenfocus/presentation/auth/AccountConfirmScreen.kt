@@ -72,7 +72,7 @@ fun AccountConfirmScreen(
             enabled = confirmCode.length >= 4
         ) {
             Text(
-                text = "Confirm"
+                text = stringResource(R.string.confirm)
             )
         }
     }

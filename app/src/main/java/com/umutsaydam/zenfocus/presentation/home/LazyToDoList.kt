@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
@@ -41,7 +43,7 @@ fun LazyToDoList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(PADDING_SMALL),
-                    text = "To-do list not yet created.",
+                    text = stringResource(R.string.not_created_todo),
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 )

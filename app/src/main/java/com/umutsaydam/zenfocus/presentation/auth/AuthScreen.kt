@@ -172,13 +172,13 @@ fun AuthScreen(
             item {
                 AuthSection {
                     Text(
-                        text = "Welcome",
+                        text = stringResource(R.string.welcome),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
                     Text(
-                        text = "Login to access your account",
+                        text = stringResource(R.string.login_to_access_account),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.outline
                     )

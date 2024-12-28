@@ -1,6 +1,13 @@
 package com.umutsaydam.zenfocus.presentation.appLanguage
 
+import android.app.LocaleManager
 import android.content.Context
+import android.content.res.Configuration
+import android.os.Build
+import android.os.LocaleList
+import android.util.Log
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.R
@@ -10,6 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +48,8 @@ class AppLanguageViewModel @Inject constructor(
     fun setDefaultLang(lang: String) {
         if (_defaultLang.value != lang) {
             _defaultLang.value = lang
-            saveAppLang(lang)
+            saveAppLang()
+            changeAppLang()
         }
     }
 
@@ -48,9 +57,23 @@ class AppLanguageViewModel @Inject constructor(
         return _defaultLang.value.split("-")[1]
     }
 
-    private fun saveAppLang(lang: String) {
+    private fun saveAppLang() {
         viewModelScope.launch {
-            localUserDataStoreCases.saveAppLang.invoke(lang)
+            localUserDataStoreCases.saveAppLang.invoke(_defaultLang.value)
+        }
+    }
+
+    private fun changeAppLang() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Log.i("R/T", "tiramisu > ${getLangCode()}")
+            context.getSystemService(LocaleManager::class.java).applicationLocales =
+                LocaleList.forLanguageTags(getLangCode())
+        } else {
+            Log.i("R/T", "tiramisu < ${getLangCode()}")
+            val config = context.resources.configuration
+            val localeList = LocaleList.forLanguageTags(getLangCode())
+            config.setLocales(localeList)
+            context.createConfigurationContext(config)
         }
     }
 }

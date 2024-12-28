@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ZenFocus</string>
+    <string name="app_name" translatable="false">ZenFocus</string>
     <string name="settings">Settings</string>
     <string name="back_to_home">Back</string>
     <string name="appearance">Appearance</string>
@@ -18,13 +18,13 @@
     <string name="sign_up">Sign up</string>
     <string name="signed_up">You signed up successfully.</string>
     <string name="confirm_account">Please confirm your account.</string>
-    <string name="email">Email</string>
+    <string name="email" translatable="false">Email</string>
     <string name="enter_email">Enter your email</string>
     <string name="password">Password</string>
     <string name="enter_password">Enter your password</string>
     <string name="or_sign_in_with">Or Sign in With</string>
     <string name="or_sign_up_with">Or Sign up With</string>
-    <string name="google">Google</string>
+    <string name="google" translatable="false">Google</string>
     <string name="join_with_google">Join with google</string>
     <string name="open_side_menu">Open side menu</string>
     <string name="pomodoro_times">Select pomodoro times</string>
@@ -38,9 +38,16 @@
     <string name="task_will_delete">Are you sure the task will delete?</string>
     <string name="select">Select</string>
     <string name="save">Save</string>
-    <string name="selected_theme">"Selected theme"</string>
-    <string name="no_connection">"Internet connection unavailable!"</string>
-    <string name="remove_ad">"Remove Ad"</string>
+    <string name="selected_theme">Selected theme</string>
+    <string name="no_connection">Internet connection unavailable!</string>
+    <string name="remove_ad">Remove Ad</string>
+    <string name="not_created_todo">To-do list not yet created.</string>
+    <string name="add_to_do">Add to do</string>
+    <string name="enter_your_task">Enter your task</string>
+    <string name="welcome">Welcome</string>
+    <string name="login_to_access_account">Login to access your account</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="app_langs">
         <item>Turkish-tr</item>

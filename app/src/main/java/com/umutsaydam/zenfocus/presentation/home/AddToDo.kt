@@ -43,12 +43,12 @@ fun AddToDo(
         verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1)
     ) {
         FormTextField(
-            formTitle = "Add to do",
+            formTitle = stringResource(R.string.add_to_do),
             value = toDoTask,
             onValueChanged = { newTask ->
                 toDoTask = newTask
             },
-            placeHolder = "Enter your task",
+            placeHolder = stringResource(R.string.enter_your_task),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Text
