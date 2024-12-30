@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.AppCompat.Theme.ZenFocus" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Theme.AppCompat" parent="Theme.AppCompat.NoActionBar" >
+    </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_bg</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/app_icon_splash_screen</item>
-        <item name="postSplashScreenTheme">@style/Theme.AppCompat.Theme.ZenFocus</item>
+        <item name="postSplashScreenTheme">@style/Theme.AppCompat</item>
     </style>
 </resources>
