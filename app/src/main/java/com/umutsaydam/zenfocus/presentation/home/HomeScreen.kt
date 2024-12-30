@@ -133,23 +133,12 @@ fun HomeScreen(
 
     StatusBarSwitcher(false)
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                color = MaterialTheme.colorScheme.onBackground,
-                shape = RectangleShape
-            )
-    ) {
-//        Image(
-//            modifier = Modifier.fillMaxSize(),
-//            painter = painterResource(R.drawable.lofi1),
-//            contentDescription = "Selected theme",
-//            contentScale = ContentScale.Fit
-//        )
-
         Scaffold(
-            modifier = modifier,
+            modifier = modifier
+                .fillMaxSize()
+                .background(
+                    color = MaterialTheme.colorScheme.onBackground
+                ),
             containerColor = Color.Transparent,
             topBar = {
                 IconWithTopAppBar(
@@ -234,9 +223,7 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        top = paddingValues.calculateTopPadding()
-                    ),
+                    .padding(paddingValues),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
@@ -447,7 +434,6 @@ fun HomeScreen(
                 }
             }
         }
-    }
 }
 
 private fun getAdSize(context: Context): AdSize {

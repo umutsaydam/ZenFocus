@@ -159,8 +159,7 @@ fun AppearanceScreen(
                 if (selectedTheme != null) {
                     Image(
                         modifier = Modifier
-                            .width(205.dp)
-                            .height(375.dp)
+                            .fillMaxSize(0.7f)
                             .clip(RoundedCornerShape(CORNER_MEDIUM)),
                         painter = rememberAsyncImagePainter(selectedTheme!!.themeUrl),
                         contentDescription = stringResource(R.string.selected_theme),
@@ -178,7 +177,7 @@ fun AppearanceScreen(
                     )
                 }
                 CenterFocusedCarousel(
-                    modifier = Modifier.align(Alignment.End),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                     listOfTheme = themeList.value,
                     gridState = gridState,
                     content = { firstVisibleIndex, currentIndex ->
@@ -189,8 +188,8 @@ fun AppearanceScreen(
                             Log.i("R/T", "Have to be loaded image: $theme")
                             AsyncImage(
                                 modifier = Modifier
-                                    .size(
-                                        if (isBigger) 100.dp else 80.dp
+                                    .fillMaxSize(
+                                        if (isBigger) 0.02f else 0.01f
                                     )
                                     .padding(if (isBigger) 0.dp else 5.dp)
                                     .clip(RoundedCornerShape(CORNER_MEDIUM))
