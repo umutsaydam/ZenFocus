@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -41,12 +42,11 @@ fun CenterFocusedCarousel(
 
     Box(
         modifier = modifier
-            .width(300.dp)
+            .fillMaxWidth()
     ) {
         LazyHorizontalGrid(
             state = gridState,
-            modifier = modifier
-                .width(300.dp),
+            modifier = modifier,
             rows = GridCells.Fixed(1),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(

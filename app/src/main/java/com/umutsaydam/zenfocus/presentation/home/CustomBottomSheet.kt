@@ -1,9 +1,15 @@
 package com.umutsaydam.zenfocus.presentation.home
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsIgnoringVisibility
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -32,5 +38,10 @@ fun CustomBottomSheet(
         windowInsets = WindowInsets.ime
     ) {
         content()
+        Spacer(
+            modifier = Modifier.padding(
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            )
+        )
     }
 }

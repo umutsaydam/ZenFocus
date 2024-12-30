@@ -13,5 +13,6 @@ fun StatusBarSwitcher(
     val window = (LocalContext.current as Activity).window
     val view = LocalView.current
     val windowInsetsController = WindowCompat.getInsetsController(window, view)
+    windowInsetsController.isAppearanceLightNavigationBars = enableDarkBg
     windowInsetsController.isAppearanceLightStatusBars = enableDarkBg
 }

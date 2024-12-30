@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.LocaleList
 import android.util.Log
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +19,8 @@ import androidx.compose.runtime.getValue
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -41,11 +44,10 @@ class MainActivity(
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen()
+        actionBar?.hide()
         enableEdgeToEdge()
-
         initAmplify()
         initGoogleAds(this)
-
         setContent {
             ZenFocusTheme {
                 val mainActivityViewModel: MainActivityViewModel = hiltViewModel()
