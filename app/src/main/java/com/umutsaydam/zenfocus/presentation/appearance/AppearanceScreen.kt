@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,10 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -68,6 +69,8 @@ fun AppearanceScreen(
     var selectedTheme by remember { mutableStateOf(appearanceViewModel.defaultTheme.value) }
     val context = LocalContext.current
     var rewardedAd: RewardedAd? by remember { mutableStateOf(null) }
+    val isTablet = LocalConfiguration.current.screenWidthDp.dp > 600.dp
+    val themeSpace = if (isTablet) 380.dp else 80.dp
 
     LaunchedEffect(rewardedAd) {
         rewardedAd?.let { rewardAd ->
@@ -186,11 +189,11 @@ fun AppearanceScreen(
                         if (theme != null) {
                             val isBigger = firstVisibleIndex + 1 == currentIndex
                             Log.i("R/T", "Have to be loaded image: $theme")
+                            val (imageWidth, imageHeight) = calculateImageSize(isTablet, isBigger)
                             AsyncImage(
                                 modifier = Modifier
-                                    .fillMaxSize(
-                                        if (isBigger) 0.02f else 0.01f
-                                    )
+                                    .width(imageWidth)
+                                    .height(imageHeight)
                                     .padding(if (isBigger) 0.dp else 5.dp)
                                     .clip(RoundedCornerShape(CORNER_MEDIUM))
                                     .clickable {
@@ -208,7 +211,7 @@ fun AppearanceScreen(
                                 selectedTheme = theme
                             }
                         } else {
-                            Spacer(modifier = Modifier.width(80.dp))
+                            Spacer(modifier = Modifier.width(themeSpace))
                         }
                     }
                 )
@@ -216,6 +219,14 @@ fun AppearanceScreen(
         } else {
             NotConnectedMessage()
         }
+    }
+}
+
+fun calculateImageSize(isTablet: Boolean, isBigger: Boolean): Pair<Dp, Dp> {
+    return if (isTablet){
+        if (isBigger) 180.dp to 190.dp else 170.dp to 180.dp
+    }else{
+        if (isBigger) 100.dp to 110.dp else 80.dp to 90.dp
     }
 }
 
