@@ -193,11 +193,7 @@ fun AuthScreen(
                     Row(
                         modifier = Modifier
                             .clip(RoundedCornerShape(CORNER_SMALL))
-                            .border(
-                                width = BORDER_SMALL,
-                                color = MaterialTheme.colorScheme.primaryContainer
-                            )
-                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .background(MaterialTheme.colorScheme.surfaceContainerLow)
                             .padding(horizontal = PADDING_SMALL),
                     ) {
                         listOf("sign_in" to 0, "sign_up" to 1).forEach { (text, index) ->
@@ -254,7 +250,8 @@ fun AuthScreen(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(if (currPage == 0) R.string.or_sign_in_with else R.string.or_sign_up_with),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.outline
                 )
             }
 

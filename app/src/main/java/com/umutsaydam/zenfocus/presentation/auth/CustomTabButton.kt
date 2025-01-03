@@ -39,7 +39,7 @@ fun CustomTabButton(
     ) {
         Text(
             text = buttonText,
-            color = MaterialTheme.colorScheme.primary
+            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
         )
     }
 }
