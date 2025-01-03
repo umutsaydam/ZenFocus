@@ -4,19 +4,24 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
+import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.TaskModel
+import com.umutsaydam.zenfocus.domain.model.UserTypeEnum
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
 import com.umutsaydam.zenfocus.util.Constants.NONE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.lang.Thread.State
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,8 +31,14 @@ class HomeViewModel @Inject constructor(
     private val pomodoroManagerUseCase: PomodoroManagerUseCase,
     private val pomodoroServiceUseCases: PomodoroServiceUseCases,
     private val focusSoundUseCases: FocusSoundUseCases,
-    private val checkerUseCases: NetworkCheckerUseCases
+    private val checkerUseCases: NetworkCheckerUseCases,
+    private val authCases: AwsAuthCases
 ) : ViewModel() {
+    private val _userId = MutableStateFlow<String?>(null)
+
+    private val _userType = MutableStateFlow<String?>(null)
+    private val userType: StateFlow<String?> = _userType
+
     private val _remainingTime = MutableStateFlow<String>("00:00")
     val remainingTime: StateFlow<String> = _remainingTime
 
@@ -57,6 +68,8 @@ class HomeViewModel @Inject constructor(
 
     init {
         getTasks()
+        getUserId()
+        getUserType()
         isTimerRunning()
         setTimer()
         getSoundList()
@@ -257,8 +270,53 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun isNetworkConnected(): Boolean{
+    fun isNetworkConnected(): Boolean {
         return checkerUseCases.isConnected()
+    }
+
+    fun willShowAd(): Boolean {
+        return _userType.value != UserTypeEnum.AD_FREE_USER.type
+    }
+
+    private fun getUserType() {
+        viewModelScope.launch {
+            localUserDataStoreCases.readUserType().collectLatest{ type ->
+                _userType.value = type
+                Log.i("R/T", "_userType.value in viewmodel ${_userType.value}")
+            }
+        }
+    }
+
+    private fun getUserId() {
+        viewModelScope.launch {
+            _userId.value = localUserDataStoreCases.readUserId().first()
+        }
+    }
+
+    fun changeUserTypeAsAdFree() {
+        viewModelScope.launch {
+            val adFreeUser = UserTypeEnum.AD_FREE_USER.type
+            if (_userId.value != null && _userType.value != adFreeUser) {
+                val result = authCases.updateUserInfo(
+                    userId = _userId.value!!,
+                    userType = adFreeUser
+                )
+
+                when (result) {
+                    is Resource.Success -> {
+
+                    }
+
+                    is Resource.Error -> {
+
+                    }
+
+                    is Resource.Loading -> {
+
+                    }
+                }
+            }
+        }
     }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {

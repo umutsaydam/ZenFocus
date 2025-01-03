@@ -11,9 +11,11 @@ import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 import com.umutsaydam.zenfocus.util.FileNameFromUrl
 import com.umutsaydam.zenfocus.domain.model.Resource
+import com.umutsaydam.zenfocus.domain.model.UserTypeEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +26,8 @@ class AppearanceViewModel @Inject constructor(
     private val themeRepository: ThemeRepository,
     private val networkCheckerUseCases: NetworkCheckerUseCases
 ) : ViewModel() {
+    private val _userType = MutableStateFlow<String?>(null)
+    private val userType: StateFlow<String?> = _userType
 
     private val _themeList = MutableStateFlow<List<ThemeInfo?>>(listOf(null))
     val themeList: StateFlow<List<ThemeInfo?>> = _themeList
@@ -36,6 +40,7 @@ class AppearanceViewModel @Inject constructor(
 
     init {
         getThemeList()
+        getUserType()
     }
 
     fun isConnected(): Boolean {
@@ -110,5 +115,18 @@ class AppearanceViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun getUserType() {
+        viewModelScope.launch {
+            localUserDataStoreCases.readUserType().collectLatest{ type ->
+                _userType.value = type
+                Log.i("R/T", "_userType.value in viewmodel ${_userType.value}")
+            }
+        }
+    }
+
+    fun willShowAd(): Boolean {
+        return _userType.value != UserTypeEnum.AD_FREE_USER.type
     }
 }

@@ -113,25 +113,29 @@ fun AppearanceScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            val adRequest = AdRequest.Builder().build()
-                            RewardedAd.load(
-                                context,
-                                BuildConfig.AD_REWARD_THEME_UNIT_ID,
-                                adRequest,
-                                object : RewardedAdLoadCallback() {
-                                    override fun onAdLoaded(p0: RewardedAd) {
-                                        super.onAdLoaded(p0)
-                                        Log.i("A/D", "Reward Ad loaded")
-                                        rewardedAd = p0
-                                    }
+                            if (appearanceViewModel.willShowAd()){
+                                val adRequest = AdRequest.Builder().build()
+                                RewardedAd.load(
+                                    context,
+                                    BuildConfig.AD_REWARD_THEME_UNIT_ID,
+                                    adRequest,
+                                    object : RewardedAdLoadCallback() {
+                                        override fun onAdLoaded(p0: RewardedAd) {
+                                            super.onAdLoaded(p0)
+                                            Log.i("A/D", "Reward Ad loaded")
+                                            rewardedAd = p0
+                                        }
 
-                                    override fun onAdFailedToLoad(p0: LoadAdError) {
-                                        super.onAdFailedToLoad(p0)
-                                        Log.i("A/D", "Reward Ad failed to load")
-                                        rewardedAd = null
+                                        override fun onAdFailedToLoad(p0: LoadAdError) {
+                                            super.onAdFailedToLoad(p0)
+                                            Log.i("A/D", "Reward Ad failed to load")
+                                            rewardedAd = null
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            } else{
+                                appearanceViewModel.setDefaultTheme(selectedTheme)
+                            }
                         }
                     ) {
                         Icon(

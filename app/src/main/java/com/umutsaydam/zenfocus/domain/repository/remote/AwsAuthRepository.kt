@@ -21,5 +21,7 @@ interface AwsAuthRepository {
 
     suspend fun getUserInfo(userID: String): Resource<UserInfo>
 
+    suspend fun updateUserType(userId: String, userType: String): Resource<UserInfo>
+
     suspend fun signOut()
 }

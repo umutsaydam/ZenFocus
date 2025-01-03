@@ -216,7 +216,7 @@ class AwsAuthServiceImpl : AwsAuthService {
                     )
 
                     continuation.resume(Resource.Success(userInfo)) { cause, _, _ ->
-                        Log.e("R/T", "Coroutine cancelled onSuccess: $cause")
+                        Log.e("R/T", "Coroutine cancelled onSuccess1: $cause")
                     }
                 },
                 { error ->
@@ -229,6 +229,54 @@ class AwsAuthServiceImpl : AwsAuthService {
         }
     }
 
+    override suspend fun updateUserType(userId: String, userType: String): Resource<UserInfo> {
+        val userData = mapOf(
+            "userID" to userId,
+            "newUserType" to userType,
+        )
+
+        val jsonUserData = Gson().toJson(userData)
+        val requestBody = jsonUserData.toByteArray()
+
+        val request = RestOptions.builder()
+            .addPath("/UpdateUserType")
+            .addBody(requestBody)
+            .build()
+
+        return suspendCancellableCoroutine { continuation ->
+            Amplify.API.post(request,
+                { response ->
+                    Log.i("R/T", "User info updated DynamoDB: ${response.code}}")
+                    Log.i("R/T", response.data.asJSONObject().toString())
+
+                    val dataAsJson = response.data.asJSONObject()
+                    val statusCode = dataAsJson.get("statusCode")
+                    val body = dataAsJson.getJSONObject("body")
+                    val updatedUser = body.getJSONObject("updatedUser")
+                    val userID = updatedUser.get("userID").toString()
+                    val newUserType = updatedUser.get("userType").toString()
+
+                    Log.i("R/T", ">>>> $userID}")
+                    Log.i("R/T", ">>>> $newUserType")
+
+                    val userInfo = UserInfo(
+                        userId = userID,
+                        userType = newUserType,
+                    )
+
+                    continuation.resume(Resource.Success(userInfo)) { cause, _, _ ->
+                        Log.e("R/T", "Coroutine cancelled onSuccess: $cause")
+                    }
+                },
+                { error ->
+                    Log.e("R/T", "Failed to add user to DynamoDB", error)
+                    continuation.resume(Resource.Error(error.message)) { cause, _, _ ->
+                        Log.e("R/T", "Coroutine cancelled onSuccess: $cause")
+                    }
+                }
+            )
+        }
+    }
     override suspend fun fetchAuthSession(): Resource<String> {
         return suspendCancellableCoroutine { continuation ->
             Amplify.Auth.fetchAuthSession(

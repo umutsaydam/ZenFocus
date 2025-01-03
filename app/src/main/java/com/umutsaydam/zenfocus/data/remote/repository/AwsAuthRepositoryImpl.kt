@@ -38,6 +38,10 @@ class AwsAuthRepositoryImpl @Inject constructor(
         return awsAuthService.getUserInfo(userID)
     }
 
+    override suspend fun updateUserType(userId: String, userType: String): Resource<UserInfo> {
+        return awsAuthService.updateUserType(userId, userType)
+    }
+
     override suspend fun signOut() {
         awsAuthService.signOut()
     }

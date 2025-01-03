@@ -17,6 +17,8 @@ interface AwsAuthService {
 
     suspend fun getUserInfo(userId: String): Resource<UserInfo>
 
+    suspend fun updateUserType(userId: String, userType: String): Resource<UserInfo>
+
     suspend fun fetchAuthSession(): Resource<String>
 
     suspend fun signUpOrInWithGoogle(activity: Activity): Resource<String>

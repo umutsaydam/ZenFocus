@@ -47,7 +47,6 @@ class AuthViewModel @Inject constructor(
             when (result) {
                 is AwsAuthSignInResult.IsSignedIn -> {
                     getUserId()
-                    _signInStep.value = AuthSignInStep.DONE
                 }
 
                 is AwsAuthSignInResult.ConfirmSignIn -> {
@@ -77,6 +76,7 @@ class AuthViewModel @Inject constructor(
                     val userId = result.data
                     userId?.let { id ->
                         saveUserId(id)
+                        getUserInfo(userId)
                     }
                     _userId.value = result.data
                 }
@@ -97,29 +97,29 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             localUserDataStoreCases.saveUserId(userId)
             Log.i("R/T", "id saved $userId")
-
-            getUserInfo(userId)
         }
     }
 
     private fun getUserInfo(userId: String) {
         viewModelScope.launch {
             val result = awsAuthCases.readUserInfo(userId)
-            Log.i("R/T", "in viewmodel : $result")
+            Log.i("R/T", "/////// in viewmodel : $result")
             when (result) {
                 is Resource.Success -> {
-                    Log.i("R/T", "in viewmodel : ${result.data}")
+                    Log.i("R/T", "*/*/**/*//*/*/*/*/* in viewmodel : ${result.data}")
                     result.data?.let { userInfo ->
+                        Log.i("R/T", "*/*/*/*/*/*/*  $userInfo")
                         saveUserType(userInfo.userType)
+                        _signInStep.value = AuthSignInStep.DONE
                     }
                 }
 
                 is Resource.Error -> {
-                    Log.i("R/T", "in viewmodel : ${result.message}")
+                    Log.i("R/T", "in viewmodel err: ${result.message}")
                 }
 
                 is Resource.Loading -> {
-                    Log.i("R/T", "in viewmodel : loading")
+                    Log.i("R/T", "in viewmodel loading: loading")
                 }
             }
         }
@@ -128,7 +128,7 @@ class AuthViewModel @Inject constructor(
     private fun saveUserType(userType: String) {
         viewModelScope.launch {
             localUserDataStoreCases.saveUserType(userType)
-            Log.i("R/T", "Saved userType.")
+            Log.i("R/T", "Saved userType. $userType")
         }
     }
 
@@ -163,10 +163,9 @@ class AuthViewModel @Inject constructor(
                 is Resource.Success -> {
                     val currUserId = result.data
                     currUserId?.let { id ->
+                        _userId.value = id
                         saveUserId(id)
                         getUserInfo(id)
-                        _userId.value = id
-                        _signInStep.value = AuthSignInStep.DONE
                     }
                 }
 

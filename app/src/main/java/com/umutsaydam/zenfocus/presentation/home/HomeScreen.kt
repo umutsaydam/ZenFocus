@@ -160,32 +160,34 @@ fun HomeScreen(
                         }
                     },
                     actions = {
-                        TextButton(
-                            onClick = {
-                                Log.i("R/AD", "Button clicked...")
+                        if(homeViewModel.willShowAd()){
+                            TextButton(
+                                onClick = {
+                                    Log.i("R/AD", "Button clicked...")
 
-                                billingClient.startConnection(object : BillingClientStateListener {
-                                    override fun onBillingServiceDisconnected() {
-                                        Log.i("R/AD", "Billing Service Disconnected")
-                                    }
-
-                                    override fun onBillingSetupFinished(billingResult: BillingResult) {
-                                        if (billingResult.responseCode == BillingResponseCode.OK) {
-                                            Log.i("R/AD", "onBillingSetupFinished")
-                                            queryProductDetails(billingClient, context)
-                                        } else {
-                                            Log.i(
-                                                "R/AD",
-                                                "Billing Setup Failed: ${billingResult.debugMessage}"
-                                            )
+                                    billingClient.startConnection(object : BillingClientStateListener {
+                                        override fun onBillingServiceDisconnected() {
+                                            Log.i("R/AD", "Billing Service Disconnected")
                                         }
-                                    }
-                                })
+
+                                        override fun onBillingSetupFinished(billingResult: BillingResult) {
+                                            if (billingResult.responseCode == BillingResponseCode.OK) {
+                                                Log.i("R/AD", "onBillingSetupFinished")
+                                                queryProductDetails(billingClient, context)
+                                            } else {
+                                                Log.i(
+                                                    "R/AD",
+                                                    "Billing Setup Failed: ${billingResult.debugMessage}"
+                                                )
+                                            }
+                                        }
+                                    })
+                                }
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.remove_ad)
+                                )
                             }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.remove_ad)
-                            )
                         }
                     }
                 )
@@ -323,7 +325,7 @@ fun HomeScreen(
                     )
                 }
 
-                if (homeViewModel.isNetworkConnected() && (isAdLoaded || !isFirstAdRequested)) {
+                if (homeViewModel.isNetworkConnected() && homeViewModel.willShowAd() &&(isAdLoaded || !isFirstAdRequested)) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -464,6 +466,7 @@ private fun handlePurchase(billingClient: BillingClient, purchase: Purchase) {
             billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                 if (billingResult.responseCode == BillingResponseCode.OK) {
                     Log.i("R/AD", "enable process to remove ads...")
+
                 }
             }
         }
