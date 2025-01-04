@@ -13,6 +13,7 @@ import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
 import com.umutsaydam.zenfocus.util.Constants.NONE
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.lang.Thread.State
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +32,8 @@ class HomeViewModel @Inject constructor(
     private val pomodoroServiceUseCases: PomodoroServiceUseCases,
     private val focusSoundUseCases: FocusSoundUseCases,
     private val checkerUseCases: NetworkCheckerUseCases,
-    private val authCases: AwsAuthCases
+    private val authCases: AwsAuthCases,
+    private val googleProductsInAppUseCases: GoogleProductsInAppUseCases
 ) : ViewModel() {
     private val _userId = MutableStateFlow<String?>(null)
 
@@ -294,7 +295,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun changeUserTypeAsAdFree() {
+    private fun changeUserTypeAsAdFree() {
         viewModelScope.launch {
             val adFreeUser = UserTypeEnum.AD_FREE_USER.type
             if (_userId.value != null && _userType.value != adFreeUser) {
@@ -315,6 +316,18 @@ class HomeViewModel @Inject constructor(
                     is Resource.Loading -> {
 
                     }
+                }
+            }
+        }
+    }
+
+    fun startProductsInApp(){
+        googleProductsInAppUseCases.startConnection()
+
+        viewModelScope.launch {
+            googleProductsInAppUseCases.observePurchaseStateFlow().collect{ purchaseState ->
+                if (purchaseState){
+                    changeUserTypeAsAdFree()
                 }
             }
         }

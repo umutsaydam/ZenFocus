@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,17 +46,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.android.billingclient.api.AcknowledgePurchaseParams
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingClient.BillingResponseCode
-import com.android.billingclient.api.BillingClientStateListener
-import com.android.billingclient.api.BillingFlowParams
-import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.PendingPurchasesParams
-import com.android.billingclient.api.ProductDetails
-import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.QueryProductDetailsParams
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -68,7 +56,6 @@ import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.util.safeNavigate
-import kotlinx.coroutines.flow.collectIndexed
 
 @Composable
 fun HomeScreen(
@@ -92,25 +79,7 @@ fun HomeScreen(
     var isFirstAdRequested by remember { mutableStateOf(false) }
     var isAdLoaded by remember { mutableStateOf(false) }
     val adSize: AdSize = getAdSize(context)
-//********************************************************************
-    val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
-        if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
-            Log.i("R/AD", "BillingResponseCode.OK")
-            for (purchase in purchases) {
-                //handlePurchase(billingClient, purchase)
-            }
-        } else {
-            Log.i("R/AD", "something went wrong... line 149")
-        }
-    }
 
-    val billingClient = BillingClient.newBuilder(context)
-        .setListener(purchasesUpdatedListener)
-        .enablePendingPurchases(
-            PendingPurchasesParams.newBuilder().enableOneTimeProducts().build()
-        )
-        .build()
-//********************************************************************
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -165,24 +134,7 @@ fun HomeScreen(
                             TextButton(
                                 onClick = {
                                     Log.i("R/AD", "Button clicked...")
-
-                                    billingClient.startConnection(object : BillingClientStateListener {
-                                        override fun onBillingServiceDisconnected() {
-                                            Log.i("R/AD", "Billing Service Disconnected")
-                                        }
-
-                                        override fun onBillingSetupFinished(billingResult: BillingResult) {
-                                            if (billingResult.responseCode == BillingResponseCode.OK) {
-                                                Log.i("R/AD", "onBillingSetupFinished")
-                                                queryProductDetails(billingClient, context)
-                                            } else {
-                                                Log.i(
-                                                    "R/AD",
-                                                    "Billing Setup Failed: ${billingResult.debugMessage}"
-                                                )
-                                            }
-                                        }
-                                    })
+                                    homeViewModel.startProductsInApp()
                                 }
                             ) {
                                 Text(
@@ -454,69 +406,4 @@ private fun getAdSize(context: Context): AdSize {
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
     }
     return AdSize.BANNER
-}
-
-private fun handlePurchase(billingClient: BillingClient, purchase: Purchase) {
-    if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-        if (!purchase.isAcknowledged) {
-            val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                .setPurchaseToken(purchase.purchaseToken)
-                .build()
-
-            billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
-                if (billingResult.responseCode == BillingResponseCode.OK) {
-                    Log.i("R/AD", "enable process to remove ads...")
-
-                }
-            }
-        }
-    }
-}
-
-private fun queryProductDetails(billingClient: BillingClient, context: Context) {
-    Log.i("R/AD", "starting queryProductDetails func...")
-    val productList = listOf(
-        QueryProductDetailsParams.Product.newBuilder()
-            .setProductId("remove_ads")
-            .setProductType(BillingClient.ProductType.INAPP)
-            .build()
-    )
-
-    val params = QueryProductDetailsParams.newBuilder()
-        .setProductList(productList)
-        .build()
-
-    billingClient.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
-        Log.i(
-            "R/AD",
-            "starting queryProductDetails func billingResult ${billingResult.responseCode} ?= ${BillingResponseCode.OK}"
-        )
-        Log.i("R/AD", "productDetailsList: $productDetailsList")
-        if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
-            val productDetails = productDetailsList.first()
-
-            val activity = context as? Activity
-            activity?.let {
-                Log.i("R/AD", "calling launchPurchaseFlow func...")
-                launchPurchaseFlow(billingClient, it, productDetails)
-            }
-        }
-    }
-}
-
-fun launchPurchaseFlow(
-    billingClient: BillingClient,
-    activity: Activity,
-    productDetails: ProductDetails
-) {
-    Log.i("R/AD", "starting launchPurchaseFlow func...")
-    val productDetailsParams = BillingFlowParams.ProductDetailsParams.newBuilder()
-        .setProductDetails(productDetails)
-        .build()
-
-    val billingFlowParams = BillingFlowParams.newBuilder()
-        .setProductDetailsParamsList(listOf(productDetailsParams))
-        .build()
-
-    billingClient.launchBillingFlow(activity, billingFlowParams)
 }

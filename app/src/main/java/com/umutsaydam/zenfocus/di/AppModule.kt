@@ -18,6 +18,7 @@ import com.umutsaydam.zenfocus.data.remote.service.AwsStorageServiceImpl
 import com.umutsaydam.zenfocus.data.local.repository.RingerModeRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.manager.FocusSoundManagerImpl
 import com.umutsaydam.zenfocus.data.local.repository.NetworkCheckerRepositoryImpl
+import com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl
 import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroServiceManager
@@ -30,6 +31,7 @@ import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
+import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 import com.umutsaydam.zenfocus.domain.service.AwsStorageService
 import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
@@ -67,6 +69,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.SaveUse
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsReadUserInfo
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignInWithGoogle
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignOut
@@ -199,6 +203,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideGoogleProductsInAppUseCases(
+        googleProductsInAppRepository: GoogleProductsInAppRepository
+    ): GoogleProductsInAppUseCases = GoogleProductsInAppUseCasesImpl(googleProductsInAppRepository)
+
+    @Provides
+    @Singleton
     fun localUserManager(
         application: Application
     ): LocalUserManager = LocalUserManagerImpl(application)
@@ -237,6 +247,12 @@ object AppModule {
     fun provideNetworkChecker(
         application: Application
     ): NetworkCheckerRepository = NetworkCheckerRepositoryImpl(application)
+
+    @Provides
+    @Singleton
+    fun provideGoogleProductsInAppRepository(
+        application: Application
+    ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(application)
 
     @Provides
     @Singleton
