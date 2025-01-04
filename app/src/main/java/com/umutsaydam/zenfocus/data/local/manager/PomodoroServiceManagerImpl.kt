@@ -12,9 +12,13 @@ class PomodoroServiceManagerImpl(
 ) : PomodoroServiceManager {
 
     override fun startPomodoroService() {
-        Log.i("R/T", "Service is starting ...")
-        val intent = Intent(context, PomodoroForegroundService::class.java)
-        ContextCompat.startForegroundService(context, intent)
+        if (!PomodoroForegroundService.isServiceRunning) {
+            Log.i("R/T", "Service is starting ...")
+            val intent = Intent(context, PomodoroForegroundService::class.java)
+            ContextCompat.startForegroundService(context, intent)
+        } else {
+            Log.i("R/T", "Service is already running.")
+        }
     }
 
     override fun isRunning(): Boolean {
@@ -22,8 +26,12 @@ class PomodoroServiceManagerImpl(
     }
 
     override fun stopPomodoroService() {
-        Log.i("R/T", "Service is stopping...")
-        val intent = Intent(context, PomodoroForegroundService::class.java)
-        context.stopService(intent)
+        if (PomodoroForegroundService.isServiceRunning){
+            Log.i("R/T", "Service is stopping...")
+            val intent = Intent(context, PomodoroForegroundService::class.java)
+            context.stopService(intent)
+        }else{
+            Log.i("R/T", "Service is not working so can not stop.")
+        }
     }
 }

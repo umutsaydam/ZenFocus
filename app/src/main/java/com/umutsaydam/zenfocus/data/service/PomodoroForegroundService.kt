@@ -51,9 +51,7 @@ class PomodoroForegroundService : Service() {
             "ACTION_PAUSE" -> {
                 Log.i("R/T", "Timer was paused")
                 pauseTimer()
-                observeRemainingTimeTextFormat()
-                val notification = createNotification(remainingTimeText.value)
-                startForeground(1, notification)
+                updateNotification(remainingTimeText.value)
             }
 
             "ACTION_RESUME" -> {
@@ -68,10 +66,12 @@ class PomodoroForegroundService : Service() {
             }
         }
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     private fun createNotification(contentText: String): Notification {
+        val isTimerRunning = pomodoroManager.isRunning().value
+
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
@@ -81,8 +81,6 @@ class PomodoroForegroundService : Service() {
             intent,
             PendingIntent.FLAG_IMMUTABLE
         )
-
-        val isTimerRunning = pomodoroManager.isRunning().value
 
         val actionIntent = Intent(this, PomodoroForegroundService::class.java).apply {
             action = if (isTimerRunning) "ACTION_PAUSE" else "ACTION_RESUME"
@@ -127,8 +125,12 @@ class PomodoroForegroundService : Service() {
     }
 
     private fun updateNotification(newContentText: String) {
-        val notification = createNotification(newContentText)
-        notificationManager.notify(notificationId, notification)
+        if (isServiceRunning){
+            val notification = createNotification(newContentText)
+            notificationManager.notify(notificationId, notification)
+        }else{
+            cleanUpService()
+        }
     }
 
     private fun createNotificationChannel() {
@@ -148,6 +150,7 @@ class PomodoroForegroundService : Service() {
 
     private fun resumeTimer() {
         pomodoroManager.resumeTimer()
+        observeRemainingTimeTextFormat()
     }
 
     private fun pauseTimer() {
@@ -158,15 +161,21 @@ class PomodoroForegroundService : Service() {
         return null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private fun cleanUpService() {
         isServiceRunning = false
         notificationJob?.cancel()
         notificationJob = null
+        stopSelf()
         stopForeground(STOP_FOREGROUND_REMOVE)
+        notificationManager.cancel(notificationId)
         Log.i(
             "R/T",
             "Service stopped and notification removed ************* ${Build.VERSION.SDK_INT} *************"
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cleanUpService()
     }
 }
