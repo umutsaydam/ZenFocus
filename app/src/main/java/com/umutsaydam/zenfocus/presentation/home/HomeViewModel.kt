@@ -240,14 +240,15 @@ class HomeViewModel @Inject constructor(
 
     private fun getTasks() {
         viewModelScope.launch {
-            _toDoList.value = toDoUsesCases.getTasks.invoke()
+            toDoUsesCases.getTasks().collect{ list ->
+                _toDoList.value = list
+            }
         }
     }
 
     fun upsertTask(taskModel: TaskModel) {
         viewModelScope.launch {
-            toDoUsesCases.upsertTask.invoke(taskModel)
-            getTasks()
+            toDoUsesCases.upsertTask(taskModel)
         }
     }
 

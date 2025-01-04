@@ -31,16 +31,12 @@ fun ToDoListItem(
     onClick: (Boolean) -> Unit,
     onLongClick: (TaskModel) -> Unit
 ) {
-    var checkState by remember {
-        mutableStateOf(taskModel.isTaskCompleted)
-    }
     Row(
         modifier = modifier
             .fillMaxWidth()
             .combinedClickable(
                 onClick = {
-                    checkState = !checkState
-                    onClick(checkState)
+                    onClick(!taskModel.isTaskCompleted)
                 },
                 onLongClick = {
                     onLongClick(taskModel)
@@ -53,9 +49,8 @@ fun ToDoListItem(
             modifier = Modifier
                 .scale(0.7f)
                 .weight(0.2f),
-            checked = checkState,
+            checked = taskModel.isTaskCompleted,
             onCheckedChange = { newState ->
-                checkState = newState
                 onClick(newState)
             }
         )
@@ -65,8 +60,8 @@ fun ToDoListItem(
             text = taskModel.taskContent,
             color = textColor,
             style = TextStyle(
-                fontStyle = if (checkState) FontStyle.Italic else FontStyle.Normal,
-                textDecoration = if (checkState) TextDecoration.LineThrough else TextDecoration.None
+                fontStyle = if (taskModel.isTaskCompleted) FontStyle.Italic else FontStyle.Normal,
+                textDecoration = if (taskModel.isTaskCompleted) TextDecoration.LineThrough else TextDecoration.None
             )
         )
     }

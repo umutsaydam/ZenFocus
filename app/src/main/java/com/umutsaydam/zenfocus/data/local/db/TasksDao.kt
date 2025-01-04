@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.umutsaydam.zenfocus.domain.model.TaskModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TasksDao {
@@ -17,5 +18,5 @@ interface TasksDao {
     suspend fun deleteTask(taskModel: TaskModel)
 
     @Query("SELECT * FROM TaskModel")
-    suspend fun getTasks(): List<TaskModel>
+    fun getTasks(): Flow<List<TaskModel>>
 }

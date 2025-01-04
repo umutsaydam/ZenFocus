@@ -68,6 +68,7 @@ import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.util.safeNavigate
+import kotlinx.coroutines.flow.collectIndexed
 
 @Composable
 fun HomeScreen(
@@ -296,12 +297,11 @@ fun HomeScreen(
                 LazyToDoList(
                     toDoList = toDoList
                 ) { index ->
-                    val toDoModel = toDoList[index]
+                    val currTaskModel = toDoList[index]
                     ToDoListItem(
-                        taskModel = toDoModel,
+                        taskModel = currTaskModel,
                         onClick = { newState ->
-                            toDoModel.isTaskCompleted = newState
-                            homeViewModel.upsertTask(toDoModel)
+                            homeViewModel.upsertTask(currTaskModel.copy(isTaskCompleted = newState))
                         },
                         onLongClick = { taskModel ->
                             selectedTaskModel = taskModel
