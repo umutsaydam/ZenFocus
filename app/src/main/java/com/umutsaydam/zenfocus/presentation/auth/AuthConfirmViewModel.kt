@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.result.step.AuthSignUpStep
+import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.model.AwsAuthSignUpResult
@@ -21,8 +22,8 @@ class AuthConfirmViewModel @Inject constructor(
     private val _userConfirmState: MutableStateFlow<AuthSignUpStep?> = MutableStateFlow(null)
     var userConfirmState: StateFlow<AuthSignUpStep?> = _userConfirmState
 
-    private val _errorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
+    private val _uiMessage = MutableStateFlow<Int?>(null)
+    val uiMessage: StateFlow<Int?> = _uiMessage
 
     fun isConnected(): Boolean {
         return networkCheckerUseCases.isConnected()
@@ -35,11 +36,12 @@ class AuthConfirmViewModel @Inject constructor(
             when (result) {
                 is AwsAuthSignUpResult.IsSignedUp -> {
                     _userConfirmState.value = AuthSignUpStep.DONE
+                    _uiMessage.value = R.string.signed_up
                 }
 
                 is AwsAuthSignUpResult.Error -> {
                     _userConfirmState.value = null
-                    _errorMessage.value = result.exception.message
+                    _uiMessage.value = R.string.error_while_sign_up
                 }
 
                 else -> {

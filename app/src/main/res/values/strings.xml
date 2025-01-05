@@ -48,6 +48,17 @@
     <string name="login_to_access_account">Login to access your account</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="loading">Loading…</string>
+    <string name="error_occurred_themes_list">An error occurred while getting themes</string>
+    <string name="new_theme_set">New theme has been set</string>
+    <string name="new_theme_setting_error">An error occurred while setting the new theme</string>
+    <string name="error_while_sign_up">An error occurred while signing up</string>
+    <string name="verify_account">Please verify your account</string>
+    <string name="error_while_signing_in">An error occurred while logging in</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="became_ad_free_user">Congratulations, you are now an ad-free user!</string>
+    <string name="error_occurred_ad_free">An error occurred, please try again later or contact us</string>
+    <string name="password_length">Password minimum length is 8 character</string>
 
     <string-array name="app_langs">
         <item>Turkish-tr</item>

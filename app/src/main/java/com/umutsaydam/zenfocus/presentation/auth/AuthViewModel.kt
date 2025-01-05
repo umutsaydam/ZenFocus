@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
+import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
@@ -35,6 +36,9 @@ class AuthViewModel @Inject constructor(
     private val _errorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _uiMessage = MutableStateFlow<Int?>(null)
+    val uiMessage: StateFlow<Int?> = _uiMessage
+
     fun isConnected(): Boolean {
         return networkCheckerUseCases.isConnected()
     }
@@ -46,12 +50,14 @@ class AuthViewModel @Inject constructor(
 
             when (result) {
                 is AwsAuthSignInResult.IsSignedIn -> {
+                    _uiMessage.value = R.string.signing_in
                     getUserId()
                 }
 
                 is AwsAuthSignInResult.ConfirmSignIn -> {
                     _userId.value = null
                     _signInStep.value = AuthSignInStep.CONFIRM_SIGN_UP
+                    _uiMessage.value = R.string.verify_account
                     Log.i("R/T", "confirm $result")
                 }
 
@@ -59,6 +65,7 @@ class AuthViewModel @Inject constructor(
                     Log.i("R/T", "error : $result")
                     _userId.value = null
                     _signInStep.value = null
+                    _uiMessage.value = R.string.error_while_signing_in
                     _errorMessage.value = result.exception.message
                 }
             }
@@ -84,10 +91,6 @@ class AuthViewModel @Inject constructor(
                 is Resource.Error -> {
                     _userId.value = null
                     _errorMessage.value = result.message
-                }
-
-                is Resource.Loading -> {
-
                 }
             }
         }
@@ -117,10 +120,6 @@ class AuthViewModel @Inject constructor(
                 is Resource.Error -> {
                     Log.i("R/T", "in viewmodel err: ${result.message}")
                 }
-
-                is Resource.Loading -> {
-                    Log.i("R/T", "in viewmodel loading: loading")
-                }
             }
         }
     }
@@ -139,15 +138,18 @@ class AuthViewModel @Inject constructor(
 
             when (result) {
                 is AwsAuthSignUpResult.IsSignedUp -> {
+                    _uiMessage.value = R.string.signed_up
                     _signUpStep.value = AuthSignUpStep.DONE
                 }
 
                 is AwsAuthSignUpResult.ConfirmSignUp -> {
+                    _uiMessage.value = R.string.verify_account
                     _signUpStep.value = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
                 }
 
                 is AwsAuthSignUpResult.Error -> {
                     _signUpStep.value = null
+                    _uiMessage.value = R.string.error_while_sign_up
                     _errorMessage.value = result.exception.message
                 }
             }
@@ -171,10 +173,7 @@ class AuthViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     Log.e("R/T", "error in viewmodel: ${result.message}")
-                }
-
-                is Resource.Loading -> {
-
+                    _uiMessage.value = R.string.error_while_signing_in
                 }
             }
         }

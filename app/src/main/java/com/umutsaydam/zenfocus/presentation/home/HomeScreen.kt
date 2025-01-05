@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import android.view.WindowMetrics
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -81,8 +83,15 @@ fun HomeScreen(
     var isFirstAdRequested by remember { mutableStateOf(false) }
     var isAdLoaded by remember { mutableStateOf(false) }
     val adSize: AdSize = getAdSize(context)
-
     val lifecycleOwner = LocalLifecycleOwner.current
+    val uiMessage by homeViewModel.uiMessage.collectAsState()
+
+    LaunchedEffect(uiMessage) {
+        uiMessage?.let { message ->
+            Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
+        }
+    }
+
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {

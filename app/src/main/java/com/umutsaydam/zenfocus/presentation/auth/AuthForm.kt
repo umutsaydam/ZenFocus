@@ -8,10 +8,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -28,18 +24,15 @@ import com.umutsaydam.zenfocus.ui.theme.White
 fun AuthForm(
     authEmail: String,
     authPassword: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
     buttonText: String,
     onClick: () -> Unit
 ) {
-    var email by remember { mutableStateOf(authEmail) }
-    var password by remember { mutableStateOf(authPassword) }
-
     FormTextField(
         formTitle = stringResource(R.string.email),
-        value = email,
-        onValueChanged = {
-            email = it
-        },
+        value = authEmail,
+        onValueChanged = onEmailChange,
         placeHolder = stringResource(R.string.enter_email),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next,
@@ -48,10 +41,8 @@ fun AuthForm(
     )
     FormTextField(
         formTitle = stringResource(R.string.password),
-        value = password,
-        onValueChanged = {
-            password = it
-        },
+        value = authPassword,
+        onValueChanged = onPasswordChange,
         placeHolder = stringResource(R.string.enter_password),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
@@ -70,12 +61,10 @@ fun AuthForm(
             disabledContentColor = Gray
         ),
         onClick = {
-            email = email.trim()
-            password = password.trim()
             onClick()
         },
         shape = RoundedCornerShape(CORNER_SMALL),
-        enabled = email.isNotEmpty() && password.isNotEmpty()
+        enabled = authEmail.isNotEmpty() && authPassword.isNotEmpty()
     ) {
         Text(
             text = buttonText

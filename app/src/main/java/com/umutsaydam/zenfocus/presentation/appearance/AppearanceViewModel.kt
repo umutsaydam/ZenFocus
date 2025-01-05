@@ -3,6 +3,7 @@ package com.umutsaydam.zenfocus.presentation.appearance
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.data.remote.dto.APIResponse
 import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
@@ -32,8 +33,8 @@ class AppearanceViewModel @Inject constructor(
     private val _themeList = MutableStateFlow<List<ThemeInfo?>>(listOf(null))
     val themeList: StateFlow<List<ThemeInfo?>> = _themeList
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
+    private val _uiMessage = MutableStateFlow<Int?>(null)
+    val uiMessage: StateFlow<Int?> = _uiMessage
 
     private val _defaultTheme = MutableStateFlow<ThemeInfo?>(null)
     val defaultTheme: StateFlow<ThemeInfo?> = _defaultTheme
@@ -67,6 +68,8 @@ class AppearanceViewModel @Inject constructor(
         Log.i("R/T", "network state: ${networkCheckerUseCases.isConnected()}")
         if (isConnected()) {
             viewModelScope.launch {
+                _uiMessage.value = R.string.loading
+
                 when (val themesResult: Resource<APIResponse> =
                     awsStorageCases.readThemeList.invoke()) {
                     is Resource.Success -> {
@@ -79,12 +82,8 @@ class AppearanceViewModel @Inject constructor(
 
                     is Resource.Error -> {
                         _themeList.value = listOf(null)
-                        _errorMessage.value = themesResult.message
+                        _uiMessage.value = R.string.error_occurred_themes_list
                         Log.i("R/T", "Error in viewmodel: ${themesResult.message}")
-                    }
-
-                    is Resource.Loading -> {
-                        Log.i("R/T", "loading...")
                     }
                 }
             }
@@ -97,21 +96,19 @@ class AppearanceViewModel @Inject constructor(
             val themeResource: Resource<String> =
                 awsStorageCases.downloadSelectedThemeList(selectedThemeUrl)
             Log.i("R/T", "theme data ${themeResource.data}, theme message ${themeResource.message}")
+            _uiMessage.value = R.string.loading
 
             when (themeResource) {
                 is Resource.Success -> {
                     themeResource.data?.let { themeName ->
                         localUserDataStoreCases.saveTheme(themeName)
+                        _uiMessage.value = R.string.new_theme_set
                     }
                 }
 
                 is Resource.Error -> {
                     _defaultTheme.value = null
-                    _errorMessage.value = themeResource.message
-                }
-
-                is Resource.Loading -> {
-
+                    _uiMessage.value = R.string.new_theme_setting_error
                 }
             }
         }
@@ -119,7 +116,7 @@ class AppearanceViewModel @Inject constructor(
 
     private fun getUserType() {
         viewModelScope.launch {
-            localUserDataStoreCases.readUserType().collectLatest{ type ->
+            localUserDataStoreCases.readUserType().collectLatest { type ->
                 _userType.value = type
                 Log.i("R/T", "_userType.value in viewmodel ${_userType.value}")
             }

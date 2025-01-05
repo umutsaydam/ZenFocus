@@ -3,6 +3,7 @@ package com.umutsaydam.zenfocus.presentation.appearance
 import android.app.Activity
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -72,6 +73,13 @@ fun AppearanceScreen(
     var rewardedAd: RewardedAd? by remember { mutableStateOf(null) }
     val isTablet = LocalConfiguration.current.screenWidthDp.dp > 600.dp
     val themeSpace = if (isTablet) 380.dp else 80.dp
+    val uiMessage by appearanceViewModel.uiMessage.collectAsState()
+
+    LaunchedEffect(uiMessage) {
+        uiMessage?.let { message ->
+            Toast.makeText(context,context.getString(message), Toast.LENGTH_SHORT).show()
+        }
+    }
 
     LaunchedEffect(rewardedAd) {
         rewardedAd?.let { rewardAd ->

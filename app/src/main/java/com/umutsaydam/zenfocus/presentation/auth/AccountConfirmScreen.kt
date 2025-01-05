@@ -11,6 +11,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +40,13 @@ fun AccountConfirmScreen(
     val networkErrorMessage = stringResource(R.string.no_connection)
     var confirmCode by remember { mutableStateOf("") }
     Log.i("R/T", email)
+    val uiMessage by authConfirmViewModel.uiMessage.collectAsState()
 
+    LaunchedEffect(uiMessage) {
+        uiMessage?.let { message ->
+            Toast.makeText(context,context.getString(message), Toast.LENGTH_SHORT).show()
+        }
+    }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,

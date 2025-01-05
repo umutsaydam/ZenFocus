@@ -3,6 +3,7 @@ package com.umutsaydam.zenfocus.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
 import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.TaskModel
@@ -66,6 +67,9 @@ class HomeViewModel @Inject constructor(
 
     private val _defaultSound = MutableStateFlow<String>(NONE)
     val defaultSound = _defaultSound
+
+    private val _uiMessage = MutableStateFlow<Int?>(null)
+    val uiMessage: StateFlow<Int?> = _uiMessage
 
     init {
         getTasks()
@@ -306,15 +310,11 @@ class HomeViewModel @Inject constructor(
 
                 when (result) {
                     is Resource.Success -> {
-
+                        _uiMessage.value = R.string.became_ad_free_user
                     }
 
                     is Resource.Error -> {
-
-                    }
-
-                    is Resource.Loading -> {
-
+                        _uiMessage.value = R.string.error_occurred_ad_free
                     }
                 }
             }

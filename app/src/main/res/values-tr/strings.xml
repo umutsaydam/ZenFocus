@@ -46,4 +46,15 @@
     <string name="login_to_access_account">Hesabınıza erişmek için giriş yapın</string>
     <string name="confirm">Onayla</string>
     <string name="cancel">İptal et</string>
+    <string name="loading">Yükleniyor…</string>
+    <string name="error_occurred_themes_list">Temalar alınırken bir hata oluştu</string>
+    <string name="new_theme_set">Yeni tema ayarlandı</string>
+    <string name="new_theme_setting_error">Yeni tema ayarlanırken bir hata oluştu</string>
+    <string name="error_while_sign_up">Kayıt olurken bir hata oluştu</string>
+    <string name="verify_account">Lütfen hesabınızı doğrulayın</string>
+    <string name="error_while_signing_in">Giriş yaparken bir hata oluştu</string>
+    <string name="signing_in">Giriş yapılıyor…</string>
+    <string name="became_ad_free_user">Tebrikler, reklamsız kullanıcı oldun!</string>
+    <string name="error_occurred_ad_free">Bir hata oluştu, lütfen daha sonra tekrar deneyin ya da bizimle iletişime geçin</string>
+    <string name="password_length">Şifre karakter uzunluğu minimum 8 karakter</string>
 </resources>

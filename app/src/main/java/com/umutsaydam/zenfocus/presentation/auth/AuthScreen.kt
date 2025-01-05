@@ -38,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,7 +54,6 @@ import androidx.navigation.compose.rememberNavController
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
-import com.umutsaydam.zenfocus.presentation.Dimens.BORDER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
@@ -85,12 +85,16 @@ fun AuthScreen(
     val context = LocalContext.current
     val activity = context as? Activity
 
-    val email by remember { mutableStateOf("") }
-    val password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
-    val networkErrorMessage = stringResource(R.string.no_connection)
-    val completedSignUpMessage = stringResource(R.string.signed_up)
-    val confirmYourAccountMessage = stringResource(R.string.confirm_account)
+    val uiMessage by authViewModel.uiMessage.collectAsState()
+
+    LaunchedEffect(uiMessage) {
+        uiMessage?.let { message ->
+            Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
+        }
+    }
 
     LaunchedEffect(signInStep.value) {
         when (signInStep.value) {
@@ -99,7 +103,11 @@ fun AuthScreen(
             }
 
             AuthSignInStep.CONFIRM_SIGN_UP -> {
-                Toast.makeText(context, confirmYourAccountMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.confirm_account),
+                    Toast.LENGTH_SHORT
+                ).show()
                 val confirmRoute = "AccountConfirm/$email"
                 navController.safeNavigate(confirmRoute)
             }
@@ -113,14 +121,19 @@ fun AuthScreen(
     LaunchedEffect(signUpStep.value) {
         when (signUpStep.value) {
             AuthSignUpStep.CONFIRM_SIGN_UP_STEP -> {
-                Toast.makeText(context, confirmYourAccountMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.confirm_account),
+                    Toast.LENGTH_SHORT
+                ).show()
                 val confirmRoute = "AccountConfirm/$email"
                 navController.safeNavigate(confirmRoute)
             }
 
             AuthSignUpStep.DONE -> {
                 Log.i("R/T", "sign up is done")
-                Toast.makeText(context, completedSignUpMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.signed_up), Toast.LENGTH_SHORT)
+                    .show()
             }
 
             AuthSignUpStep.COMPLETE_AUTO_SIGN_IN -> {
@@ -228,18 +241,28 @@ fun AuthScreen(
                             AuthForm(
                                 authEmail = email,
                                 authPassword = password,
+                                onEmailChange = { email = it },
+                                onPasswordChange = { password = it },
                                 buttonText = stringResource(if (isSignInSection) R.string.sign_in else R.string.sign_up),
                                 onClick = {
                                     if (authViewModel.isConnected()) {
                                         if (isSignInSection) {
                                             authViewModel.signIn(email, password)
                                         } else {
-                                            authViewModel.signUp(email, password)
+                                            if (password.length > 7) {
+                                                authViewModel.signUp(email, password)
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.password_length),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
                                         }
                                     } else {
                                         Toast.makeText(
                                             context,
-                                            networkErrorMessage,
+                                            context.getString(R.string.no_connection),
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
@@ -275,7 +298,7 @@ fun AuthScreen(
                                 } else {
                                     Toast.makeText(
                                         context,
-                                        networkErrorMessage,
+                                        context.getString(R.string.no_connection),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }

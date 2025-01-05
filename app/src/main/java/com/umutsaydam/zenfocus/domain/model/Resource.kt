@@ -8,5 +8,4 @@ sealed class Resource<T>(
     class Success<T>(data: T) : Resource<T>(data)
     class Error<T>(status: String? = null, data: T? = null, message: String? = null) :
         Resource<T>(status = status, data = data, message = message)
-    class Loading<T> : Resource<T>()
 }
