@@ -38,10 +38,10 @@ class FocusSoundManagerImpl(
     }
 
     override fun playSoundIfAvailable() {
-        if (deviceRingerModeAvailable() && _currentSoundName.value != NONE) {
+        if (deviceRingerModeAvailable()) {
             try {
-                if (_isPlaying.value) {
-                    Log.i("R/T", "Media player is playing another sound so it is stopped...")
+                if (_isPlaying.value || _currentSoundName.value == NONE) {
+                    Log.i("R/T", "Media player is playing another sound or selected none so it is stopped...")
                     mediaPlayer!!.stop()
                     mediaPlayer!!.release()
                 }
