@@ -133,12 +133,9 @@ fun FocusModeScreen(
                 size = SIZE_LARGE2,
                 animatedAlpha = animatedAlpha,
                 progress = remainingPercent,
-                color = White,
                 strokeWith = STROKE_MEDIUM,
-                trackColor = OutLineVariant,
                 strokeCap = StrokeCap.Round,
                 text = remainingTime,
-                textColor = Color.White,
                 style = MaterialTheme.typography.titleLarge
             )
         }
