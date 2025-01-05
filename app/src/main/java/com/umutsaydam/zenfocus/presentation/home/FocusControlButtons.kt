@@ -12,13 +12,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_SMALL
+import com.umutsaydam.zenfocus.ui.theme.Transparent
+import com.umutsaydam.zenfocus.ui.theme.White
 
 @Composable
 fun FocusControlButtons(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    containerColor: Color = Color.Transparent,
-    contentColor: Color = Color.White,
+    containerColor: Color = Transparent,
+    contentColor: Color = White,
     painterResource: Painter,
     contentDescription: String
 ) {

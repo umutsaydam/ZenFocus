@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +53,10 @@ import com.umutsaydam.zenfocus.BuildConfig
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
+import com.umutsaydam.zenfocus.ui.theme.DarkBackground
+import com.umutsaydam.zenfocus.ui.theme.OutLineVariant
+import com.umutsaydam.zenfocus.ui.theme.Transparent
+import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
@@ -103,291 +105,290 @@ fun HomeScreen(
 
     StatusBarSwitcher(false)
 
-        Scaffold(
-            modifier = modifier
-                .fillMaxSize()
-                .background(
-                    color = MaterialTheme.colorScheme.onBackground
-                ),
-            containerColor = Color.Transparent,
-            topBar = {
-                IconWithTopAppBar(
-                    title = {
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                color = DarkBackground
+            ),
+        containerColor = Transparent,
+        topBar = {
+            IconWithTopAppBar(
+                title = {
 
-                    },
-                    containerColor = Color.Transparent,
-                    navigationIcon = {
-                        IconButton(
+                },
+                containerColor = Transparent,
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.safeNavigate(Route.Settings.route)
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_menu),
+                            contentDescription = stringResource(R.string.open_side_menu),
+                            tint = White
+                        )
+                    }
+                },
+                actions = {
+                    if (homeViewModel.willShowAd()) {
+                        TextButton(
                             onClick = {
-                                navController.safeNavigate(Route.Settings.route)
+                                Log.i("R/AD", "Button clicked...")
+                                homeViewModel.startProductsInApp()
                             }
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_menu),
-                                contentDescription = stringResource(R.string.open_side_menu),
-                                tint = Color.White
+                            Text(
+                                text = stringResource(R.string.remove_ad)
                             )
                         }
-                    },
-                    actions = {
-                        if(homeViewModel.willShowAd()){
-                            TextButton(
-                                onClick = {
-                                    Log.i("R/AD", "Button clicked...")
-                                    homeViewModel.startProductsInApp()
-                                }
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.remove_ad)
-                                )
-                            }
-                        }
                     }
-                )
-            }
-        ) { paddingValues ->
-
-            if (showDialog) {
-                CustomAlertDialog(
-                    icon = painterResource(R.drawable.ic_timer_off),
-                    title = stringResource(R.string.stop_pomodoro),
-                    text = stringResource(R.string.pomodoro_will_stop),
-                    isConfirmed = { confirmedState ->
-                        if (confirmedState) {
-                            homeViewModel.stopTimer()
-                        }
-                        showDialog = false
-                    }
-                )
-            }
-
-            if (showDeleteTaskDialog && selectedTaskModel != null) {
-                CustomAlertDialog(
-                    icon = painterResource(R.drawable.ic_delete),
-                    title = stringResource(R.string.delete_task),
-                    text = stringResource(R.string.task_will_delete),
-                    isConfirmed = { confirmedState ->
-                        if (confirmedState) {
-                            homeViewModel.deleteTask(selectedTaskModel!!)
-                        }
-                        showDeleteTaskDialog = false
-                    }
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressWithText(
-                        progress = remainingPercent,
-                        text = remainingTime
-                    )
                 }
-                Spacer(modifier = Modifier.height(SPACE_MEDIUM))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        PADDING_SMALL,
-                        Alignment.CenterHorizontally
-                    )
-                ) {
-                    if (isTimerRunning) {
-                        FocusControlButtons(
-                            onClick = {
-                                homeViewModel.pauseTimer()
-                            },
-                            painterResource = painterResource(R.drawable.ic_pause_black),
-                            contentDescription = stringResource(R.string.pomodoro_pause)
-                        )
-                        FocusControlButtons(
-                            onClick = {
-                                showDialog = true
-                            },
-                            painterResource = painterResource(R.drawable.ic_timer_off),
-                            contentDescription = stringResource(R.string.pomodoro_stop)
-                        )
-                    } else {
-                        FocusControlButtons(
-                            onClick = {
-                                homeViewModel.showPomodoroTimesBottomSheet()
-                            },
-                            painterResource = painterResource(R.drawable.ic_time),
-                            contentDescription = stringResource(R.string.pomodoro_times)
-                        )
-                        FocusControlButtons(
-                            onClick = {
-                                homeViewModel.playOrResumeTimer()
-                            },
-                            painterResource = painterResource(R.drawable.ic_play_arrow_black),
-                            contentDescription = stringResource(R.string.pomodoro_start)
-                        )
+            )
+        }
+    ) { paddingValues ->
+
+        if (showDialog) {
+            CustomAlertDialog(
+                icon = painterResource(R.drawable.ic_timer_off),
+                title = stringResource(R.string.stop_pomodoro),
+                text = stringResource(R.string.pomodoro_will_stop),
+                isConfirmed = { confirmedState ->
+                    if (confirmedState) {
+                        homeViewModel.stopTimer()
                     }
+                    showDialog = false
+                }
+            )
+        }
+
+        if (showDeleteTaskDialog && selectedTaskModel != null) {
+            CustomAlertDialog(
+                icon = painterResource(R.drawable.ic_delete),
+                title = stringResource(R.string.delete_task),
+                text = stringResource(R.string.task_will_delete),
+                isConfirmed = { confirmedState ->
+                    if (confirmedState) {
+                        homeViewModel.deleteTask(selectedTaskModel!!)
+                    }
+                    showDeleteTaskDialog = false
+                }
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressWithText(
+                    progress = remainingPercent,
+                    text = remainingTime
+                )
+            }
+            Spacer(modifier = Modifier.height(SPACE_MEDIUM))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(
+                    PADDING_SMALL,
+                    Alignment.CenterHorizontally
+                )
+            ) {
+                if (isTimerRunning) {
                     FocusControlButtons(
                         onClick = {
-                            homeViewModel.showPomodoroSoundsBottomSheet()
+                            homeViewModel.pauseTimer()
                         },
-                        painterResource = painterResource(R.drawable.ic_music),
-                        contentDescription = stringResource(R.string.pomodoro_sounds)
+                        painterResource = painterResource(R.drawable.ic_pause_black),
+                        contentDescription = stringResource(R.string.pomodoro_pause)
                     )
-                    if (isTimerRunning) {
-                        FocusControlButtons(
-                            onClick = {
-                                navController.safeNavigate(Route.FocusMode.route)
-                            },
-                            painterResource = painterResource(R.drawable.ic_focus_black),
-                            contentDescription = stringResource(R.string.back_to_focus_mode)
-                        )
+                    FocusControlButtons(
+                        onClick = {
+                            showDialog = true
+                        },
+                        painterResource = painterResource(R.drawable.ic_timer_off),
+                        contentDescription = stringResource(R.string.pomodoro_stop)
+                    )
+                } else {
+                    FocusControlButtons(
+                        onClick = {
+                            homeViewModel.showPomodoroTimesBottomSheet()
+                        },
+                        painterResource = painterResource(R.drawable.ic_time),
+                        contentDescription = stringResource(R.string.pomodoro_times)
+                    )
+                    FocusControlButtons(
+                        onClick = {
+                            homeViewModel.playOrResumeTimer()
+                        },
+                        painterResource = painterResource(R.drawable.ic_play_arrow_black),
+                        contentDescription = stringResource(R.string.pomodoro_start)
+                    )
+                }
+                FocusControlButtons(
+                    onClick = {
+                        homeViewModel.showPomodoroSoundsBottomSheet()
+                    },
+                    painterResource = painterResource(R.drawable.ic_music),
+                    contentDescription = stringResource(R.string.pomodoro_sounds)
+                )
+                if (isTimerRunning) {
+                    FocusControlButtons(
+                        onClick = {
+                            navController.safeNavigate(Route.FocusMode.route)
+                        },
+                        painterResource = painterResource(R.drawable.ic_focus_black),
+                        contentDescription = stringResource(R.string.back_to_focus_mode)
+                    )
+                }
+            }
+
+            LazyToDoList(
+                toDoList = toDoList
+            ) { index ->
+                val currTaskModel = toDoList[index]
+                ToDoListItem(
+                    taskModel = currTaskModel,
+                    onClick = { newState ->
+                        homeViewModel.upsertTask(currTaskModel.copy(isTaskCompleted = newState))
+                    },
+                    onLongClick = { taskModel ->
+                        selectedTaskModel = taskModel
+                        showDeleteTaskDialog = true
                     }
-                }
+                )
+            }
 
-                LazyToDoList(
-                    toDoList = toDoList
-                ) { index ->
-                    val currTaskModel = toDoList[index]
-                    ToDoListItem(
-                        taskModel = currTaskModel,
-                        onClick = { newState ->
-                            homeViewModel.upsertTask(currTaskModel.copy(isTaskCompleted = newState))
-                        },
-                        onLongClick = { taskModel ->
-                            selectedTaskModel = taskModel
-                            showDeleteTaskDialog = true
-                        }
-                    )
-                }
+            Box(
+                modifier = if (isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                CustomFab(
+                    alignment = Alignment.BottomEnd,
+                    containerColor = OutLineVariant,
+                    fabIcon = painterResource(R.drawable.ic_add),
+                    contentDescription = stringResource(R.string.add_to_do_button),
+                    onClick = {
+                        homeViewModel.showAddToDoBottomSheet()
+                    }
+                )
+            }
 
+            if (homeViewModel.isNetworkConnected() && homeViewModel.willShowAd() && (isAdLoaded || !isFirstAdRequested)) {
                 Box(
-                    modifier = if (isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize(),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    CustomFab(
-                        alignment = Alignment.BottomEnd,
-                        containerColor = MaterialTheme.colorScheme.outlineVariant,
-                        fabIcon = painterResource(R.drawable.ic_add),
-                        contentDescription = stringResource(R.string.add_to_do_button),
-                        onClick = {
-                            homeViewModel.showAddToDoBottomSheet()
-                        }
-                    )
-                }
+                    AndroidView(
+                        modifier = Modifier.fillMaxWidth(),
+                        factory = { context ->
+                            AdView(context).apply {
+                                setAdSize(adSize)
+                                adUnitId = BuildConfig.AD_BANNER_UNIT_ID
+                                loadAd(AdRequest.Builder().build())
 
-                if (homeViewModel.isNetworkConnected() && homeViewModel.willShowAd() &&(isAdLoaded || !isFirstAdRequested)) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Yellow),
-                        contentAlignment = Alignment.BottomEnd
-                    ) {
-                        AndroidView(
-                            modifier = Modifier.fillMaxWidth(),
-                            factory = { context ->
-                                AdView(context).apply {
-                                    setAdSize(adSize)
-                                    adUnitId = BuildConfig.AD_BANNER_UNIT_ID
-                                    loadAd(AdRequest.Builder().build())
+                                adListener = object : AdListener() {
+                                    override fun onAdClicked() {
+                                        Log.i("A/D", "onAdClicked")
+                                    }
 
-                                    adListener = object : AdListener() {
-                                        override fun onAdClicked() {
-                                            Log.i("A/D", "onAdClicked")
-                                        }
+                                    override fun onAdClosed() {
+                                        super.onAdClosed()
+                                        Log.i("A/D", "onAdClosed")
+                                    }
 
-                                        override fun onAdClosed() {
-                                            super.onAdClosed()
-                                            Log.i("A/D", "onAdClosed")
-                                        }
+                                    override fun onAdFailedToLoad(p0: LoadAdError) {
+                                        super.onAdFailedToLoad(p0)
+                                        Log.i("A/D", "onAdFailedToLoad $p0")
+                                        isAdLoaded = false
+                                        isFirstAdRequested = true
+                                    }
 
-                                        override fun onAdFailedToLoad(p0: LoadAdError) {
-                                            super.onAdFailedToLoad(p0)
-                                            Log.i("A/D", "onAdFailedToLoad $p0")
-                                            isAdLoaded = false
-                                            isFirstAdRequested = true
-                                        }
+                                    override fun onAdImpression() {
+                                        super.onAdImpression()
+                                        Log.i("A/D", "onAdImpression")
+                                    }
 
-                                        override fun onAdImpression() {
-                                            super.onAdImpression()
-                                            Log.i("A/D", "onAdImpression")
-                                        }
+                                    override fun onAdLoaded() {
+                                        super.onAdLoaded()
+                                        Log.i("A/D", "onAdLoaded")
+                                        isAdLoaded = true
+                                        isFirstAdRequested = true
+                                    }
 
-                                        override fun onAdLoaded() {
-                                            super.onAdLoaded()
-                                            Log.i("A/D", "onAdLoaded")
-                                            isAdLoaded = true
-                                            isFirstAdRequested = true
-                                        }
+                                    override fun onAdOpened() {
+                                        super.onAdOpened()
+                                        Log.i("A/D", "onAdOpened")
+                                    }
 
-                                        override fun onAdOpened() {
-                                            super.onAdOpened()
-                                            Log.i("A/D", "onAdOpened")
-                                        }
-
-                                        override fun onAdSwipeGestureClicked() {
-                                            super.onAdSwipeGestureClicked()
-                                            Log.i("A/D", "onAdSwipeGestureClicked")
-                                        }
+                                    override fun onAdSwipeGestureClicked() {
+                                        super.onAdSwipeGestureClicked()
+                                        Log.i("A/D", "onAdSwipeGestureClicked")
                                     }
                                 }
-                            }
-                        )
-                    }
-                }
-
-                if (bottomSheetState.value) {
-                    CustomBottomSheet(
-                        onDismissRequest = {
-                            homeViewModel.setBottomSheetState(false)
-                            if (!isTimerRunning) {
-                                homeViewModel.stopSound()
-                            }
-                        },
-                        content = {
-                            when (currentSheetContent) {
-                                BottomSheetContent.AddToDo -> {
-                                    AddToDo { newTask ->
-                                        homeViewModel.upsertTask(newTask)
-                                    }
-                                }
-
-                                BottomSheetContent.PomodoroSounds -> {
-                                    LazySoundList(
-                                        soundList = soundList,
-                                        content = { index ->
-                                            val sound = soundList[index]
-                                            RadioButtonWithText(
-                                                modifier = Modifier.background(MaterialTheme.colorScheme.background),
-                                                radioSelected = sound == defaultSound,
-                                                radioText = sound,
-                                                onClick = {
-                                                    homeViewModel.setDefaultSoundAndPlay(sound)
-                                                }
-                                            )
-                                        },
-                                        fixedContent = { index -> }
-                                    )
-                                }
-
-                                BottomSheetContent.PomodoroTimes -> {
-                                    PomodoroControlSlider(
-                                        sliderPosition = sliderPosition,
-                                        steps = 2,
-                                        valueRange = 1f..4f
-                                    ) { newSliderPosition ->
-                                        homeViewModel.setSliderPosition(newSliderPosition)
-                                    }
-                                }
-
-                                null -> Unit
                             }
                         }
                     )
                 }
             }
+
+            if (bottomSheetState.value) {
+                CustomBottomSheet(
+                    onDismissRequest = {
+                        homeViewModel.setBottomSheetState(false)
+                        if (!isTimerRunning) {
+                            homeViewModel.stopSound()
+                        }
+                    },
+                    content = {
+                        when (currentSheetContent) {
+                            BottomSheetContent.AddToDo -> {
+                                AddToDo { newTask ->
+                                    homeViewModel.upsertTask(newTask)
+                                }
+                            }
+
+                            BottomSheetContent.PomodoroSounds -> {
+                                LazySoundList(
+                                    soundList = soundList,
+                                    content = { index ->
+                                        val sound = soundList[index]
+                                        RadioButtonWithText(
+                                            modifier = Modifier.background(White),
+                                            radioSelected = sound == defaultSound,
+                                            radioText = sound,
+                                            onClick = {
+                                                homeViewModel.setDefaultSoundAndPlay(sound)
+                                            }
+                                        )
+                                    },
+                                    fixedContent = { index -> }
+                                )
+                            }
+
+                            BottomSheetContent.PomodoroTimes -> {
+                                PomodoroControlSlider(
+                                    sliderPosition = sliderPosition,
+                                    steps = 2,
+                                    valueRange = 1f..4f
+                                ) { newSliderPosition ->
+                                    homeViewModel.setSliderPosition(newSliderPosition)
+                                }
+                            }
+
+                            null -> Unit
+                        }
+                    }
+                )
+            }
         }
+    }
 }
 
 private fun getAdSize(context: Context): AdSize {

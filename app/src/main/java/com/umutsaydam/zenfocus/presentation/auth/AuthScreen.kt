@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,6 +62,10 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.ui.theme.Black
+import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
+import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import com.umutsaydam.zenfocus.util.safeNavigate
 import kotlinx.coroutines.launch
@@ -145,11 +148,11 @@ fun AuthScreen(
                         Icon(
                             painter = painterResource(R.drawable.ic_close),
                             contentDescription = stringResource(R.string.back_to_settings),
-                            tint = MaterialTheme.colorScheme.outline
+                            tint = Outline
                         )
                     }
                 },
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                containerColor = SurfaceContainerLow
             )
         }
     ) { paddingValues ->
@@ -157,7 +160,7 @@ fun AuthScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .background(SurfaceContainerLow)
                 .padding(
                     top = topPadding,
                     start = PADDING_MEDIUM2,
@@ -180,7 +183,7 @@ fun AuthScreen(
                     Text(
                         text = stringResource(R.string.login_to_access_account),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.outline
+                        color = Outline
                     )
                 }
             }
@@ -193,7 +196,7 @@ fun AuthScreen(
                     Row(
                         modifier = Modifier
                             .clip(RoundedCornerShape(CORNER_SMALL))
-                            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                            .background(SurfaceContainerLow)
                             .padding(horizontal = PADDING_SMALL),
                     ) {
                         listOf("sign_in" to 0, "sign_up" to 1).forEach { (text, index) ->
@@ -251,7 +254,7 @@ fun AuthScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(if (currPage == 0) R.string.or_sign_in_with else R.string.or_sign_up_with),
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.outline
+                    color = Outline
                 )
             }
 
@@ -279,8 +282,8 @@ fun AuthScreen(
                         },
                         shape = RoundedCornerShape(CORNER_SMALL),
                         colors = ButtonDefaults.buttonColors().copy(
-                            containerColor = MaterialTheme.colorScheme.background,
-                            contentColor = MaterialTheme.colorScheme.onBackground
+                            containerColor = White,
+                            contentColor = Black
                         )
                     ) {
                         Image(

@@ -13,14 +13,14 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
+import com.umutsaydam.zenfocus.ui.theme.Gray
+import com.umutsaydam.zenfocus.ui.theme.Transparent
 
 @Composable
 fun FormTextField(
@@ -30,10 +30,10 @@ fun FormTextField(
     placeHolder: String,
     keyboardOptions: KeyboardOptions,
     colors: TextFieldColors = TextFieldDefaults.colors(
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        focusedContainerColor = Color.Transparent,
-        unfocusedContainerColor = Color.Transparent
+        focusedIndicatorColor = Transparent,
+        unfocusedIndicatorColor = Transparent,
+        focusedContainerColor = Transparent,
+        unfocusedContainerColor = Transparent
     )
 ) {
     Text(
@@ -44,7 +44,7 @@ fun FormTextField(
             .fillMaxWidth()
             .border(
                 width = 1.dp,
-                color = Color.Gray,
+                color = Gray,
                 shape = RoundedCornerShape(CORNER_SMALL)
             ),
         value = value,

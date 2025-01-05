@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,6 +30,7 @@ import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
+import com.umutsaydam.zenfocus.ui.theme.White
 
 @Composable
 fun NumberPickerDialog(
@@ -60,7 +60,7 @@ fun NumberPickerDialog(
         Column(
             modifier = modifier
                 .background(
-                    color = MaterialTheme.colorScheme.background,
+                    color = White,
                     shape = RoundedCornerShape(CORNER_SMALL)
                 )
                 .size(300.dp)

@@ -20,6 +20,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE1
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM
+import com.umutsaydam.zenfocus.ui.theme.Gray
+import com.umutsaydam.zenfocus.ui.theme.OutLineVariant
+import com.umutsaydam.zenfocus.ui.theme.White
 
 @Composable
 fun CircularProgressWithText(
@@ -27,12 +30,12 @@ fun CircularProgressWithText(
     size: Dp = SIZE_LARGE1,
     animatedAlpha: Float = 1f,
     progress: Float,
-    color: Color = MaterialTheme.colorScheme.onBackground,
+    color: Color = Gray,
     strokeWith: Dp = STROKE_MEDIUM,
-    trackColor: Color = MaterialTheme.colorScheme.outlineVariant,
+    trackColor: Color = OutLineVariant,
     strokeCap: StrokeCap = StrokeCap.Round,
     text: String,
-    textColor: Color = MaterialTheme.colorScheme.background,
+    textColor: Color = White,
     style: TextStyle = MaterialTheme.typography.titleMedium,
     durationMillis: Int = 1000,
     delayMillis: Int = 0

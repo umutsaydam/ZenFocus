@@ -14,10 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.THICKNESS_SMALL
+import com.umutsaydam.zenfocus.ui.theme.LightGray
 
 @Composable
 fun RadioButtonWithText(
@@ -55,7 +55,7 @@ fun RadioButtonWithText(
 
         HorizontalDivider(
             thickness = THICKNESS_SMALL,
-            color = Color.LightGray
+            color = LightGray
         )
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.umutsaydam.zenfocus.R
+import com.umutsaydam.zenfocus.ui.theme.LightGray
 
 @Composable
 fun NotConnectedMessage(modifier: Modifier = Modifier) {
@@ -34,7 +35,7 @@ fun NotConnectedMessage(modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(R.string.no_connection),
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.LightGray,
+                    color = LightGray,
                     fontWeight = FontWeight.Bold
                 )
             )

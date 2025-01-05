@@ -38,6 +38,8 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.home.CircularProgressWithText
+import com.umutsaydam.zenfocus.ui.theme.OutLineVariant
+import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.delay
 
@@ -104,7 +106,7 @@ fun FocusModeScreen(
         modifier = modifier
             .fillMaxSize()
             .background(
-                color = MaterialTheme.colorScheme.onBackground,
+                color = White,
                 shape = RectangleShape
             )
             .clickable(
@@ -131,9 +133,9 @@ fun FocusModeScreen(
                 size = SIZE_LARGE2,
                 animatedAlpha = animatedAlpha,
                 progress = remainingPercent,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = White,
                 strokeWith = STROKE_MEDIUM,
-                trackColor = MaterialTheme.colorScheme.outlineVariant,
+                trackColor = OutLineVariant,
                 strokeCap = StrokeCap.Round,
                 text = remainingTime,
                 textColor = Color.White,

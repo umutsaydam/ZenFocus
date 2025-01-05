@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +40,10 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.navigation.Route
+import com.umutsaydam.zenfocus.ui.theme.Gray
+import com.umutsaydam.zenfocus.ui.theme.LightGray
+import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import com.umutsaydam.zenfocus.util.safeNavigate
 import kotlinx.coroutines.launch
@@ -98,7 +101,7 @@ fun SettingsScreen(
                 Text(
                     text = currIndex.toString(),
                     fontSize = if (isSelected) 24.sp else 16.sp,
-                    color = if (isSelected) Color.Gray else Color.LightGray,
+                    color = if (isSelected) Gray else LightGray,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
@@ -132,13 +135,13 @@ fun SettingsScreen(
 
     Scaffold(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        containerColor = SurfaceContainerLow,
         topBar = {
             IconWithTopAppBar(
                 title = {
                     Text(
                         stringResource(R.string.settings),
-                        color = MaterialTheme.colorScheme.outline
+                        color = Outline
                     )
                 },
                 navigationIcon = {
@@ -150,7 +153,7 @@ fun SettingsScreen(
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_back),
                             contentDescription = stringResource(R.string.back_to_home),
-                            tint = MaterialTheme.colorScheme.outline
+                            tint = Outline
                         )
                     }
                 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,9 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
+import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
+import com.umutsaydam.zenfocus.ui.theme.Transparent
 
 @Composable
 fun CenterFocusedCarousel(
@@ -65,8 +65,8 @@ fun CenterFocusedCarousel(
                 .width(35.dp)
                 .align(Alignment.CenterStart),
             colorList = listOf(
-                MaterialTheme.colorScheme.surfaceContainerLow,
-                Color.Transparent
+                SurfaceContainerLow,
+                Transparent
             )
         )
 
@@ -76,8 +76,8 @@ fun CenterFocusedCarousel(
                 .width(35.dp)
                 .align(Alignment.CenterEnd),
             colorList = listOf(
-                Color.Transparent,
-                MaterialTheme.colorScheme.surfaceContainerLow
+                Transparent,
+                SurfaceContainerLow
             )
         )
     }

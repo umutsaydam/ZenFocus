@@ -14,13 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
+import com.umutsaydam.zenfocus.ui.theme.Black
 
 @Composable
 fun CustomFab(
     modifier: Modifier = Modifier,
     alignment: Alignment,
     containerColor: Color = FloatingActionButtonDefaults.containerColor,
-    contentColor: Color = Color.Black,
+    contentColor: Color = Black,
     fabIcon: Painter,
     contentDescription: String,
     onClick: () -> Unit

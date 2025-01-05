@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -25,6 +24,8 @@ import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
+import com.umutsaydam.zenfocus.ui.theme.Secondary
+import com.umutsaydam.zenfocus.ui.theme.SecondaryContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,9 +50,9 @@ fun PomodoroControlSlider(
             value = defaultSliderPosition,
             onValueChange = { defaultSliderPosition = it },
             colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colorScheme.secondary,
-                activeTrackColor = MaterialTheme.colorScheme.secondary,
-                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer
+                thumbColor = Secondary,
+                activeTrackColor = Secondary,
+                inactiveTrackColor = SecondaryContainer
             ),
             steps = steps,
             valueRange = valueRange,

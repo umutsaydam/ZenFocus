@@ -8,15 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
+import com.umutsaydam.zenfocus.ui.theme.White
 
 @Composable
 fun LazySoundList(
@@ -44,7 +43,7 @@ fun LazySoundList(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
+                .background(White)
                 .padding(PADDING_SMALL)
                 .align(Alignment.BottomCenter),
             contentAlignment = Alignment.BottomCenter

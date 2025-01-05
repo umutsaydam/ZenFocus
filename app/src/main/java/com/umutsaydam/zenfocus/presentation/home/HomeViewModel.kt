@@ -241,7 +241,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getTasks() {
         viewModelScope.launch {
-            toDoUsesCases.getTasks().collect{ list ->
+            toDoUsesCases.getTasks().collect { list ->
                 _toDoList.value = list
             }
         }
@@ -282,7 +282,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getUserType() {
         viewModelScope.launch {
-            localUserDataStoreCases.readUserType().collectLatest{ type ->
+            localUserDataStoreCases.readUserType().collectLatest { type ->
                 _userType.value = type
                 Log.i("R/T", "_userType.value in viewmodel ${_userType.value}")
             }
@@ -321,12 +321,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun startProductsInApp(){
+    fun startProductsInApp() {
         googleProductsInAppUseCases.startConnection()
 
         viewModelScope.launch {
-            googleProductsInAppUseCases.observePurchaseStateFlow().collect{ purchaseState ->
-                if (purchaseState){
+            googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
+                if (purchaseState) {
                     changeUserTypeAsAdFree()
                 }
             }

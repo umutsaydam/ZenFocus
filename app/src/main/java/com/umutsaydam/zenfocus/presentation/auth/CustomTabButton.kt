@@ -3,15 +3,16 @@ package com.umutsaydam.zenfocus.presentation.auth
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import com.umutsaydam.zenfocus.presentation.Dimens.BORDER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
+import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.Primary
+import com.umutsaydam.zenfocus.ui.theme.Transparent
+import com.umutsaydam.zenfocus.ui.theme.White
 
 @Composable
 fun CustomTabButton(
@@ -22,11 +23,11 @@ fun CustomTabButton(
 ) {
     val buttonShape = RoundedCornerShape(CORNER_SMALL)
     val buttonColors = ButtonDefaults.outlinedButtonColors(
-        containerColor = if (isSelected) MaterialTheme.colorScheme.background else Color.Transparent,
+        containerColor = if (isSelected) White else Transparent,
     )
     val borderStroke = BorderStroke(
         width = BORDER_SMALL,
-        color = MaterialTheme.colorScheme.background
+        color = White
     ).takeIf { isSelected }
 
     OutlinedButton(
@@ -39,7 +40,7 @@ fun CustomTabButton(
     ) {
         Text(
             text = buttonText,
-            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+            color = if (isSelected) Primary else Outline
         )
     }
 }

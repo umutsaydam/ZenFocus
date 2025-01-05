@@ -6,7 +6,6 @@ import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +19,8 @@ import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.NotConnectedMessage
+import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
@@ -29,7 +30,7 @@ fun PolicyScreen(
     policyViewModel: PolicyViewModel = hiltViewModel()
 ) {
     Scaffold(
-        contentColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        contentColor = SurfaceContainerLow,
         topBar = {
             IconWithTopAppBar(
                 navigationIcon = {
@@ -41,7 +42,7 @@ fun PolicyScreen(
                         Icon(
                             painter = painterResource(R.drawable.ic_close),
                             contentDescription = stringResource(R.string.back_to_settings),
-                            tint = MaterialTheme.colorScheme.outline
+                            tint = Outline
                         )
                     }
                 }

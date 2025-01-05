@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -15,12 +14,13 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
+import com.umutsaydam.zenfocus.ui.theme.Outline
 
 @Composable
 fun MenuItemSwitch(
     modifier: Modifier = Modifier,
     menuTitle: String,
-    textColor: Color = MaterialTheme.colorScheme.outline,
+    textColor: Color = Outline,
     onClick: (Boolean) -> Unit,
     isChecked: Boolean = true
 ) {

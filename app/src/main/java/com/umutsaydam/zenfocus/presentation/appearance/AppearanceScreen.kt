@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,6 +53,8 @@ import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.NotConnectedMessage
+import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.launch
 
@@ -93,7 +94,7 @@ fun AppearanceScreen(
 
     Scaffold(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        containerColor = SurfaceContainerLow,
         topBar = {
             IconWithTopAppBar(
                 navigationIcon = {
@@ -105,7 +106,7 @@ fun AppearanceScreen(
                         Icon(
                             painter = painterResource(R.drawable.ic_close),
                             contentDescription = stringResource(R.string.back_to_settings),
-                            tint = MaterialTheme.colorScheme.outline
+                            tint = Outline
                         )
                     }
                 },
@@ -113,7 +114,7 @@ fun AppearanceScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            if (appearanceViewModel.willShowAd()){
+                            if (appearanceViewModel.willShowAd()) {
                                 val adRequest = AdRequest.Builder().build()
                                 RewardedAd.load(
                                     context,
@@ -133,7 +134,7 @@ fun AppearanceScreen(
                                         }
                                     }
                                 )
-                            } else{
+                            } else {
                                 appearanceViewModel.setDefaultTheme(selectedTheme)
                             }
                         }
@@ -141,7 +142,7 @@ fun AppearanceScreen(
                         Icon(
                             painter = painterResource(R.drawable.ic_done),
                             contentDescription = stringResource(R.string.back_to_settings),
-                            tint = MaterialTheme.colorScheme.outline
+                            tint = Outline
                         )
                     }
                 }
@@ -227,9 +228,9 @@ fun AppearanceScreen(
 }
 
 fun calculateImageSize(isTablet: Boolean, isBigger: Boolean): Pair<Dp, Dp> {
-    return if (isTablet){
+    return if (isTablet) {
         if (isBigger) 180.dp to 190.dp else 170.dp to 180.dp
-    }else{
+    } else {
         if (isBigger) 100.dp to 110.dp else 80.dp to 90.dp
     }
 }
