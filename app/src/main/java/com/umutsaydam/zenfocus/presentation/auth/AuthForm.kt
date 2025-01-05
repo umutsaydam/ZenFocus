@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +19,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
+import com.umutsaydam.zenfocus.ui.theme.Black
+import com.umutsaydam.zenfocus.ui.theme.Gray
+import com.umutsaydam.zenfocus.ui.theme.LightGray
+import com.umutsaydam.zenfocus.ui.theme.White
 
 @Composable
 fun AuthForm(
@@ -58,6 +63,12 @@ fun AuthForm(
         modifier = Modifier
             .fillMaxWidth()
             .height(BUTTON_HEIGHT_MEDIUM),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = White,
+            contentColor = Black,
+            disabledContainerColor = LightGray,
+            disabledContentColor = Gray
+        ),
         onClick = {
             email = email.trim()
             password = password.trim()

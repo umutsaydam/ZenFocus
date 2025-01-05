@@ -177,7 +177,8 @@ fun AuthScreen(
                     Text(
                         text = stringResource(R.string.welcome),
                         style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = Black
                         )
                     )
                     Text(

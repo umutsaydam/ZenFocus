@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -14,7 +15,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
+import com.umutsaydam.zenfocus.ui.theme.LightGray
 import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.Primary
 
 @Composable
 fun MenuItemSwitch(
@@ -50,8 +53,13 @@ fun MenuItemSwitch(
                 onCheckedChange = { newState ->
                     onClick(newState)
                 },
-
+                colors = SwitchDefaults.colors().copy(
+                    checkedThumbColor = Primary,
+                    checkedTrackColor = LightGray,
+                    uncheckedThumbColor = LightGray,
+                    uncheckedTrackColor = Primary,
                 )
+            )
         }
     }
 }

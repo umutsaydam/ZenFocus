@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +16,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.umutsaydam.zenfocus.R
+import com.umutsaydam.zenfocus.ui.theme.LightBackground
 import com.umutsaydam.zenfocus.ui.theme.LightGray
 
 @Composable
 fun NotConnectedMessage(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(LightBackground),
         contentAlignment = Alignment.Center
     ) {
         Column(

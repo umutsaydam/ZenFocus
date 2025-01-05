@@ -19,7 +19,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
+import com.umutsaydam.zenfocus.ui.theme.Black
 import com.umutsaydam.zenfocus.ui.theme.Gray
+import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.Transparent
 
 @Composable
@@ -30,6 +32,8 @@ fun FormTextField(
     placeHolder: String,
     keyboardOptions: KeyboardOptions,
     colors: TextFieldColors = TextFieldDefaults.colors(
+        focusedTextColor = Black,
+        unfocusedTextColor = Black,
         focusedIndicatorColor = Transparent,
         unfocusedIndicatorColor = Transparent,
         focusedContainerColor = Transparent,
@@ -37,7 +41,8 @@ fun FormTextField(
     )
 ) {
     Text(
-        text = formTitle
+        text = formTitle,
+        color = Black
     )
     TextField(
         modifier = Modifier
@@ -49,7 +54,12 @@ fun FormTextField(
             ),
         value = value,
         onValueChange = { onValueChanged(it) },
-        placeholder = { Text(placeHolder) },
+        placeholder = {
+            Text(
+                text = placeHolder,
+                color = Outline
+            )
+        },
         visualTransformation = if (keyboardOptions.keyboardType == KeyboardType.Password) {
             PasswordVisualTransformation()
         } else {
