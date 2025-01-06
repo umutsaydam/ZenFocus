@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -43,12 +45,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.umutsaydam.zenfocus.BuildConfig
 import com.umutsaydam.zenfocus.R
+import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
@@ -57,6 +55,7 @@ import com.umutsaydam.zenfocus.presentation.common.NotConnectedMessage
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,14 +69,14 @@ fun AppearanceScreen(
     val coroutine = rememberCoroutineScope()
     var selectedTheme by remember { mutableStateOf(appearanceViewModel.defaultTheme.value) }
     val context = LocalContext.current
-    var rewardedAd: RewardedAd? by remember { mutableStateOf(null) }
+    val rewardedAd by appearanceViewModel.rewardedAd.collectAsState()
     val isTablet = LocalConfiguration.current.screenWidthDp.dp > 600.dp
     val themeSpace = if (isTablet) 380.dp else 80.dp
     val uiMessage by appearanceViewModel.uiMessage.collectAsState()
 
     LaunchedEffect(uiMessage) {
         uiMessage?.let { message ->
-            Toast.makeText(context,context.getString(message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -123,25 +122,7 @@ fun AppearanceScreen(
                     IconButton(
                         onClick = {
                             if (appearanceViewModel.willShowAd()) {
-                                val adRequest = AdRequest.Builder().build()
-                                RewardedAd.load(
-                                    context,
-                                    BuildConfig.AD_REWARD_THEME_UNIT_ID,
-                                    adRequest,
-                                    object : RewardedAdLoadCallback() {
-                                        override fun onAdLoaded(p0: RewardedAd) {
-                                            super.onAdLoaded(p0)
-                                            Log.i("A/D", "Reward Ad loaded")
-                                            rewardedAd = p0
-                                        }
-
-                                        override fun onAdFailedToLoad(p0: LoadAdError) {
-                                            super.onAdFailedToLoad(p0)
-                                            Log.i("A/D", "Reward Ad failed to load")
-                                            rewardedAd = null
-                                        }
-                                    }
-                                )
+                                appearanceViewModel.showRewardedAd()
                             } else {
                                 appearanceViewModel.setDefaultTheme(selectedTheme)
                             }
@@ -172,62 +153,19 @@ fun AppearanceScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM)
             ) {
-                if (selectedTheme != null) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxSize(0.7f)
-                            .clip(RoundedCornerShape(CORNER_MEDIUM)),
-                        painter = rememberAsyncImagePainter(selectedTheme!!.themeUrl),
-                        contentDescription = stringResource(R.string.selected_theme),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Icon(
-                        modifier = Modifier
-                            .width(205.dp)
-                            .height(375.dp)
-                            .clip(RoundedCornerShape(CORNER_MEDIUM)),
-                        painter = painterResource(R.drawable.ic_image),
-                        contentDescription = stringResource(R.string.selected_theme),
-                        tint = Color.LightGray
-                    )
-                }
+                ThemeImage(selectedTheme)
                 CenterFocusedCarousel(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     listOfTheme = themeList.value,
                     gridState = gridState,
-                    content = { firstVisibleIndex, currentIndex ->
-                        val theme = themeList.value[currentIndex]
-
-                        if (theme != null) {
-                            val isBigger = firstVisibleIndex + 1 == currentIndex
-                            Log.i("R/T", "Have to be loaded image: $theme")
-                            val (imageWidth, imageHeight) = calculateImageSize(isTablet, isBigger)
-                            AsyncImage(
-                                modifier = Modifier
-                                    .width(imageWidth)
-                                    .height(imageHeight)
-                                    .padding(if (isBigger) 0.dp else 5.dp)
-                                    .clip(RoundedCornerShape(CORNER_MEDIUM))
-                                    .clickable {
-                                        coroutine.launch {
-                                            gridState.animateScrollToItem(
-                                                index = maxOf(0, currentIndex - 1)
-                                            )
-                                        }
-                                    },
-                                model = theme.themeUrl,
-                                contentDescription = theme.themeName,
-                                contentScale = ContentScale.Crop
-                            )
-                            if (isBigger) {
-                                selectedTheme = theme
-                            }
-                        } else {
-                            Spacer(modifier = Modifier.width(themeSpace))
-                        }
+                    isTablet = isTablet,
+                    themeSpace = themeSpace,
+                    coroutineScope = coroutine,
+                    onThemeSelected = { theme ->
+                        selectedTheme = theme
                     }
                 )
+
             }
         } else {
             NotConnectedMessage()
@@ -235,7 +173,76 @@ fun AppearanceScreen(
     }
 }
 
-fun calculateImageSize(isTablet: Boolean, isBigger: Boolean): Pair<Dp, Dp> {
+@Composable
+fun ThemeImage(selectedTheme: ThemeInfo?) {
+    if (selectedTheme != null) {
+        Image(
+            modifier = Modifier
+                .fillMaxSize(0.7f)
+                .clip(RoundedCornerShape(16.dp)),
+            painter = rememberAsyncImagePainter(selectedTheme.themeUrl),
+            contentDescription = "Selected Theme",
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Icon(
+            modifier = Modifier.size(200.dp).clip(RoundedCornerShape(16.dp)),
+            painter = painterResource(R.drawable.ic_image),
+            contentDescription = "Default Theme",
+            tint = Color.LightGray
+        )
+    }
+}
+
+@Composable
+fun CenterFocusedCarousel(
+    modifier: Modifier = Modifier,
+    listOfTheme: List<ThemeInfo?>,
+    gridState: LazyGridState,
+    isTablet: Boolean,
+    themeSpace: Dp,
+    coroutineScope: CoroutineScope,
+    onThemeSelected: (ThemeInfo) -> Unit
+) {
+    CenterFocusedCarousel(
+        modifier = modifier,
+        listOfTheme = listOfTheme,
+        gridState = gridState,
+        content = { firstVisibleIndex, currentIndex ->
+            val theme = listOfTheme[currentIndex]
+
+            if (theme != null) {
+                val isBigger = firstVisibleIndex + 1 == currentIndex
+                Log.i("R/T", "Have to be loaded image: $theme")
+                val (imageWidth, imageHeight) = calculateImageSize(isTablet, isBigger)
+                AsyncImage(
+                    modifier = Modifier
+                        .width(imageWidth)
+                        .height(imageHeight)
+                        .padding(if (isBigger) 0.dp else 5.dp)
+                        .clip(RoundedCornerShape(CORNER_MEDIUM))
+                        .clickable {
+                            coroutineScope.launch {
+                                gridState.animateScrollToItem(
+                                    index = maxOf(0, currentIndex - 1)
+                                )
+                            }
+                        },
+                    model = theme.themeUrl,
+                    contentDescription = theme.themeName,
+                    contentScale = ContentScale.Crop
+                )
+                if (isBigger) {
+                    onThemeSelected(theme)
+                }
+            } else {
+                Spacer(modifier = Modifier.width(themeSpace))
+            }
+        }
+    )
+}
+
+private fun calculateImageSize(isTablet: Boolean, isBigger: Boolean): Pair<Dp, Dp> {
     return if (isTablet) {
         if (isBigger) 180.dp to 190.dp else 170.dp to 180.dp
     } else {

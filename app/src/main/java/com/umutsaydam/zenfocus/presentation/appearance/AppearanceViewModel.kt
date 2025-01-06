@@ -3,6 +3,7 @@ package com.umutsaydam.zenfocus.presentation.appearance
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.ads.rewarded.RewardedAd
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.data.remote.dto.APIResponse
 import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
@@ -13,6 +14,7 @@ import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 import com.umutsaydam.zenfocus.util.FileNameFromUrl
 import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.UserTypeEnum
+import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +27,8 @@ class AppearanceViewModel @Inject constructor(
     private val awsStorageCases: AwsStorageCases,
     private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val themeRepository: ThemeRepository,
-    private val networkCheckerUseCases: NetworkCheckerUseCases
+    private val networkCheckerUseCases: NetworkCheckerUseCases,
+    private val googleAddUseCases: GoogleAdUseCases
 ) : ViewModel() {
     private val _userType = MutableStateFlow<String?>(null)
     private val userType: StateFlow<String?> = _userType
@@ -38,6 +41,9 @@ class AppearanceViewModel @Inject constructor(
 
     private val _defaultTheme = MutableStateFlow<ThemeInfo?>(null)
     val defaultTheme: StateFlow<ThemeInfo?> = _defaultTheme
+
+    private val _rewardedAd = MutableStateFlow<RewardedAd?>(null)
+    val rewardedAd: StateFlow<RewardedAd?> = _rewardedAd
 
     init {
         getThemeList()
@@ -125,5 +131,11 @@ class AppearanceViewModel @Inject constructor(
 
     fun willShowAd(): Boolean {
         return _userType.value != UserTypeEnum.AD_FREE_USER.type
+    }
+
+    fun showRewardedAd() {
+        viewModelScope.launch {
+            _rewardedAd.value = googleAddUseCases.showRewardedAd()
+        }
     }
 }

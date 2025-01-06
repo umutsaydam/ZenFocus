@@ -3,8 +3,11 @@ package com.umutsaydam.zenfocus.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
+import com.umutsaydam.zenfocus.domain.model.GoogleBannerAdState
 import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.domain.model.UserTypeEnum
@@ -14,6 +17,7 @@ import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
 import com.umutsaydam.zenfocus.util.Constants.NONE
@@ -34,7 +38,8 @@ class HomeViewModel @Inject constructor(
     private val focusSoundUseCases: FocusSoundUseCases,
     private val checkerUseCases: NetworkCheckerUseCases,
     private val authCases: AwsAuthCases,
-    private val googleProductsInAppUseCases: GoogleProductsInAppUseCases
+    private val googleProductsInAppUseCases: GoogleProductsInAppUseCases,
+    private val googleAdUseCases: GoogleAdUseCases
 ) : ViewModel() {
     private val _userId = MutableStateFlow<String?>(null)
 
@@ -70,6 +75,9 @@ class HomeViewModel @Inject constructor(
 
     private val _uiMessage = MutableStateFlow<Int?>(null)
     val uiMessage: StateFlow<Int?> = _uiMessage
+
+    private val _adState = MutableStateFlow(GoogleBannerAdState())
+    val adState: StateFlow<GoogleBannerAdState> = _adState
 
     init {
         getTasks()
@@ -319,6 +327,18 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun showBannerAd(adSize: AdSize): AdView {
+       return googleAdUseCases.showBannerAd(
+            adSize = adSize,
+            onAdLoaded = { isLoaded ->
+                _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
+            },
+            onFirstAdRequested = { isFirstAdRequested ->
+                _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
+            }
+        )
     }
 
     fun startProductsInApp() {

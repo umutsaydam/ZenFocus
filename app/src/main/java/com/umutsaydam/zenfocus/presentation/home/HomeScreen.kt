@@ -46,12 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.LoadAdError
-import com.umutsaydam.zenfocus.BuildConfig
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
@@ -80,8 +75,7 @@ fun HomeScreen(
     var showDeleteTaskDialog by remember { mutableStateOf(false) }
     var selectedTaskModel: TaskModel? = null
     val context = LocalContext.current
-    var isFirstAdRequested by remember { mutableStateOf(false) }
-    var isAdLoaded by remember { mutableStateOf(false) }
+    val adState by homeViewModel.adState.collectAsState()
     val adSize: AdSize = getAdSize(context)
     val lifecycleOwner = LocalLifecycleOwner.current
     val uiMessage by homeViewModel.uiMessage.collectAsState()
@@ -274,7 +268,7 @@ fun HomeScreen(
             }
 
             Box(
-                modifier = if (isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
+                modifier = if (adState.isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 CustomFab(
@@ -288,7 +282,7 @@ fun HomeScreen(
                 )
             }
 
-            if (homeViewModel.isNetworkConnected() && homeViewModel.willShowAd() && (isAdLoaded || !isFirstAdRequested)) {
+            if (homeViewModel.isNetworkConnected() && homeViewModel.willShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -296,52 +290,8 @@ fun HomeScreen(
                 ) {
                     AndroidView(
                         modifier = Modifier.fillMaxWidth(),
-                        factory = { context ->
-                            AdView(context).apply {
-                                setAdSize(adSize)
-                                adUnitId = BuildConfig.AD_BANNER_UNIT_ID
-                                loadAd(AdRequest.Builder().build())
-
-                                adListener = object : AdListener() {
-                                    override fun onAdClicked() {
-                                        Log.i("A/D", "onAdClicked")
-                                    }
-
-                                    override fun onAdClosed() {
-                                        super.onAdClosed()
-                                        Log.i("A/D", "onAdClosed")
-                                    }
-
-                                    override fun onAdFailedToLoad(p0: LoadAdError) {
-                                        super.onAdFailedToLoad(p0)
-                                        Log.i("A/D", "onAdFailedToLoad $p0")
-                                        isAdLoaded = false
-                                        isFirstAdRequested = true
-                                    }
-
-                                    override fun onAdImpression() {
-                                        super.onAdImpression()
-                                        Log.i("A/D", "onAdImpression")
-                                    }
-
-                                    override fun onAdLoaded() {
-                                        super.onAdLoaded()
-                                        Log.i("A/D", "onAdLoaded")
-                                        isAdLoaded = true
-                                        isFirstAdRequested = true
-                                    }
-
-                                    override fun onAdOpened() {
-                                        super.onAdOpened()
-                                        Log.i("A/D", "onAdOpened")
-                                    }
-
-                                    override fun onAdSwipeGestureClicked() {
-                                        super.onAdSwipeGestureClicked()
-                                        Log.i("A/D", "onAdSwipeGestureClicked")
-                                    }
-                                }
-                            }
+                        factory = {
+                            homeViewModel.showBannerAd(adSize)
                         }
                     )
                 }
