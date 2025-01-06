@@ -59,6 +59,11 @@
     <string name="became_ad_free_user">Congratulations, you are now an ad-free user!</string>
     <string name="error_occurred_ad_free">An error occurred, please try again later or contact us</string>
     <string name="password_length">Password minimum length is 8 character</string>
+    <string name="incorrect_email_or_password">Incorrect email or password</string>
+    <string name="enter_confirm_code">Enter your confirm code</string>
+    <string name="code_mismatch">Confirmation code entered is not correct</string>
+    <string name="limit_exceeded">Code submission limit exceeded. Please try again later.</string>
+    <string name="account_verified">Your account verified.</string>
 
     <string-array name="app_langs">
         <item>Turkish-tr</item>

@@ -79,6 +79,7 @@ import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserGetUserId
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserSignIn
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserSignUp
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsUserSignUpConfirm
+import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsResendConfirmationCode
 import com.umutsaydam.zenfocus.domain.usecases.remote.storageCases.DownloadSelectedTheme
 import com.umutsaydam.zenfocus.domain.usecases.remote.storageCases.ReadThemeList
 import com.umutsaydam.zenfocus.domain.usecases.tasks.cases.DeleteTask
@@ -169,6 +170,7 @@ object AppModule {
             userSignIn = AwsUserSignIn(awsAuthRepository),
             userSignUp = AwsUserSignUp(awsAuthRepository),
             userSignUpConfirm = AwsUserSignUpConfirm(awsAuthRepository),
+            awsResendConfirmationCode = AwsResendConfirmationCode(awsAuthRepository),
             userGetId = AwsUserGetUserId(awsAuthRepository),
             readUserInfo = AwsReadUserInfo(awsAuthRepository),
             updateUserInfo = AwsUpdateUserInfo(awsAuthRepository),

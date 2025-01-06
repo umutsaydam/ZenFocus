@@ -15,6 +15,8 @@ interface AwsAuthRepository {
 
     suspend fun confirmAccount(email: String, confirmCode: String): AwsAuthSignUpResult
 
+    suspend fun resendConfirmationCode(email: String): AwsAuthSignUpResult
+
     suspend fun getCurrentUserId(): Resource<String>
 
     suspend fun signUpOrInWithGoogle(activity: Activity): Resource<String>

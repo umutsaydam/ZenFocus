@@ -26,6 +26,10 @@ class AwsAuthRepositoryImpl @Inject constructor(
         return awsAuthService.confirmAccount(email, confirmCode)
     }
 
+    override suspend fun resendConfirmationCode(email: String): AwsAuthSignUpResult {
+        return awsAuthService.resendConfirmationCode(email)
+    }
+
     override suspend fun getCurrentUserId(): Resource<String> {
         return awsAuthService.getCurrentUserId()
     }

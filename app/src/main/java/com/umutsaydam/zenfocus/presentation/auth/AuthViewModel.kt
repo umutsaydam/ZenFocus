@@ -4,6 +4,8 @@ import android.app.Activity
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amplifyframework.auth.cognito.exceptions.service.UserNotConfirmedException
+import com.amplifyframework.auth.exceptions.NotAuthorizedException
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
@@ -33,9 +35,6 @@ class AuthViewModel @Inject constructor(
 
     private val _userId: MutableStateFlow<String?> = MutableStateFlow(null)
 
-    private val _errorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
-
     private val _uiMessage = MutableStateFlow<Int?>(null)
     val uiMessage: StateFlow<Int?> = _uiMessage
 
@@ -56,17 +55,29 @@ class AuthViewModel @Inject constructor(
 
                 is AwsAuthSignInResult.ConfirmSignIn -> {
                     _userId.value = null
-                    _signInStep.value = AuthSignInStep.CONFIRM_SIGN_UP
-                    _uiMessage.value = R.string.verify_account
                     Log.i("R/T", "confirm $result")
+                    _signUpStep.value = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
                 }
 
                 is AwsAuthSignInResult.Error -> {
                     Log.i("R/T", "error : $result")
                     _userId.value = null
-                    _signInStep.value = null
-                    _uiMessage.value = R.string.error_while_signing_in
-                    _errorMessage.value = result.exception.message
+
+                    when (result.exception) {
+                        is NotAuthorizedException -> {
+                            _uiMessage.value = R.string.incorrect_email_or_password
+                        }
+
+                        is UserNotConfirmedException -> {
+                            _uiMessage.value = R.string.confirm_account
+                            _signInStep.value = AuthSignInStep.CONFIRM_SIGN_UP
+                        }
+
+                        else -> {
+                            _uiMessage.value = R.string.error_while_signing_in
+                            _signInStep.value = null
+                        }
+                    }
                 }
             }
         }
@@ -90,7 +101,6 @@ class AuthViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     _userId.value = null
-                    _errorMessage.value = result.message
                 }
             }
         }
@@ -150,7 +160,10 @@ class AuthViewModel @Inject constructor(
                 is AwsAuthSignUpResult.Error -> {
                     _signUpStep.value = null
                     _uiMessage.value = R.string.error_while_sign_up
-                    _errorMessage.value = result.exception.message
+                }
+
+                is AwsAuthSignUpResult.ResentCode -> {
+                    //TODO: resend code
                 }
             }
         }

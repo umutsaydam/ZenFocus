@@ -108,12 +108,12 @@ fun AuthScreen(
                     context.getString(R.string.confirm_account),
                     Toast.LENGTH_SHORT
                 ).show()
-                val confirmRoute = "AccountConfirm/$email"
+                val confirmRoute = "AccountConfirm/$email/true"
                 navController.safeNavigate(confirmRoute)
             }
 
             else -> {
-                Log.i("R/T", "${signInStep.value} : Error: ${authViewModel.errorMessage.value}")
+                Log.i("R/T", "${signInStep.value} : Error: ")
             }
         }
     }
@@ -126,7 +126,8 @@ fun AuthScreen(
                     context.getString(R.string.confirm_account),
                     Toast.LENGTH_SHORT
                 ).show()
-                val confirmRoute = "AccountConfirm/$email"
+                val confirmRoute = "AccountConfirm/$email/false"
+                Log.i("R/T", "----- $email")
                 navController.safeNavigate(confirmRoute)
             }
 
@@ -141,9 +142,7 @@ fun AuthScreen(
             }
 
             null -> {
-                if (authViewModel.errorMessage.value.isNullOrEmpty()) {
                     Log.i("R/T", "error message is null")
-                }
             }
         }
     }

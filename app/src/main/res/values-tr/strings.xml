@@ -57,4 +57,9 @@
     <string name="became_ad_free_user">Tebrikler, reklamsız kullanıcı oldun!</string>
     <string name="error_occurred_ad_free">Bir hata oluştu, lütfen daha sonra tekrar deneyin ya da bizimle iletişime geçin</string>
     <string name="password_length">Şifre karakter uzunluğu minimum 8 karakter</string>
+    <string name="incorrect_email_or_password">Email ya da şifre yanlış</string>
+    <string name="enter_confirm_code">Doğrulama kodunuzu giriniz</string>
+    <string name="code_mismatch">Yanlış doğrulama kodu</string>
+    <string name="limit_exceeded">Kod gönderim hakkı aşıldı. Lütfen daha sonra tekrar deneyin.</string>
+    <string name="account_verified">Hesabınız doğrulandı.</string>
 </resources>

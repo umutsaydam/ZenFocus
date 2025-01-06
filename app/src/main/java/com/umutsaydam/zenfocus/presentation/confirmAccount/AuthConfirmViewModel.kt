@@ -1,8 +1,10 @@
-package com.umutsaydam.zenfocus.presentation.auth
+package com.umutsaydam.zenfocus.presentation.confirmAccount
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amplifyframework.auth.cognito.exceptions.service.CodeMismatchException
+import com.amplifyframework.auth.cognito.exceptions.service.LimitExceededException
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
@@ -33,20 +35,44 @@ class AuthConfirmViewModel @Inject constructor(
         viewModelScope.launch {
             val result = awsAuthCases.userSignUpConfirm(email, confirmCode)
             Log.i("R/T", "in viewmodel: $result")
-            when (result) {
-                is AwsAuthSignUpResult.IsSignedUp -> {
-                    _userConfirmState.value = AuthSignUpStep.DONE
-                    _uiMessage.value = R.string.signed_up
-                }
+            confirmationResultHandle(result)
+        }
+    }
 
-                is AwsAuthSignUpResult.Error -> {
-                    _userConfirmState.value = null
-                    _uiMessage.value = R.string.error_while_sign_up
-                }
+    fun resendConfirmationCode(email: String) {
+        viewModelScope.launch {
+            val result = awsAuthCases.awsResendConfirmationCode(email)
+            confirmationResultHandle(result)
+        }
+    }
 
-                else -> {
-                    _userConfirmState.value = null
+    private fun confirmationResultHandle(result: AwsAuthSignUpResult) {
+        when (result) {
+            is AwsAuthSignUpResult.IsSignedUp -> {
+                _userConfirmState.value = AuthSignUpStep.DONE
+                _uiMessage.value = R.string.verify_account
+            }
+
+            is AwsAuthSignUpResult.Error -> {
+                _userConfirmState.value = null
+
+                when (result.exception) {
+                    is CodeMismatchException -> {
+                        _uiMessage.value = R.string.code_mismatch
+                    }
+
+                    is LimitExceededException -> {
+                        _uiMessage.value = R.string.limit_exceeded
+                    }
+
+                    else -> {
+                        _uiMessage.value = R.string.error_while_sign_up
+                    }
                 }
+            }
+
+            else -> {
+                _userConfirmState.value = null
             }
         }
     }

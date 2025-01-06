@@ -158,6 +158,27 @@ class AwsAuthServiceImpl : AwsAuthService {
         }
     }
 
+    override suspend fun resendConfirmationCode(email: String): AwsAuthSignUpResult {
+        return suspendCancellableCoroutine { continuation ->
+            Amplify.Auth.resendSignUpCode(
+                email,
+                { result ->
+                    Log.d("R/T", "Resend result: $result")
+
+                    continuation.resume(AwsAuthSignUpResult.ResentCode(result.destination)) { cause, _, _ ->
+                        Log.e("R/T", "Coroutine cancelled success: $cause")
+                    }
+                },
+                { error ->
+                    Log.i("R/T", "$error")
+                    continuation.resume(AwsAuthSignUpResult.Error(error)) { cause, _, _ ->
+                        Log.e("R/T", "Coroutine cancelled error : $cause")
+                    }
+                }
+            )
+        }
+    }
+
     override suspend fun getCurrentUserId(): Resource<String> {
         return suspendCancellableCoroutine { continuation ->
             Amplify.Auth.getCurrentUser(

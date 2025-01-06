@@ -1,9 +1,10 @@
-package com.umutsaydam.zenfocus.presentation.auth
+package com.umutsaydam.zenfocus.presentation.confirmAccount
 
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,43 +26,58 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
+import com.umutsaydam.zenfocus.presentation.auth.FormTextField
+import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
 fun AccountConfirmScreen(
     modifier: Modifier = Modifier,
     email: String,
+    shouldResend: Boolean,
     navController: NavHostController,
     authConfirmViewModel: AuthConfirmViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val networkErrorMessage = stringResource(R.string.no_connection)
     var confirmCode by remember { mutableStateOf("") }
-    Log.i("R/T", email)
+    val userConfirmState by authConfirmViewModel.userConfirmState.collectAsState()
     val uiMessage by authConfirmViewModel.uiMessage.collectAsState()
-
+    Log.i("R/T", "****----- $shouldResend")
     LaunchedEffect(uiMessage) {
         uiMessage?.let { message ->
-            Toast.makeText(context,context.getString(message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
         }
     }
+
+    LaunchedEffect(userConfirmState) {
+        if (userConfirmState == AuthSignUpStep.DONE) {
+            navController.popBackStackOrIgnore()
+        }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        authConfirmViewModel.resendConfirmationCode(email)
+    }
+
     Column(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         FormTextField(
-            formTitle = stringResource(R.string.email),
+            formTitle = stringResource(R.string.verify_account),
             value = confirmCode,
             onValueChanged = {
                 confirmCode = it
             },
-            placeHolder = stringResource(R.string.enter_email),
+            placeHolder = stringResource(R.string.enter_confirm_code),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
-                keyboardType = KeyboardType.Email
+                keyboardType = KeyboardType.Number
             )
         )
 
@@ -77,7 +93,7 @@ fun AccountConfirmScreen(
                 }
             },
             shape = RoundedCornerShape(CORNER_SMALL),
-            enabled = confirmCode.length >= 4
+            enabled = confirmCode.length >= 6
         ) {
             Text(
                 text = stringResource(R.string.confirm)

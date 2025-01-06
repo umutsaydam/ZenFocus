@@ -16,7 +16,10 @@ sealed class Route(
     data object Policy : Route("Policy")
     data object Settings : Route("Settings")
     data object AccountConfirm : Route(
-        route = "AccountConfirm/{email}",
-        arguments = listOf(navArgument("email") { type = NavType.StringType })
+        route = "AccountConfirm/{email}/{shouldResend}",
+        arguments = listOf(
+            navArgument("email") { type = NavType.StringType },
+            navArgument("shouldResend") { type = NavType.BoolType },
+        )
     )
 }

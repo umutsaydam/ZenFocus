@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.umutsaydam.zenfocus.presentation.appLanguage.AppLanguageScreen
 import com.umutsaydam.zenfocus.presentation.appearance.AppearanceScreen
-import com.umutsaydam.zenfocus.presentation.auth.AccountConfirmScreen
+import com.umutsaydam.zenfocus.presentation.confirmAccount.AccountConfirmScreen
 import com.umutsaydam.zenfocus.presentation.auth.AuthScreen
 import com.umutsaydam.zenfocus.presentation.focusMode.FocusModeScreen
 import com.umutsaydam.zenfocus.presentation.home.HomeScreen
@@ -135,9 +135,11 @@ fun MainNavHost() {
             }
         ) { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email")
+            val shouldResend = backStackEntry.arguments?.getBoolean("shouldResend")
             Log.i("R/T", "$email")
-            if (!email.isNullOrEmpty()) {
-                AccountConfirmScreen(email = email, navController = navController)
+            Log.i("R/T", "$shouldResend")
+            if (!email.isNullOrEmpty() && shouldResend != null) {
+                AccountConfirmScreen(email = email, shouldResend = shouldResend, navController = navController)
             }
         }
     }

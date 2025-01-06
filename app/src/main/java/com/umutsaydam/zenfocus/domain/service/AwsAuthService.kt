@@ -13,6 +13,8 @@ interface AwsAuthService {
 
     suspend fun confirmAccount(email: String, confirmCode: String): AwsAuthSignUpResult
 
+    suspend fun resendConfirmationCode(email: String): AwsAuthSignUpResult
+
     suspend fun getCurrentUserId(): Resource<String>
 
     suspend fun getUserInfo(userId: String): Resource<UserInfo>
