@@ -2,13 +2,10 @@ package com.umutsaydam.zenfocus
 
 import android.app.Activity
 import android.app.LocaleManager
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.LocaleList
 import android.util.Log
-import android.view.WindowInsetsController
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,14 +13,12 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.amplifyframework.AmplifyException
 import com.amplifyframework.api.aws.AWSApiPlugin
@@ -43,13 +38,19 @@ class MainActivity(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        installSplashScreen()
+        val splash = installSplashScreen()
+
         actionBar?.hide()
         enableEdgeToEdge()
         initAmplify()
         initGoogleAds(this)
         setContent {
             ZenFocusTheme {
+                var isLoading by remember { mutableStateOf(true) }
+                splash.setKeepOnScreenCondition {
+                    isLoading
+                }
+
                 val mainActivityViewModel: MainActivityViewModel = hiltViewModel()
                 mainActivityViewModel.startInitialSetupIfFirstEntry(Locale.getDefault())
                 val appLang by mainActivityViewModel.defaultAppLang.collectAsState()
@@ -70,6 +71,7 @@ class MainActivity(
                                 )
                             )
                         }
+                        isLoading = false
                     }
                 }
                 MainNavHost()
