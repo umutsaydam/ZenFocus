@@ -19,3 +19,31 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Hilt
+-keep class dagger.hilt.** { *; }
+-keep class * implements dagger.hilt.internal.GeneratedComponent { *; }
+
+# Room
+-keep class androidx.room.** { *; }
+-keep class * extends androidx.room.RoomDatabase { *; }
+-keep @androidx.room.** class * { *; }
+-keepclasseswithmembernames class * {
+    @androidx.room.Dao <methods>;
+}
+
+# Amplify
+-keep class com.amplifyframework.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+-dontwarn com.amazonaws.mobileconnectors.**
+-dontwarn org.apache.commons.logging.**
+
+# AWS SDK
+-keep class com.amazonaws.** { *; }
+-keepattributes Signature
+-dontwarn com.amazonaws.**
+
+# Google Play (Ads, Billing)
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
