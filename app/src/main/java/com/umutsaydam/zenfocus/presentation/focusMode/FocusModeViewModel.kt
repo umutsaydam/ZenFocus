@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.focusMode
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
@@ -15,6 +14,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class FocusModeUiState(
+    val remainingTime: String = "00:00",
+    val remainingPercent: Float = 0f
+)
+
 @HiltViewModel
 class FocusModeViewModel @Inject constructor(
     private val localUserDataStoreCases: LocalUserDataStoreCases,
@@ -22,26 +26,23 @@ class FocusModeViewModel @Inject constructor(
     private val pomodoroManagerUseCase: PomodoroManagerUseCase,
     private val pomodoroServiceUseCases: PomodoroServiceUseCases,
 ) : ViewModel() {
+    private val _uiState = MutableStateFlow(FocusModeUiState())
+    val uiState: StateFlow<FocusModeUiState> = _uiState
+
     private val _defaultTheme = MutableStateFlow<Bitmap?>(null)
+
     val defaultTheme: StateFlow<Bitmap?> = _defaultTheme
-
-    private val _remainingTime = MutableStateFlow<String>("00:00")
-    val remainingTime: StateFlow<String> = _remainingTime
-
-    private val _remainingPercent = MutableStateFlow<Float>(0f)
-    val remainingPercent: StateFlow<Float> = _remainingPercent
 
     init {
         getDefaultThemeName()
     }
 
+    private fun updateUiState(update: FocusModeUiState.() -> FocusModeUiState) {
+        _uiState.value = _uiState.value.update()
+    }
+
     fun setTimer() {
-        Log.i(
-            "R/T",
-            "PomodoroForegroundService.isServiceRunning: ${pomodoroServiceUseCases.isRunning()}"
-        )
         if (pomodoroServiceUseCases.isRunning()) {
-            Log.i("R/T", "Service was stopped. Switching normal timer...")
             stopPomodoroService()
         }
         getRemainingTime()
@@ -55,7 +56,7 @@ class FocusModeViewModel @Inject constructor(
     private fun getRemainingTime() {
         viewModelScope.launch {
             pomodoroManagerUseCase.getRemainingTimeAsTextFormat().collect { currRemainingTime ->
-                _remainingTime.value = currRemainingTime
+                updateUiState { copy(remainingTime = currRemainingTime) }
             }
         }
     }
@@ -63,7 +64,7 @@ class FocusModeViewModel @Inject constructor(
     private fun getRemainingPercent() {
         viewModelScope.launch {
             pomodoroManagerUseCase.getRemainingPercent().collect { currRemainingPercent ->
-                _remainingPercent.value = currRemainingPercent
+                updateUiState { copy(remainingPercent = currRemainingPercent) }
             }
         }
     }
@@ -84,7 +85,6 @@ class FocusModeViewModel @Inject constructor(
         viewModelScope.launch {
             val defaultThemeName = localUserDataStoreCases.readTheme()
             defaultThemeName.collect { themeName ->
-                Log.i("R/T", "theme: $themeName")
                 getTheme(themeName)
             }
         }

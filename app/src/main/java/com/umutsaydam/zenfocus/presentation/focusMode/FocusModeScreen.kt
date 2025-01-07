@@ -1,7 +1,5 @@
 package com.umutsaydam.zenfocus.presentation.focusMode
 
-import android.app.Activity
-import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -23,12 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -38,7 +34,6 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.home.CircularProgressWithText
-import com.umutsaydam.zenfocus.ui.theme.OutLineVariant
 import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.delay
@@ -50,8 +45,7 @@ fun FocusModeScreen(
     focusModeViewModel: FocusModeViewModel = hiltViewModel()
 ) {
     val defaultTheme by focusModeViewModel.defaultTheme.collectAsState()
-    val remainingTime by focusModeViewModel.remainingTime.collectAsState()
-    val remainingPercent by focusModeViewModel.remainingPercent.collectAsState()
+    val uiState by focusModeViewModel.uiState.collectAsState()
     var isBackPressed by remember { mutableStateOf(false) }
 
     BackHandler(
@@ -132,26 +126,12 @@ fun FocusModeScreen(
             CircularProgressWithText(
                 size = SIZE_LARGE2,
                 animatedAlpha = animatedAlpha,
-                progress = remainingPercent,
+                progress = uiState.remainingPercent,
                 strokeWith = STROKE_MEDIUM,
                 strokeCap = StrokeCap.Round,
-                text = remainingTime,
+                text = uiState.remainingTime,
                 style = MaterialTheme.typography.titleLarge
             )
-        }
-    }
-}
-
-@Composable
-fun KeepScreenOn() {
-    val context = LocalContext.current
-    val activity = context as? Activity
-
-    DisposableEffect(Unit) {
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        onDispose {
-            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 }
