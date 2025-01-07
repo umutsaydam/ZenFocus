@@ -1,6 +1,5 @@
 package com.umutsaydam.zenfocus.presentation.confirmAccount
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -48,7 +47,6 @@ fun AccountConfirmScreen(
     var confirmCode by remember { mutableStateOf("") }
     val userConfirmState by authConfirmViewModel.userConfirmState.collectAsState()
     val uiMessage by authConfirmViewModel.uiMessage.collectAsState()
-    Log.i("R/T", "****----- $shouldResend")
     LaunchedEffect(uiMessage) {
         uiMessage?.let { message ->
             Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
@@ -62,7 +60,9 @@ fun AccountConfirmScreen(
     }
 
     LaunchedEffect(key1 = Unit) {
-        authConfirmViewModel.resendConfirmationCode(email)
+        if (shouldResend){
+            authConfirmViewModel.resendConfirmationCode(email)
+        }
     }
 
     Column(

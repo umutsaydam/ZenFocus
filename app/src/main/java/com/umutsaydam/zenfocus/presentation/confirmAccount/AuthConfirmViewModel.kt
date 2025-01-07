@@ -1,6 +1,5 @@
 package com.umutsaydam.zenfocus.presentation.confirmAccount
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.cognito.exceptions.service.CodeMismatchException
@@ -34,7 +33,6 @@ class AuthConfirmViewModel @Inject constructor(
     fun accountConfirm(email: String, confirmCode: String) {
         viewModelScope.launch {
             val result = awsAuthCases.userSignUpConfirm(email, confirmCode)
-            Log.i("R/T", "in viewmodel: $result")
             confirmationResultHandle(result)
         }
     }
