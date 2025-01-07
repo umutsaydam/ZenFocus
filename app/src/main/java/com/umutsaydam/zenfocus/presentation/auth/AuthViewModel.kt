@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
 import android.app.Activity
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.cognito.exceptions.service.UserNotConfirmedException
@@ -21,22 +20,26 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class AuthUiState(
+    val signUpStep: AuthSignUpStep? = null,
+    val signInStep: AuthSignInStep? = null,
+    val userId: String? = null,
+    val uiMessage: Int? = null,
+
+    )
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val awsAuthCases: AwsAuthCases,
     private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val networkCheckerUseCases: NetworkCheckerUseCases
 ) : ViewModel() {
-    private val _signUpStep: MutableStateFlow<AuthSignUpStep?> = MutableStateFlow(null)
-    var signUpStep: StateFlow<AuthSignUpStep?> = _signUpStep
+    private val _uiState = MutableStateFlow(AuthUiState())
+    val uiState: StateFlow<AuthUiState> = _uiState
 
-    private val _signInStep: MutableStateFlow<AuthSignInStep?> = MutableStateFlow(null)
-    val signInStep: StateFlow<AuthSignInStep?> = _signInStep
-
-    private val _userId: MutableStateFlow<String?> = MutableStateFlow(null)
-
-    private val _uiMessage = MutableStateFlow<Int?>(null)
-    val uiMessage: StateFlow<Int?> = _uiMessage
+    private fun updateUiState(update: AuthUiState.() -> AuthUiState) {
+        _uiState.value = _uiState.value.update()
+    }
 
     fun isConnected(): Boolean {
         return networkCheckerUseCases.isConnected()
@@ -44,38 +47,45 @@ class AuthViewModel @Inject constructor(
 
     fun signIn(email: String, password: String) {
         viewModelScope.launch {
-            val result: AwsAuthSignInResult = awsAuthCases.userSignIn(email, password)
-            Log.i("R/T", "$result")
-
-            when (result) {
+            when (val result: AwsAuthSignInResult = awsAuthCases.userSignIn(email, password)) {
                 is AwsAuthSignInResult.IsSignedIn -> {
-                    _uiMessage.value = R.string.signing_in
+                    updateUiState { copy(uiMessage = R.string.signing_in) }
                     getUserId()
                 }
 
                 is AwsAuthSignInResult.ConfirmSignIn -> {
-                    _userId.value = null
-                    Log.i("R/T", "confirm $result")
-                    _signUpStep.value = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
+                    updateUiState {
+                        copy(
+                            userId = null,
+                            signUpStep = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
+                        )
+                    }
                 }
 
                 is AwsAuthSignInResult.Error -> {
-                    Log.i("R/T", "error : $result")
-                    _userId.value = null
+                    updateUiState { copy(userId = null) }
 
                     when (result.exception) {
                         is NotAuthorizedException -> {
-                            _uiMessage.value = R.string.incorrect_email_or_password
+                            updateUiState { copy(uiMessage = R.string.incorrect_email_or_password) }
                         }
 
                         is UserNotConfirmedException -> {
-                            _uiMessage.value = R.string.confirm_account
-                            _signInStep.value = AuthSignInStep.CONFIRM_SIGN_UP
+                            updateUiState {
+                                copy(
+                                    uiMessage = R.string.confirm_account,
+                                    signInStep = AuthSignInStep.CONFIRM_SIGN_UP
+                                )
+                            }
                         }
 
                         else -> {
-                            _uiMessage.value = R.string.error_while_signing_in
-                            _signInStep.value = null
+                            updateUiState {
+                                copy(
+                                    uiMessage = R.string.error_while_signing_in,
+                                    signInStep = null
+                                )
+                            }
                         }
                     }
                 }
@@ -85,22 +95,18 @@ class AuthViewModel @Inject constructor(
 
     private fun getUserId() {
         viewModelScope.launch {
-            val result = awsAuthCases.userGetId.invoke()
-            Log.i("R/T", "$result")
-
-            when (result) {
+            when (val result = awsAuthCases.userGetId.invoke()) {
                 is Resource.Success -> {
-                    Log.i("R/T", "in viewmodel ${result.data}")
                     val userId = result.data
                     userId?.let { id ->
                         saveUserId(id)
                         getUserInfo(userId)
                     }
-                    _userId.value = result.data
+                    updateUiState { copy(userId = result.data) }
                 }
 
                 is Resource.Error -> {
-                    _userId.value = null
+                    updateUiState { copy(userId = null) }
                 }
             }
         }
@@ -109,26 +115,21 @@ class AuthViewModel @Inject constructor(
     private fun saveUserId(userId: String) {
         viewModelScope.launch {
             localUserDataStoreCases.saveUserId(userId)
-            Log.i("R/T", "id saved $userId")
         }
     }
 
     private fun getUserInfo(userId: String) {
         viewModelScope.launch {
-            val result = awsAuthCases.readUserInfo(userId)
-            Log.i("R/T", "/////// in viewmodel : $result")
-            when (result) {
+            when (val result = awsAuthCases.readUserInfo(userId)) {
                 is Resource.Success -> {
-                    Log.i("R/T", "*/*/**/*//*/*/*/*/* in viewmodel : ${result.data}")
                     result.data?.let { userInfo ->
-                        Log.i("R/T", "*/*/*/*/*/*/*  $userInfo")
                         saveUserType(userInfo.userType)
-                        _signInStep.value = AuthSignInStep.DONE
+                        updateUiState { copy(signInStep = AuthSignInStep.DONE) }
                     }
                 }
 
                 is Resource.Error -> {
-                    Log.i("R/T", "in viewmodel err: ${result.message}")
+                    updateUiState { copy(uiMessage = R.string.error_while_signing_in) }
                 }
             }
         }
@@ -137,29 +138,39 @@ class AuthViewModel @Inject constructor(
     private fun saveUserType(userType: String) {
         viewModelScope.launch {
             localUserDataStoreCases.saveUserType(userType)
-            Log.i("R/T", "Saved userType. $userType")
         }
     }
 
     fun signUp(email: String, password: String) {
         viewModelScope.launch {
             val result = awsAuthCases.userSignUp(email, password)
-            Log.i("R/T", "in viewmodel => $result")
 
             when (result) {
                 is AwsAuthSignUpResult.IsSignedUp -> {
-                    _uiMessage.value = R.string.signed_up
-                    _signUpStep.value = AuthSignUpStep.DONE
+                    updateUiState {
+                        copy(
+                            uiMessage = R.string.signed_up,
+                            signUpStep = AuthSignUpStep.DONE
+                        )
+                    }
                 }
 
                 is AwsAuthSignUpResult.ConfirmSignUp -> {
-                    _uiMessage.value = R.string.verify_account
-                    _signUpStep.value = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
+                    updateUiState {
+                        copy(
+                            uiMessage = R.string.verify_account,
+                            signUpStep = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
+                        )
+                    }
                 }
 
                 is AwsAuthSignUpResult.Error -> {
-                    _signUpStep.value = null
-                    _uiMessage.value = R.string.error_while_sign_up
+                    updateUiState {
+                        copy(
+                            signUpStep = null,
+                            uiMessage = R.string.error_while_sign_up
+                        )
+                    }
                 }
 
                 is AwsAuthSignUpResult.ResentCode -> {
@@ -171,22 +182,18 @@ class AuthViewModel @Inject constructor(
 
     fun signInWithGoogle(activity: Activity) {
         viewModelScope.launch {
-            val result = awsAuthCases.signInWithGoogle(activity)
-            Log.i("R/T", "resu in viewmodel:  $result")
-
-            when (result) {
+            when (val result = awsAuthCases.signInWithGoogle(activity)) {
                 is Resource.Success -> {
                     val currUserId = result.data
                     currUserId?.let { id ->
-                        _userId.value = id
+                        updateUiState { copy(userId = id) }
                         saveUserId(id)
                         getUserInfo(id)
                     }
                 }
 
                 is Resource.Error -> {
-                    Log.e("R/T", "error in viewmodel: ${result.message}")
-                    _uiMessage.value = R.string.error_while_signing_in
+                    updateUiState { copy(uiMessage = R.string.error_while_signing_in) }
                 }
             }
         }

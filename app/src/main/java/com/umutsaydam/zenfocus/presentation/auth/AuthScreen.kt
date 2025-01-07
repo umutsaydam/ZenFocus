@@ -2,14 +2,11 @@ package com.umutsaydam.zenfocus.presentation.auth
 
 import android.app.Activity
 import android.content.res.Configuration
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -77,27 +74,21 @@ fun AuthScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
+    val uiState by authViewModel.uiState.collectAsState()
     val pagerState = rememberPagerState(pageCount = { 2 })
     val currPage = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
-    val signUpStep = authViewModel.signUpStep.collectAsState()
-    val signInStep = authViewModel.signInStep.collectAsState()
     val context = LocalContext.current
     val activity = context as? Activity
-
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    val uiMessage by authViewModel.uiMessage.collectAsState()
-
-    LaunchedEffect(uiMessage) {
-        uiMessage?.let { message ->
+    LaunchedEffect(uiState.uiMessage, uiState.signInStep, uiState.signUpStep) {
+        uiState.uiMessage?.let { message ->
             Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
         }
-    }
 
-    LaunchedEffect(signInStep.value) {
-        when (signInStep.value) {
+        when (uiState.signInStep) {
             AuthSignInStep.DONE -> {
                 navController.popBackStackOrIgnore()
             }
@@ -112,14 +103,10 @@ fun AuthScreen(
                 navController.safeNavigate(confirmRoute)
             }
 
-            else -> {
-                Log.i("R/T", "${signInStep.value} : Error: ")
-            }
+            else -> {}
         }
-    }
 
-    LaunchedEffect(signUpStep.value) {
-        when (signUpStep.value) {
+        when (uiState.signUpStep) {
             AuthSignUpStep.CONFIRM_SIGN_UP_STEP -> {
                 Toast.makeText(
                     context,
@@ -127,22 +114,18 @@ fun AuthScreen(
                     Toast.LENGTH_SHORT
                 ).show()
                 val confirmRoute = "AccountConfirm/$email/false"
-                Log.i("R/T", "----- $email")
                 navController.safeNavigate(confirmRoute)
             }
 
             AuthSignUpStep.DONE -> {
-                Log.i("R/T", "sign up is done")
                 Toast.makeText(context, context.getString(R.string.signed_up), Toast.LENGTH_SHORT)
                     .show()
             }
 
             AuthSignUpStep.COMPLETE_AUTO_SIGN_IN -> {
-                Log.i("R/T", "complete auto sign in")
             }
 
             null -> {
-                    Log.i("R/T", "error message is null")
             }
         }
     }
@@ -324,22 +307,6 @@ fun AuthScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun AuthSection(
-    modifier: Modifier = Modifier,
-    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = verticalArrangement,
-        horizontalAlignment = horizontalAlignment
-    ) {
-        content()
     }
 }
 
