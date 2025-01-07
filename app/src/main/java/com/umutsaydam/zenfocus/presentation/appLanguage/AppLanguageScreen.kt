@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.appLanguage
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,8 +32,8 @@ fun AppLanguageScreen(
     navController: NavHostController,
     appLanguageViewModel: AppLanguageViewModel = hiltViewModel()
 ) {
-    val langList = appLanguageViewModel.langList.value
-    val selectedLang by appLanguageViewModel.defaultLang.collectAsState()
+    val langList = appLanguageViewModel.langList
+    val selectedLang by remember {appLanguageViewModel.defaultLang}.collectAsState()
 
     Scaffold(
         modifier = modifier,
@@ -57,16 +57,14 @@ fun AppLanguageScreen(
             )
         }
     ) { paddingValues ->
-
         LazyColumn(
             modifier = Modifier
                 .padding(
-                    vertical = paddingValues.calculateTopPadding()
+                    top = paddingValues.calculateTopPadding()
                 )
         ) {
-            items(count = langList.size) { index ->
+            items(count = langList.size, key = { it }) { index ->
                 val lang = langList[index]
-                Log.d("R/T", "$lang - $selectedLang")
                 RadioButtonWithText(
                     modifier = Modifier.background(LightBackground),
                     radioSelected = lang == selectedLang,
