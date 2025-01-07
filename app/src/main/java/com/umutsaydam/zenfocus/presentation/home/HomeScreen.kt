@@ -3,7 +3,6 @@ package com.umutsaydam.zenfocus.presentation.home
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.view.WindowMetrics
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -25,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,26 +62,18 @@ fun HomeScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val remainingTime by homeViewModel.remainingTime.collectAsState()
-    val remainingPercent by homeViewModel.remainingPercent.collectAsState()
-    val toDoList by homeViewModel.toDoList.collectAsState()
-    val isTimerRunning by homeViewModel.isTimerRunning.collectAsState()
-    val soundList by homeViewModel.focusSoundList.collectAsState()
-    val defaultSound by homeViewModel.defaultSound.collectAsState()
-    val bottomSheetState = homeViewModel.bottomSheetState.collectAsState()
-    val currentSheetContent by homeViewModel.bottomSheetContent.collectAsState()
-    val sliderPosition by homeViewModel.sliderPosition.collectAsState()
+    val homeUiState by homeViewModel.homeUiState.collectAsState()
+    val soundList by remember { derivedStateOf { homeViewModel.focusSoundList } }
     var showDialog by remember { mutableStateOf(false) }
     var showDeleteTaskDialog by remember { mutableStateOf(false) }
     var selectedTaskModel: TaskModel? = null
     val context = LocalContext.current
     val adState by homeViewModel.adState.collectAsState()
-    val adSize: AdSize = getAdSize(context)
+    val adSize: AdSize by remember { derivedStateOf { getAdSize(context) } }
     val lifecycleOwner = LocalLifecycleOwner.current
-    val uiMessage by homeViewModel.uiMessage.collectAsState()
 
-    LaunchedEffect(uiMessage) {
-        uiMessage?.let { message ->
+    LaunchedEffect(homeUiState.uiMessage) {
+        homeUiState.uiMessage?.let { message ->
             Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
         }
     }
@@ -135,10 +127,9 @@ fun HomeScreen(
                     }
                 },
                 actions = {
-                    if (homeViewModel.willShowAd()) {
+                    if (homeViewModel.shouldShowAd()) {
                         TextButton(
                             onClick = {
-                                Log.i("R/AD", "Button clicked...")
                                 homeViewModel.startProductsInApp()
                             }
                         ) {
@@ -190,8 +181,8 @@ fun HomeScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressWithText(
-                    progress = remainingPercent,
-                    text = remainingTime
+                    progress = homeUiState.remainingPercent,
+                    text = homeUiState.remainingTime
                 )
             }
             Spacer(modifier = Modifier.height(SPACE_MEDIUM))
@@ -202,7 +193,7 @@ fun HomeScreen(
                     Alignment.CenterHorizontally
                 )
             ) {
-                if (isTimerRunning) {
+                if (homeUiState.isTimerRunning) {
                     FocusControlButtons(
                         onClick = {
                             homeViewModel.pauseTimer()
@@ -240,7 +231,7 @@ fun HomeScreen(
                     painterResource = painterResource(R.drawable.ic_music),
                     contentDescription = stringResource(R.string.pomodoro_sounds)
                 )
-                if (isTimerRunning) {
+                if (homeUiState.isTimerRunning) {
                     FocusControlButtons(
                         onClick = {
                             navController.safeNavigate(Route.FocusMode.route)
@@ -252,9 +243,9 @@ fun HomeScreen(
             }
 
             LazyToDoList(
-                toDoList = toDoList
+                toDoList = homeUiState.toDoList
             ) { index ->
-                val currTaskModel = toDoList[index]
+                val currTaskModel = homeUiState.toDoList[index]
                 ToDoListItem(
                     taskModel = currTaskModel,
                     onClick = { newState ->
@@ -282,7 +273,7 @@ fun HomeScreen(
                 )
             }
 
-            if (homeViewModel.isNetworkConnected() && homeViewModel.willShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
+            if (homeViewModel.isNetworkConnected() && homeViewModel.shouldShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -297,16 +288,16 @@ fun HomeScreen(
                 }
             }
 
-            if (bottomSheetState.value) {
+            if (homeUiState.bottomSheetState) {
                 CustomBottomSheet(
                     onDismissRequest = {
                         homeViewModel.setBottomSheetState(false)
-                        if (!isTimerRunning) {
+                        if (!homeUiState.isTimerRunning) {
                             homeViewModel.stopSound()
                         }
                     },
                     content = {
-                        when (currentSheetContent) {
+                        when (homeUiState.bottomSheetContent) {
                             BottomSheetContent.AddToDo -> {
                                 AddToDo { newTask ->
                                     homeViewModel.upsertTask(newTask)
@@ -315,12 +306,12 @@ fun HomeScreen(
 
                             BottomSheetContent.PomodoroSounds -> {
                                 LazySoundList(
-                                    soundList = soundList,
+                                    soundList = soundList.value,
                                     content = { index ->
-                                        val sound = soundList[index]
+                                        val sound = soundList.value[index]
                                         RadioButtonWithText(
                                             modifier = Modifier.background(White),
-                                            radioSelected = sound == defaultSound,
+                                            radioSelected = sound == homeUiState.defaultSound,
                                             radioText = sound,
                                             onClick = {
                                                 homeViewModel.setDefaultSoundAndPlay(sound)
@@ -333,7 +324,7 @@ fun HomeScreen(
 
                             BottomSheetContent.PomodoroTimes -> {
                                 PomodoroControlSlider(
-                                    sliderPosition = sliderPosition,
+                                    sliderPosition = homeUiState.sliderPosition,
                                     steps = 2,
                                     valueRange = 1f..4f
                                 ) { newSliderPosition ->

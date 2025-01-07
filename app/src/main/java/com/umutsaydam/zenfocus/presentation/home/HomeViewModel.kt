@@ -1,13 +1,11 @@
 package com.umutsaydam.zenfocus.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
-import com.umutsaydam.zenfocus.domain.model.GoogleBannerAdState
 import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.domain.model.UserTypeEnum
@@ -29,6 +27,25 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class HomeUiState(
+    val userId: String? = null,
+    val userType: String? = null,
+    val remainingTime: String = "00:00",
+    val remainingPercent: Float = 0f,
+    val isTimerRunning: Boolean = false,
+    val toDoList: List<TaskModel> = emptyList(),
+    val sliderPosition: Float = 1f,
+    val bottomSheetContent: BottomSheetContent? = null,
+    val bottomSheetState: Boolean = false,
+    val defaultSound: String = NONE,
+    val uiMessage: Int? = null,
+)
+
+data class GoogleBannerAdState(
+    val isAdLoaded: Boolean = false,
+    val isFirstAdRequested: Boolean = false
+)
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val toDoUsesCases: ToDoUsesCases,
@@ -41,40 +58,11 @@ class HomeViewModel @Inject constructor(
     private val googleProductsInAppUseCases: GoogleProductsInAppUseCases,
     private val googleAdUseCases: GoogleAdUseCases
 ) : ViewModel() {
-    private val _userId = MutableStateFlow<String?>(null)
-
-    private val _userType = MutableStateFlow<String?>(null)
-    private val userType: StateFlow<String?> = _userType
-
-    private val _remainingTime = MutableStateFlow<String>("00:00")
-    val remainingTime: StateFlow<String> = _remainingTime
-
-    private val _remainingPercent = MutableStateFlow<Float>(0f)
-    val remainingPercent: StateFlow<Float> = _remainingPercent
-
-    private val _isTimerRunning = MutableStateFlow<Boolean>(false)
-    val isTimerRunning: StateFlow<Boolean> = _isTimerRunning
-
-    private val _toDoList = MutableStateFlow<List<TaskModel>>(emptyList())
-    val toDoList: StateFlow<List<TaskModel>> = _toDoList
-
-    private val _sliderPosition = MutableStateFlow<Float>(1f)
-    val sliderPosition = _sliderPosition
-
-    private val _bottomSheetContent = MutableStateFlow<BottomSheetContent?>(null)
-    val bottomSheetContent: StateFlow<BottomSheetContent?> = _bottomSheetContent
-
-    private val _bottomSheetState = MutableStateFlow<Boolean>(false)
-    val bottomSheetState: StateFlow<Boolean> = _bottomSheetState
+    private val _homeUiState = MutableStateFlow(HomeUiState())
+    val homeUiState: StateFlow<HomeUiState> = _homeUiState
 
     private val _focusSoundList = MutableStateFlow<Array<String>>(emptyArray())
     val focusSoundList: StateFlow<Array<String>> = _focusSoundList
-
-    private val _defaultSound = MutableStateFlow<String>(NONE)
-    val defaultSound = _defaultSound
-
-    private val _uiMessage = MutableStateFlow<Int?>(null)
-    val uiMessage: StateFlow<Int?> = _uiMessage
 
     private val _adState = MutableStateFlow(GoogleBannerAdState())
     val adState: StateFlow<GoogleBannerAdState> = _adState
@@ -89,6 +77,10 @@ class HomeViewModel @Inject constructor(
         getDefaultFocusSound()
     }
 
+    private fun updateHomeUiState(update: HomeUiState.() -> HomeUiState) {
+        _homeUiState.value = _homeUiState.value.update()
+    }
+
     private fun getSoundList() {
         _focusSoundList.value = focusSoundUseCases.readSoundList()
     }
@@ -96,15 +88,15 @@ class HomeViewModel @Inject constructor(
     private fun getDefaultFocusSound() {
         viewModelScope.launch {
             localUserDataStoreCases.readFocusSound().collectLatest { fileName ->
-                _defaultSound.value = fileName
+                updateHomeUiState { copy(defaultSound = fileName) }
                 setSound(fileName)
             }
         }
     }
 
     fun setDefaultSoundAndPlay(newSound: String) {
-        if (_defaultSound.value != newSound) {
-            _defaultSound.value = newSound
+        if (homeUiState.value.defaultSound != newSound) {
+            updateHomeUiState { copy(defaultSound = newSound) }
             saveDefaultSound(newSound)
         }
     }
@@ -130,16 +122,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setTimer() {
-        Log.i(
-            "R/T",
-            "PomodoroForegroundService.isServiceRunning: ${PomodoroForegroundService.isServiceRunning}"
-        )
         if (PomodoroForegroundService.isServiceRunning) {
-            Log.i("R/T", "Service was stopped. Switching normal timer...")
             stopPomodoroService()
         } else {
             // That means timer will be working for the first time.
-            Log.i("R/T", "Service was not working so switching default pomodoro timer.")
             setDefaultPomodoroCycle()
             setDefaultPomodoroBreakDuration()
             setVibrateState()
@@ -180,11 +166,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun playOrResumeTimer() {
-        if (_isTimerRunning.value) {
-            Log.i("R/T", "playTimer fun was RESUMED. in viewmodel")
+        if (homeUiState.value.isTimerRunning) {
             resumeTimer()
         } else {
-            Log.i("R/T", "playTimer fun was STARTED first time. in viewmodel")
             playTimer()
         }
     }
@@ -200,7 +184,7 @@ class HomeViewModel @Inject constructor(
     private fun isTimerRunning() {
         viewModelScope.launch {
             pomodoroManagerUseCase.isTimerRunning().collect { isRunning ->
-                _isTimerRunning.value = isRunning
+                updateHomeUiState { copy(isTimerRunning = isRunning) }
             }
         }
     }
@@ -226,7 +210,7 @@ class HomeViewModel @Inject constructor(
     private fun getRemainingTime() {
         viewModelScope.launch {
             pomodoroManagerUseCase.getRemainingTimeAsTextFormat().collect { currRemainingTime ->
-                _remainingTime.value = currRemainingTime
+                updateHomeUiState { copy(remainingTime = currRemainingTime) }
             }
         }
     }
@@ -234,13 +218,13 @@ class HomeViewModel @Inject constructor(
     private fun getRemainingPercent() {
         viewModelScope.launch {
             pomodoroManagerUseCase.getRemainingPercent().collect { currRemainingPercent ->
-                _remainingPercent.value = currRemainingPercent
+                updateHomeUiState { copy(remainingPercent = currRemainingPercent) }
             }
         }
     }
 
     fun startPomodoroService() {
-        if (_isTimerRunning.value && !PomodoroForegroundService.isServiceRunning) {
+        if (homeUiState.value.isTimerRunning && !PomodoroForegroundService.isServiceRunning) {
             pomodoroServiceUseCases.startService()
         }
     }
@@ -254,7 +238,7 @@ class HomeViewModel @Inject constructor(
     private fun getTasks() {
         viewModelScope.launch {
             toDoUsesCases.getTasks().collect { list ->
-                _toDoList.value = list
+                updateHomeUiState { copy(toDoList = list) }
             }
         }
     }
@@ -273,13 +257,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setSliderPosition(position: Float) {
-        if (_sliderPosition.value != position) {
-            _sliderPosition.value = position
+        if (_homeUiState.value.sliderPosition != position) {
+            updateHomeUiState { copy(sliderPosition = position) }
             val newCycle = position.toInt()
 
             viewModelScope.launch {
                 localUserDataStoreCases.savePomodoroCycle(newCycle)
-                Log.i("R/T", "newCycle -> $newCycle")
             }
         }
     }
@@ -288,41 +271,41 @@ class HomeViewModel @Inject constructor(
         return checkerUseCases.isConnected()
     }
 
-    fun willShowAd(): Boolean {
-        return _userType.value != UserTypeEnum.AD_FREE_USER.type
+    fun shouldShowAd(): Boolean {
+        return homeUiState.value.userType != UserTypeEnum.AD_FREE_USER.type
     }
 
     private fun getUserType() {
         viewModelScope.launch {
             localUserDataStoreCases.readUserType().collectLatest { type ->
-                _userType.value = type
-                Log.i("R/T", "_userType.value in viewmodel ${_userType.value}")
+                updateHomeUiState { copy(userType = type) }
             }
         }
     }
 
     private fun getUserId() {
         viewModelScope.launch {
-            _userId.value = localUserDataStoreCases.readUserId().first()
+            val userId = localUserDataStoreCases.readUserId().first()
+            updateHomeUiState { copy(userId = userId) }
         }
     }
 
     private fun changeUserTypeAsAdFree() {
         viewModelScope.launch {
             val adFreeUser = UserTypeEnum.AD_FREE_USER.type
-            if (_userId.value != null && _userType.value != adFreeUser) {
+            if (homeUiState.value.userId != null && homeUiState.value.userType != adFreeUser) {
                 val result = authCases.updateUserInfo(
-                    userId = _userId.value!!,
+                    userId = homeUiState.value.userId!!,
                     userType = adFreeUser
                 )
 
                 when (result) {
                     is Resource.Success -> {
-                        _uiMessage.value = R.string.became_ad_free_user
+                        updateHomeUiState { copy(uiMessage = R.string.became_ad_free_user) }
                     }
 
                     is Resource.Error -> {
-                        _uiMessage.value = R.string.error_occurred_ad_free
+                        updateHomeUiState { copy(uiMessage = R.string.error_occurred_ad_free) }
                     }
                 }
             }
@@ -330,7 +313,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun showBannerAd(adSize: AdSize): AdView {
-       return googleAdUseCases.showBannerAd(
+        return googleAdUseCases.showBannerAd(
             adSize = adSize,
             onAdLoaded = { isLoaded ->
                 _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
@@ -354,11 +337,11 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {
-        _bottomSheetContent.value = content
+        updateHomeUiState { copy(bottomSheetContent = content) }
     }
 
     fun setBottomSheetState(state: Boolean) {
-        _bottomSheetState.value = state
+        updateHomeUiState { copy(bottomSheetState = state) }
     }
 
     fun showPomodoroTimesBottomSheet() {
