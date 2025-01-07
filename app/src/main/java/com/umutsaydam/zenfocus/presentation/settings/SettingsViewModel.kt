@@ -1,6 +1,5 @@
 package com.umutsaydam.zenfocus.presentation.settings
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
@@ -12,22 +11,20 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class SettingsUiState(
+    val defaultVibrateState: Boolean = false,
+    val isSignedInState: Boolean = false,
+    val pomodoroWorkDuration: Int = 0,
+    val pomodoroBreakDuration: Int = 0
+)
+
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val awsAuthCases: AwsAuthCases
 ) : ViewModel() {
-    private val _defaultVibrateState = MutableStateFlow(false)
-    val defaultVibrateState: StateFlow<Boolean> get() = _defaultVibrateState
-
-    private val _isSignedInState = MutableStateFlow(false)
-    val isSignedInState: StateFlow<Boolean> = _isSignedInState
-
-    private val _pomodoroWorkDuration = MutableStateFlow(0)
-    val pomodoroWorkDuration: StateFlow<Int> = _pomodoroWorkDuration
-
-    private val _pomodoroBreakDuration = MutableStateFlow(0)
-    val pomodoroBreakDuration: StateFlow<Int> = _pomodoroBreakDuration
+    private val _uiState = MutableStateFlow(SettingsUiState())
+    val uiState: StateFlow<SettingsUiState> = _uiState
 
     init {
         readVibrateState()
@@ -36,16 +33,20 @@ class SettingsViewModel @Inject constructor(
         getPomodoroBreakDuration()
     }
 
+    private fun updateUiState(update: SettingsUiState.() -> SettingsUiState) {
+        _uiState.value = _uiState.value.update()
+    }
+
     private fun readVibrateState() {
         viewModelScope.launch {
             localUserDataStoreCases.readVibrateState.invoke().collect { state ->
-                _defaultVibrateState.value = state
+                updateUiState { copy(defaultVibrateState = state) }
             }
         }
     }
 
     fun setVibrateState(state: Boolean) {
-        _defaultVibrateState.value = state
+        updateUiState { copy(defaultVibrateState = state) }
 
         viewModelScope.launch {
             localUserDataStoreCases.saveVibrateState.invoke(state)
@@ -56,15 +57,14 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = localUserDataStoreCases.readUserId.invoke()
             userId.collect { value ->
-                Log.i("R/T", "value $value")
-                _isSignedInState.value = value.isNotEmpty()
+                updateUiState { copy(isSignedInState = value.isNotEmpty()) }
             }
         }
     }
 
     fun signOut() {
         viewModelScope.launch {
-            _isSignedInState.value = false
+            updateUiState { copy(isSignedInState = false) }
             awsAuthCases.signOut.invoke()
             localUserDataStoreCases.deleteUserId.invoke()
             localUserDataStoreCases.deleteUserType.invoke()
@@ -73,15 +73,15 @@ class SettingsViewModel @Inject constructor(
 
     private fun getPomodoroWorkDuration() {
         viewModelScope.launch {
-            _pomodoroWorkDuration.value = localUserDataStoreCases.readPomodoroWorkDuration().first()
+            val workDuration = localUserDataStoreCases.readPomodoroWorkDuration().first()
+            updateUiState { copy(pomodoroWorkDuration = workDuration) }
         }
     }
 
     fun savePomodoroWorkDuration(newDuration: Int) {
-        if (_pomodoroWorkDuration.value != newDuration) {
+        if (_uiState.value.pomodoroWorkDuration != newDuration) {
             viewModelScope.launch {
-                Log.i("R/T", "Working newDuration: $newDuration")
-                _pomodoroWorkDuration.value = newDuration
+                updateUiState { copy(pomodoroWorkDuration = newDuration) }
                 localUserDataStoreCases.savePomodoroWorkDuration(newDuration)
             }
         }
@@ -89,18 +89,25 @@ class SettingsViewModel @Inject constructor(
 
     private fun getPomodoroBreakDuration() {
         viewModelScope.launch {
-            _pomodoroBreakDuration.value =
-                localUserDataStoreCases.readPomodoroBreakDuration().first()
+            val breakDuration = localUserDataStoreCases.readPomodoroBreakDuration().first()
+            updateUiState { copy(pomodoroWorkDuration = breakDuration) }
         }
     }
 
     fun savePomodoroBreakDuration(newDuration: Int) {
-        if (_pomodoroBreakDuration.value != newDuration) {
+        if (_uiState.value.pomodoroBreakDuration != newDuration) {
             viewModelScope.launch {
-                Log.i("R/T", "Breaking newDuration: $newDuration")
-                _pomodoroBreakDuration.value = newDuration
+                updateUiState { copy(pomodoroWorkDuration = newDuration) }
                 localUserDataStoreCases.savePomodoroBreakDuration(newDuration)
             }
         }
+    }
+
+    fun updateWorkDuration(currIndex: Int) {
+        updateUiState { copy(pomodoroWorkDuration = currIndex) }
+    }
+
+    fun updateBreakDuration(currIndex: Int) {
+        updateUiState { copy(pomodoroBreakDuration = currIndex) }
     }
 }

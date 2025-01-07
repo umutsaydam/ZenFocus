@@ -2,12 +2,9 @@ package com.umutsaydam.zenfocus.presentation.settings
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -54,13 +50,8 @@ fun SettingsScreen(
     navController: NavHostController,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val vibrateState = settingsViewModel.defaultVibrateState.collectAsState()
-    val isSignedInState = settingsViewModel.isSignedInState.collectAsState()
     val coroutine = rememberCoroutineScope()
-    val pomodoroWorkDuration by settingsViewModel.pomodoroWorkDuration.collectAsState()
-    val pomodoroBreakDuration by settingsViewModel.pomodoroBreakDuration.collectAsState()
-    val selectedWorkDuration = mutableStateOf(pomodoroWorkDuration)
-    val selectedBreakDuration = mutableStateOf(pomodoroBreakDuration)
+    val uiState by settingsViewModel.uiState.collectAsState()
     val gridState = rememberLazyListState()
     var isDurationDialogOpened by remember { mutableStateOf(false) }
     var isWorkDurationDialogOpened by remember { mutableStateOf(true) }
@@ -69,9 +60,9 @@ fun SettingsScreen(
         coroutine.launch {
             gridState.animateScrollToItem(
                 if (isWorkDurationDialogOpened) {
-                    selectedWorkDuration.value - 1
+                    uiState.pomodoroWorkDuration - 1
                 } else {
-                    selectedBreakDuration.value - 1
+                    uiState.pomodoroBreakDuration - 1
                 }
             )
         }
@@ -84,14 +75,10 @@ fun SettingsScreen(
             ),
             gridState = gridState,
             onClick = {
-                Log.i(
-                    "R/T",
-                    "selectedWorkDuration: ${selectedWorkDuration.value} & selectedBreakDuration: ${selectedBreakDuration.value}"
-                )
                 if (isWorkDurationDialogOpened) {
-                    settingsViewModel.savePomodoroWorkDuration(selectedWorkDuration.value)
+                    settingsViewModel.savePomodoroWorkDuration(uiState.pomodoroWorkDuration)
                 } else {
-                    settingsViewModel.savePomodoroBreakDuration(selectedBreakDuration.value)
+                    settingsViewModel.savePomodoroBreakDuration(uiState.pomodoroBreakDuration)
                 }
 
                 isDurationDialogOpened = false
@@ -114,18 +101,16 @@ fun SettingsScreen(
                         },
                     textAlign = TextAlign.Center
                 )
-                Log.i("R/T", "Selected duration $currIndex")
                 if (isSelected) {
                     if (isWorkDurationDialogOpened) {
-                        selectedWorkDuration.value = currIndex
+                        settingsViewModel.updateWorkDuration(currIndex)
                     } else {
-                        selectedBreakDuration.value = currIndex
+                        settingsViewModel.updateBreakDuration(currIndex)
                     }
                 }
             },
             onDismissRequest = {
                 isWorkDurationDialogOpened = false
-                isDurationDialogOpened = false
                 isDurationDialogOpened = false
             }
         )
@@ -187,7 +172,7 @@ fun SettingsScreen(
                         onClick = { newState ->
                             settingsViewModel.setVibrateState(newState)
                         },
-                        isChecked = vibrateState.value
+                        isChecked = uiState.defaultVibrateState
                     )
                     MenuItem(
                         menuTitle = stringResource(R.string.working_time),
@@ -224,7 +209,7 @@ fun SettingsScreen(
             )
             SettingsSection(
                 content = {
-                    if (isSignedInState.value) {
+                    if (uiState.isSignedInState) {
                         MenuItem(
                             headIcon = R.drawable.ic_log_out,
                             menuTitle = stringResource(R.string.log_out),
@@ -245,19 +230,6 @@ fun SettingsScreen(
                 }
             )
         }
-    }
-}
-
-@Composable
-fun SettingsSection(
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-    ) {
-        content()
     }
 }
 
