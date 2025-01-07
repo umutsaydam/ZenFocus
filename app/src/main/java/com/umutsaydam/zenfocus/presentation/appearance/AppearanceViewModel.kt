@@ -1,6 +1,5 @@
 package com.umutsaydam.zenfocus.presentation.appearance
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -22,6 +21,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class AppearanceUiState(
+    val themeList: List<ThemeInfo?> = listOf(null),
+    val selectedTheme: ThemeInfo? = null,
+    val rewardedAd: RewardedAd? = null,
+    val uiMessage: Int? = null
+)
+
 @HiltViewModel
 class AppearanceViewModel @Inject constructor(
     private val awsStorageCases: AwsStorageCases,
@@ -30,24 +36,18 @@ class AppearanceViewModel @Inject constructor(
     private val networkCheckerUseCases: NetworkCheckerUseCases,
     private val googleAddUseCases: GoogleAdUseCases
 ) : ViewModel() {
+    private val _uiState = MutableStateFlow(AppearanceUiState())
+    val uiState: StateFlow<AppearanceUiState> = _uiState
+
     private val _userType = MutableStateFlow<String?>(null)
-    private val userType: StateFlow<String?> = _userType
-
-    private val _themeList = MutableStateFlow<List<ThemeInfo?>>(listOf(null))
-    val themeList: StateFlow<List<ThemeInfo?>> = _themeList
-
-    private val _uiMessage = MutableStateFlow<Int?>(null)
-    val uiMessage: StateFlow<Int?> = _uiMessage
-
-    private val _defaultTheme = MutableStateFlow<ThemeInfo?>(null)
-    val defaultTheme: StateFlow<ThemeInfo?> = _defaultTheme
-
-    private val _rewardedAd = MutableStateFlow<RewardedAd?>(null)
-    val rewardedAd: StateFlow<RewardedAd?> = _rewardedAd
 
     init {
         getThemeList()
         getUserType()
+    }
+
+    private fun updateUiState(update: AppearanceUiState.() -> AppearanceUiState) {
+        _uiState.value = _uiState.value.update()
     }
 
     fun isConnected(): Boolean {
@@ -55,41 +55,51 @@ class AppearanceViewModel @Inject constructor(
     }
 
     fun setDefaultTheme(newTheme: ThemeInfo?) {
-        if (newTheme != null && defaultTheme.value != newTheme) {
-            _defaultTheme.value = newTheme
+        if (newTheme != null && _uiState.value.selectedTheme != newTheme) {
+            updateUiState { copy(selectedTheme = newTheme) }
+        }
+    }
 
-            val newThemeName = FileNameFromUrl.getFileNameFromUrl(newTheme.themeUrl)
+    fun saveTheme() {
+        uiState.value.selectedTheme?.let {
+            val themeUrl = it.themeUrl
+            val newThemeName = FileNameFromUrl.getFileNameFromUrl(themeUrl)
+
             if (themeRepository.isThemeAvailableInLocalStorage(newThemeName)) {
-                Log.i("R/T", "Selected theme is already downloaded.")
-                viewModelScope.launch {
-                    localUserDataStoreCases.saveTheme(newThemeName)
-                }
+                saveThemeToLocal(newThemeName)
             } else {
-                downloadSelectedTheme(selectedThemeUrl = newTheme.themeUrl)
+                downloadSelectedTheme(selectedThemeUrl = themeUrl)
             }
         }
     }
 
+    private fun saveThemeToLocal(themeName: String) {
+        viewModelScope.launch {
+            localUserDataStoreCases.saveTheme(themeName)
+        }
+    }
+
     private fun getThemeList() {
-        Log.i("R/T", "network state: ${networkCheckerUseCases.isConnected()}")
         if (isConnected()) {
             viewModelScope.launch {
-                _uiMessage.value = R.string.loading
+                updateUiState { copy(uiMessage = R.string.loading) }
 
                 when (val themesResult: Resource<APIResponse> =
-                    awsStorageCases.readThemeList.invoke()) {
+                    awsStorageCases.readThemeList()) {
                     is Resource.Success -> {
-                        Log.i("R/T", "_themeList = $themesResult in viewmodel")
                         themesResult.data?.let {
                             val updatedThemeList = listOf(null) + it.body.items + listOf(null)
-                            _themeList.value = updatedThemeList
+                            updateUiState { copy(themeList = updatedThemeList) }
                         }
                     }
 
                     is Resource.Error -> {
-                        _themeList.value = listOf(null)
-                        _uiMessage.value = R.string.error_occurred_themes_list
-                        Log.i("R/T", "Error in viewmodel: ${themesResult.message}")
+                        updateUiState {
+                            copy(
+                                themeList = listOf(null),
+                                uiMessage = R.string.error_occurred_themes_list
+                            )
+                        }
                     }
                 }
             }
@@ -98,23 +108,25 @@ class AppearanceViewModel @Inject constructor(
 
     private fun downloadSelectedTheme(selectedThemeUrl: String) {
         viewModelScope.launch {
-            Log.i("R/T", "selectedThemeUrl $selectedThemeUrl")
             val themeResource: Resource<String> =
                 awsStorageCases.downloadSelectedThemeList(selectedThemeUrl)
-            Log.i("R/T", "theme data ${themeResource.data}, theme message ${themeResource.message}")
-            _uiMessage.value = R.string.loading
+            updateUiState { copy(uiMessage = R.string.loading) }
 
             when (themeResource) {
                 is Resource.Success -> {
                     themeResource.data?.let { themeName ->
                         localUserDataStoreCases.saveTheme(themeName)
-                        _uiMessage.value = R.string.new_theme_set
+                        updateUiState { copy(uiMessage = R.string.new_theme_set) }
                     }
                 }
 
                 is Resource.Error -> {
-                    _defaultTheme.value = null
-                    _uiMessage.value = R.string.new_theme_setting_error
+                    updateUiState {
+                        copy(
+                            selectedTheme = null,
+                            uiMessage = R.string.new_theme_setting_error
+                        )
+                    }
                 }
             }
         }
@@ -124,7 +136,6 @@ class AppearanceViewModel @Inject constructor(
         viewModelScope.launch {
             localUserDataStoreCases.readUserType().collectLatest { type ->
                 _userType.value = type
-                Log.i("R/T", "_userType.value in viewmodel ${_userType.value}")
             }
         }
     }
@@ -135,7 +146,8 @@ class AppearanceViewModel @Inject constructor(
 
     fun showRewardedAd() {
         viewModelScope.launch {
-            _rewardedAd.value = googleAddUseCases.showRewardedAd()
+            val rewardResult = googleAddUseCases.showRewardedAd()
+            updateUiState { copy(rewardedAd = rewardResult) }
         }
     }
 }
