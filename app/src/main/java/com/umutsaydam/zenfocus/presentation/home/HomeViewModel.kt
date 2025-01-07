@@ -73,7 +73,6 @@ class HomeViewModel @Inject constructor(
         getUserType()
         isTimerRunning()
         setTimer()
-        getSoundList()
         getDefaultFocusSound()
     }
 
@@ -81,7 +80,7 @@ class HomeViewModel @Inject constructor(
         _homeUiState.value = _homeUiState.value.update()
     }
 
-    private fun getSoundList() {
+    fun getSoundList() {
         _focusSoundList.value = focusSoundUseCases.readSoundList()
     }
 
@@ -251,7 +250,7 @@ class HomeViewModel @Inject constructor(
 
     fun deleteTask(taskModel: TaskModel) {
         viewModelScope.launch {
-            toDoUsesCases.deleteTask.invoke(taskModel)
+            toDoUsesCases.deleteTask(taskModel)
             getTasks()
         }
     }

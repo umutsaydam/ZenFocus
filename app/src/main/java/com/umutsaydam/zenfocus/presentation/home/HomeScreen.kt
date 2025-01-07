@@ -226,6 +226,7 @@ fun HomeScreen(
                 }
                 FocusControlButtons(
                     onClick = {
+                        homeViewModel.getSoundList()
                         homeViewModel.showPomodoroSoundsBottomSheet()
                     },
                     painterResource = painterResource(R.drawable.ic_music),
