@@ -79,27 +79,21 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun savePomodoroWorkDuration(newDuration: Int) {
-        if (_uiState.value.pomodoroWorkDuration != newDuration) {
-            viewModelScope.launch {
-                updateUiState { copy(pomodoroWorkDuration = newDuration) }
-                localUserDataStoreCases.savePomodoroWorkDuration(newDuration)
-            }
+        viewModelScope.launch {
+            localUserDataStoreCases.savePomodoroWorkDuration(newDuration)
         }
     }
 
     private fun getPomodoroBreakDuration() {
         viewModelScope.launch {
             val breakDuration = localUserDataStoreCases.readPomodoroBreakDuration().first()
-            updateUiState { copy(pomodoroWorkDuration = breakDuration) }
+            updateUiState { copy(pomodoroBreakDuration = breakDuration) }
         }
     }
 
     fun savePomodoroBreakDuration(newDuration: Int) {
-        if (_uiState.value.pomodoroBreakDuration != newDuration) {
-            viewModelScope.launch {
-                updateUiState { copy(pomodoroWorkDuration = newDuration) }
-                localUserDataStoreCases.savePomodoroBreakDuration(newDuration)
-            }
+        viewModelScope.launch {
+            localUserDataStoreCases.savePomodoroBreakDuration(newDuration)
         }
     }
 

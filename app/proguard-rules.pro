@@ -21,11 +21,17 @@
 #-renamesourcefileattribute SourceFile
 
 # Hilt
--keep class dagger.hilt.** { *; }
+-keep class dagger.hilt.** {
+    <init>();
+    *;
+}
 -keep class * implements dagger.hilt.internal.GeneratedComponent { *; }
 
 # Room
--keep class androidx.room.** { *; }
+-keep class androidx.room.** {
+    <init>();
+    *;
+}
 -keep class * extends androidx.room.RoomDatabase { *; }
 -keep @androidx.room.** class * { *; }
 -keepclasseswithmembernames class * {
@@ -33,17 +39,26 @@
 }
 
 # Amplify
--keep class com.amplifyframework.** { *; }
+-keep class com.amplifyframework.** {
+    <init>();
+    *;
+}
 -keepattributes Signature
 -keepattributes *Annotation*
 -dontwarn com.amazonaws.mobileconnectors.**
 -dontwarn org.apache.commons.logging.**
 
 # AWS SDK
--keep class com.amazonaws.** { *; }
+-keep class com.amazonaws.** {
+    <init>();
+    *;
+}
 -keepattributes Signature
 -dontwarn com.amazonaws.**
 
 # Google Play (Ads, Billing)
--keep class com.google.android.gms.** { *; }
+-keep class com.google.android.gms.** {
+    <init>();
+    *;
+}
 -dontwarn com.google.android.gms.**

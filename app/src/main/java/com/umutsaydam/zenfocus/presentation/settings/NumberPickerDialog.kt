@@ -14,12 +14,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,40 +34,24 @@ fun NumberPickerDialog(
     modifier: Modifier = Modifier,
     textTitle: String,
     gridState: LazyListState,
-    range: IntRange = 0..94,
+    range: IntRange = 0..93,
     content: @Composable (Int, Int) -> Unit,
     onClick: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    var visibleIndex by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(gridState) {
-        snapshotFlow {
-            gridState.firstVisibleItemIndex
-        }.collect { index ->
-            visibleIndex = index
-        }
+    val visibleIndex by remember(gridState) {
+        derivedStateOf { gridState.firstVisibleItemIndex }
     }
 
-    Dialog(
-        onDismissRequest = {
-            onDismissRequest()
-        },
-    ) {
+    Dialog(onDismissRequest = onDismissRequest) {
         Column(
             modifier = modifier
-                .background(
-                    color = White,
-                    shape = RoundedCornerShape(CORNER_SMALL)
-                )
+                .background(color = White, shape = RoundedCornerShape(CORNER_SMALL))
                 .size(300.dp)
                 .padding(PADDING_MEDIUM1),
             verticalArrangement = Arrangement.spacedBy(SPACE_SMALL)
         ) {
-
-            Text(
-                text = textTitle
-            )
+            Text(text = textTitle)
 
             LazyColumn(
                 modifier = Modifier
@@ -79,9 +60,9 @@ fun NumberPickerDialog(
                 verticalArrangement = Arrangement.Center,
                 state = gridState
             ) {
-                items(count = range.last) { currIndex ->
-                    if (currIndex != range.first && currIndex + 3 < range.last) {
-                        content(visibleIndex, currIndex)
+                items(range.last - range.first + 1) { index ->
+                    if (index != range.first && index + 2 < range.last) {
+                        content(visibleIndex, index)
                     } else {
                         Spacer(modifier = Modifier.height(SPACE_MEDIUM))
                     }
@@ -94,14 +75,9 @@ fun NumberPickerDialog(
                     .padding(PADDING_SMALL)
                     .weight(0.3f),
                 shape = RoundedCornerShape(CORNER_SMALL),
-                onClick = {
-                    onClick()
-                },
-//                enabled = toDoTask.isNotEmpty()
+                onClick = onClick
             ) {
-                Text(
-                    text = stringResource(R.string.save)
-                )
+                Text(text = stringResource(R.string.save))
             }
         }
     }
