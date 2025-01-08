@@ -115,7 +115,7 @@ fun FocusModeScreen(
                 modifier = Modifier.fillMaxSize(),
                 bitmap = it.asImageBitmap(),
                 contentDescription = "Selected theme",
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.FillBounds
             )
         }
         Box(
