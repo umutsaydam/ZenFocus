@@ -64,7 +64,7 @@ fun AppearanceScreen(
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val isTablet = remember { configuration.screenWidthDp.dp > 600.dp }
-    val themeSpace = remember { if (isTablet) 380.dp else 80.dp }
+    val themeSpace = remember { if (isTablet) 380.dp else 150.dp }
 
     LaunchedEffect(uiState.uiMessage, uiState.rewardedAd) {
         uiState.uiMessage?.let { message ->
