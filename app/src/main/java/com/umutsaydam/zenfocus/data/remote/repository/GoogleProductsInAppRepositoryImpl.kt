@@ -2,7 +2,6 @@ package com.umutsaydam.zenfocus.data.remote.repository
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
@@ -36,12 +35,9 @@ class GoogleProductsInAppRepositoryImpl(
     override fun setPurchasesUpdatedListener() {
         purchasesUpdatedListener = PurchasesUpdatedListener { billingResult, purchases ->
             if (billingResult.responseCode == BillingResponseCode.OK && purchases != null) {
-                Log.i("R/AD", "BillingResponseCode.OK")
                 for (purchase in purchases) {
                     handlePurchase(purchase)
                 }
-            } else {
-                Log.i("R/AD", "something went wrong... line 32")
             }
         }
     }
@@ -58,25 +54,24 @@ class GoogleProductsInAppRepositoryImpl(
     override fun startConnection() {
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
-                Log.i("R/AD", "Billing Service Disconnected")
+//                Log.i("R/AD", "Billing Service Disconnected")
             }
 
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingResponseCode.OK) {
-                    Log.i("R/AD", "onBillingSetupFinished")
                     queryProductDetails()
-                } else {
-                    Log.i(
-                        "R/AD",
-                        "Billing Setup Failed: ${billingResult.debugMessage}"
-                    )
                 }
+//                else {
+//                    Log.i(
+//                        "R/AD",
+//                        "Billing Setup Failed: ${billingResult.debugMessage}"
+//                    )
+//                }
             }
         })
     }
 
     override fun queryProductDetails() {
-        Log.i("R/AD", "starting queryProductDetails func...")
         val productList = listOf(
             QueryProductDetailsParams.Product.newBuilder()
                 .setProductId("remove_ads")
@@ -89,17 +84,11 @@ class GoogleProductsInAppRepositoryImpl(
             .build()
 
         billingClient.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
-            Log.i(
-                "R/AD",
-                "starting queryProductDetails func billingResult ${billingResult.responseCode} ?= ${BillingResponseCode.OK}"
-            )
-            Log.i("R/AD", "productDetailsList: $productDetailsList")
             if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
                 val productDetails = productDetailsList.first()
 
                 val activity = context as? Activity
                 activity?.let {
-                    Log.i("R/AD", "calling launchPurchaseFlow func...")
                     launchPurchaseFlow(
                         productDetails
                     )
@@ -109,7 +98,6 @@ class GoogleProductsInAppRepositoryImpl(
     }
 
     override fun launchPurchaseFlow(productDetails: ProductDetails) {
-        Log.i("R/AD", "starting launchPurchaseFlow func...")
         val productDetailsParams = BillingFlowParams.ProductDetailsParams.newBuilder()
             .setProductDetails(productDetails)
             .build()
@@ -133,7 +121,6 @@ class GoogleProductsInAppRepositoryImpl(
 
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                     if (billingResult.responseCode == BillingResponseCode.OK) {
-                        Log.i("R/AD", "enable process to remove ads...")
                         _purchaseStateFlow.value = true
                     }
                 }

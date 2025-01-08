@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.data.remote.service
 
 import android.content.Context
-import android.util.Log
 import com.amplifyframework.api.rest.RestOptions
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.storage.StoragePath
@@ -30,20 +29,13 @@ class AwsStorageServiceImpl @Inject constructor(
                 request,
                 { response ->
                     val responseData = response.data.asString()
-
                     val gson = Gson()
                     val apiResponse = gson.fromJson(responseData, APIResponse::class.java)
-                    Log.i("R/T", "apiResponse: $apiResponse")
 
-                    continuation.resume(Resource.Success(apiResponse)) { cause, _, _ ->
-                        Log.i("R/T", "coroutine was canceled $cause")
-                    }
+                    continuation.resume(Resource.Success(apiResponse)) { _, _, _ -> }
                 },
                 { failure ->
-                    Log.i("R/T", "Images fetched: $failure")
-                    continuation.resume(Resource.Error(failure.message)) { cause, _, _ ->
-                        Log.i("R/T", "coroutine was canceled $cause")
-                    }
+                    continuation.resume(Resource.Error(failure.message)) { _, _, _ -> }
                 }
             )
 
@@ -52,27 +44,19 @@ class AwsStorageServiceImpl @Inject constructor(
 
     override suspend fun downloadSelectedTheme(selectedThemeUrl: String): Resource<String> {
         val selectedThemeName = FileNameFromUrl.getFileNameFromUrl(selectedThemeUrl)
-        Log.i("R/T", "selectedThemeName: $selectedThemeName")
 
-       return suspendCancellableCoroutine { continuation ->
-           Amplify.Storage.downloadFile(
-               StoragePath.fromString(selectedThemeName),
-               File("${context.filesDir}/$selectedThemeName"),
-               StorageDownloadFileOptions.defaultInstance(),
-               { progress ->
-                   Log.i("R/T", progress.toString())
-               },
-               { result ->
-                   Log.i("R/T", "File downloaded: ${result.file.path}")
-                   Log.i("R/T", "File downloaded: ${result.file.name}")
-                   continuation.resume(Resource.Success(data = result.file.name)){ cause, _, _ ->
-                       Log.i("R/T", "coroutine was canceled $cause")
-                   }
-               },
-               { error ->
-                   Log.e("R/T", "Download failed", error)
-               }
-           )
-       }
+        return suspendCancellableCoroutine { continuation ->
+            Amplify.Storage.downloadFile(
+                StoragePath.fromString(selectedThemeName),
+                File("${context.filesDir}/$selectedThemeName"),
+                StorageDownloadFileOptions.defaultInstance(),
+                { result ->
+                    continuation.resume(Resource.Success(data = result.file.name)) { _, _, _ -> }
+                },
+                { error ->
+                    continuation.resume(Resource.Error(error.message)) { _, _, _ -> }
+                }
+            )
+        }
     }
 }

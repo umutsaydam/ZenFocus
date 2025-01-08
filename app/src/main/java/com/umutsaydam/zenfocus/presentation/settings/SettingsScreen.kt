@@ -2,7 +2,6 @@ package com.umutsaydam.zenfocus.presentation.settings
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -61,10 +60,8 @@ fun SettingsScreen(
         coroutine.launch {
             gridState.animateScrollToItem(
                 if (isWorkDurationDialogOpened) {
-                    Log.i("R/T", "${uiState.pomodoroWorkDuration}")
                     uiState.pomodoroWorkDuration - 1
                 } else {
-                    Log.i("R/T", "${uiState.pomodoroBreakDuration}")
                     uiState.pomodoroBreakDuration - 1
                 }
             )

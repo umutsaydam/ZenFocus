@@ -1,6 +1,5 @@
 package com.umutsaydam.zenfocus.presentation.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -136,10 +135,13 @@ fun MainNavHost() {
         ) { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email")
             val shouldResend = backStackEntry.arguments?.getBoolean("shouldResend")
-            Log.i("R/T", "$email")
-            Log.i("R/T", "$shouldResend")
+
             if (!email.isNullOrEmpty() && shouldResend != null) {
-                AccountConfirmScreen(email = email, shouldResend = shouldResend, navController = navController)
+                AccountConfirmScreen(
+                    email = email,
+                    shouldResend = shouldResend,
+                    navController = navController
+                )
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.umutsaydam.zenfocus
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
@@ -29,7 +28,6 @@ class MainActivityViewModel @Inject constructor(
     fun startInitialSetupIfFirstEntry(currentLocale: Locale) {
         viewModelScope.launch {
             readAppEntry.collect { isEnteredBefore ->
-                Log.i("R/T", "isEnteredBefore: $isEnteredBefore")
                 if (!isEnteredBefore) {
                     themeRepository.copyDefaultThemeToInternalStorage()
                     saveAppEntry()
@@ -50,9 +48,9 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    private fun getDefaultAppLang(){
+    private fun getDefaultAppLang() {
         viewModelScope.launch {
-            localUserDataStoreCases.readAppLang().collect{ langWithCode ->
+            localUserDataStoreCases.readAppLang().collect { langWithCode ->
                 val langCode = langWithCode.split("-")[1]
                 defaultAppLang.value = langCode
             }

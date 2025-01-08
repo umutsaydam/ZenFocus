@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.umutsaydam.zenfocus.MainActivity
 import com.umutsaydam.zenfocus.R
@@ -49,13 +48,11 @@ class PomodoroForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             "ACTION_PAUSE" -> {
-                Log.i("R/T", "Timer was paused")
                 pauseTimer()
                 updateNotification(remainingTimeText.value)
             }
 
             "ACTION_RESUME" -> {
-                Log.i("R/T", "Timer is resuming...")
                 resumeTimer()
             }
 
@@ -116,19 +113,17 @@ class PomodoroForegroundService : Service() {
     private fun observeRemainingTimeTextFormat() {
         notificationJob = CoroutineScope(Dispatchers.Default).launch {
             pomodoroManager.remainingTimeText.collect { remainingTimeTextFormat ->
-                Log.i("R/T", "remainingTimeTextFormat -> $remainingTimeTextFormat")
                 remainingTimeText.value = remainingTimeTextFormat
-
                 updateNotification(remainingTimeTextFormat)
             }
         }
     }
 
     private fun updateNotification(newContentText: String) {
-        if (isServiceRunning){
+        if (isServiceRunning) {
             val notification = createNotification(newContentText)
             notificationManager.notify(notificationId, notification)
-        }else{
+        } else {
             cleanUpService()
         }
     }
@@ -168,10 +163,6 @@ class PomodoroForegroundService : Service() {
         stopSelf()
         stopForeground(STOP_FOREGROUND_REMOVE)
         notificationManager.cancel(notificationId)
-        Log.i(
-            "R/T",
-            "Service stopped and notification removed ************* ${Build.VERSION.SDK_INT} *************"
-        )
     }
 
     override fun onDestroy() {

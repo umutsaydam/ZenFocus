@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.data.local.manager
 
 import android.os.CountDownTimer
-import android.util.Log
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
@@ -19,10 +18,10 @@ class PomodoroManagerImpl(
     private var _initTime = 0L
     private val _remainingTime = MutableStateFlow<Long>(0)
 
-    private val _remainingPercent = MutableStateFlow<Float>(0f)
+    private val _remainingPercent = MutableStateFlow(0f)
     override val remainingPercent: StateFlow<Float> = _remainingPercent
 
-    private val _remainingTimeText = MutableStateFlow<String>("00:00")
+    private val _remainingTimeText = MutableStateFlow("00:00")
     override val remainingTimeText: StateFlow<String> = _remainingTimeText
 
     private lateinit var timer: CountDownTimer
@@ -30,66 +29,57 @@ class PomodoroManagerImpl(
     private val _isTimerRunning = MutableStateFlow(false)
     override val isTimerRunning: StateFlow<Boolean> = _isTimerRunning
 
-    private val _workDuration = MutableStateFlow<Long>(0L)
+    private val _workDuration = MutableStateFlow(0L)
     override val workDuration: StateFlow<Long> = _workDuration
 
-    private val _breakDuration = MutableStateFlow<Long>(0L)
+    private val _breakDuration = MutableStateFlow(0L)
     override val breakDuration: StateFlow<Long> = _breakDuration
 
-    private val _pomodoroWorkCycle = MutableStateFlow<Int>(0)
+    private val _pomodoroWorkCycle = MutableStateFlow(0)
     override val pomodoroWorkCycle: StateFlow<Int> = _pomodoroWorkCycle
 
-    private val _isWorkingSession = MutableStateFlow<Boolean>(true)
+    private val _isWorkingSession = MutableStateFlow(true)
     override val isWorkingSession: StateFlow<Boolean> = _isWorkingSession
 
-    private val _isVibrateEnabled = MutableStateFlow<Boolean>(true)
+    private val _isVibrateEnabled = MutableStateFlow(true)
     override val isVibrateEnabled: StateFlow<Boolean> = _isVibrateEnabled
 
     override fun setPomodoroTimeAsMinute(minute: Int) {
-        Log.i("R/T", "setTime was started as minute")
         val convertedTime = TimeConverter.minuteToMilli(minute)
         _remainingTime.value = convertedTime
         _initTime = convertedTime
     }
 
     override fun setPomodoroTimeAsMilli(milli: Long) {
-        Log.i("R/T", "setTime was started as milli")
         _remainingTime.value = milli
         _initTime = milli
     }
 
     override fun setPomodoroWorkDurationAsMinute(minute: Int) {
-        Log.i("R/T", "work duration set as $minute (seconds)")
         val convertedTime = TimeConverter.minuteToMilli(minute)
         _workDuration.value = convertedTime
     }
 
     override fun setPomodoroBreakDurationAsMinute(minute: Int) {
-        Log.i("R/T", "break duration set as $minute (seconds)")
         val convertedTime = TimeConverter.minuteToMilli(minute)
         _breakDuration.value = convertedTime
     }
 
     override fun setPomodoroWorkCycle(workCycle: Int) {
-        Log.i("R/T", "pomodoro work cycle set as $workCycle")
         _pomodoroWorkCycle.value = workCycle
     }
 
     override fun startTimer() {
-        Log.i("R/T", "startTimer was started")
         if (!_isTimerRunning.value && _remainingTime.value == 0L) {
             if (_isWorkingSession.value) {
-                Log.i("R/T", "pomodoro time set work duration")
                 setPomodoroTimeAsMilli(_workDuration.value)
             } else {
-                Log.i("R/T", "pomodoro time set break duration")
                 setPomodoroTimeAsMilli(_breakDuration.value)
             }
         }
 
         if (_remainingTime.value > 0) {
             if (_isTimerRunning.value) {
-                Log.i("R/T", "timer has been init so the old timer was canceled.")
                 timer.cancel()
             }
 
@@ -102,14 +92,11 @@ class PomodoroManagerImpl(
                     val divided = millisUntilFinished / 1000
                     val minutes = divided / 60
                     val seconds = divided % 60
-
                     val remainingTextFormat =
                         TimeConverter.convertMinutesAndSecondsToTextFormat(minutes, seconds)
+
                     _remainingTimeText.value = remainingTextFormat
-                    Log.i("R/T", remainingTextFormat)
-
                     _remainingTime.value = millisUntilFinished
-
                     _remainingPercent.value = millisUntilFinished.toFloat() / _initTime.toFloat()
                 }
 
@@ -126,11 +113,9 @@ class PomodoroManagerImpl(
                             switchBreakSession()
                         } else {
                             // Pomodoro is completely complete.
-                            Log.i("R/T", "********* Pomodoro is completely complete *********")
                             stopTimer()
                             vibrateIfAvailable()
                             timeOutRingerManager.playSound(R.raw.completed_all_sessions)
-                            Log.i("R/T", "timer finished")
                         }
                     } else {
                         vibrateIfAvailable()
@@ -148,7 +133,6 @@ class PomodoroManagerImpl(
     }
 
     override fun switchBreakSession() {
-        Log.i("R/t", "Switching break session...")
         stopTimer()
         focusSoundManager.stopSound()
         notifyIfAvailable(R.raw.start_break_session)
@@ -158,7 +142,6 @@ class PomodoroManagerImpl(
     }
 
     override fun switchWorkSession() {
-        Log.i("R/t", "Switching work session...")
         stopTimer()
         focusSoundManager.playSoundIfAvailable()
         notifyIfAvailable(R.raw.start_work_session)
@@ -187,13 +170,9 @@ class PomodoroManagerImpl(
 
     override fun pauseTimer() {
         if (_isTimerRunning.value) {
-            Log.i("R/T", "Pause Timer func started...")
             _isTimerRunning.value = false
             focusSoundManager.stopSound()
             timer.cancel()
-            Log.i("R/T", "${_remainingTime.value}")
-        } else {
-            Log.i("R/T", "Pause can not stop because it is not working.")
         }
     }
 
@@ -205,15 +184,12 @@ class PomodoroManagerImpl(
 
     override fun stopTimer() {
         if (_isTimerRunning.value) {
-            Log.i("R/T", "timer stopped")
             _isTimerRunning.value = false
             focusSoundManager.stopSound()
             timer.cancel()
             _remainingTime.value = 0
             _remainingPercent.value = 0f
             _remainingTimeText.value = "00:00"
-        } else {
-            Log.i("R/T", "timer could not stopped. It is not initialized!")
         }
     }
 

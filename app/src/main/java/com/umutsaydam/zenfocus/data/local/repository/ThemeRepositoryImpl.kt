@@ -3,7 +3,6 @@ package com.umutsaydam.zenfocus.data.local.repository
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.util.Constants
@@ -31,9 +30,6 @@ class ThemeRepositoryImpl @Inject constructor(
             file.outputStream().use { outputStream ->
                 inputStream.copyTo(outputStream)
             }
-            Log.i("FileCopy", "Dosya iç depolamaya kopyalandı: ${file.absolutePath}")
-        } else {
-            Log.i("FileCopy", "Dosya zaten var: ${file.absolutePath}")
         }
     }
 

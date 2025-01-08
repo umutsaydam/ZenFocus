@@ -3,7 +3,6 @@ package com.umutsaydam.zenfocus.data.local.manager
 import android.content.Context
 import android.content.res.AssetManager
 import android.media.MediaPlayer
-import android.util.Log
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.model.RingerModeEnum
 import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
@@ -41,7 +40,6 @@ class FocusSoundManagerImpl(
         if (deviceRingerModeAvailable()) {
             try {
                 if (_isPlaying.value || _currentSoundName.value == NONE) {
-                    Log.i("R/T", "Media player is playing another sound or selected none so it is stopped...")
                     mediaPlayer!!.stop()
                     mediaPlayer!!.release()
                 }
@@ -59,15 +57,14 @@ class FocusSoundManagerImpl(
                     it.isLooping = true
                     it.start()
                     _isPlaying.value = true
-                    Log.i("R/T", "Focus sound is playing...")
                 }
             } catch (e: Exception) {
-                Log.i("R/T", "Error! ${e.message}")
                 _isPlaying.value = false
             }
-        } else {
-            Log.i("R/T", "sound name not found.")
         }
+//        else {
+//            Log.i("R/T", "sound name not found.")
+//        }
     }
 
     override fun deviceRingerModeAvailable(): Boolean {
@@ -79,7 +76,6 @@ class FocusSoundManagerImpl(
             mediaPlayer!!.stop()
             mediaPlayer!!.release()
             _isPlaying.value = false
-            Log.i("R/T", "Focus sound is stopping...")
         }
     }
 }

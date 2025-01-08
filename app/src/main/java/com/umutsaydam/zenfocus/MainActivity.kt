@@ -5,7 +5,6 @@ import android.app.LocaleManager
 import android.os.Build
 import android.os.Bundle
 import android.os.LocaleList
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -56,15 +55,11 @@ class MainActivity(
                 val appLang by mainActivityViewModel.defaultAppLang.collectAsState()
                 LaunchedEffect(appLang) {
                     if (appLang != null) {
-                        Log.i("R/T", appLang!!)
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            Log.i("R/T", appLang!!)
-
                             this@MainActivity.getSystemService(LocaleManager::class.java)
                                 .applicationLocales = LocaleList.forLanguageTags(appLang)
                         } else {
-                            Log.i("R/T", "sad $appLang")
                             AppCompatDelegate.setApplicationLocales(
                                 LocaleListCompat.forLanguageTags(
                                     appLang
@@ -80,9 +75,7 @@ class MainActivity(
     }
 
     private fun initGoogleAds(activity: Activity) {
-        MobileAds.initialize(activity) {
-            Log.i("A/D", "worked...")
-        }
+        MobileAds.initialize(activity) {}
     }
 
     private fun initAmplify() {
@@ -91,9 +84,8 @@ class MainActivity(
             Amplify.addPlugin(AWSS3StoragePlugin())
             Amplify.addPlugin(AWSApiPlugin())
             Amplify.configure(applicationContext)
-            Log.i("MyAmplifyApp", "Amplify initialized")
         } catch (error: AmplifyException) {
-            Log.e("MyAmplifyApp", "Could not initialize Amplify", error)
+            error.printStackTrace()
         }
     }
 }

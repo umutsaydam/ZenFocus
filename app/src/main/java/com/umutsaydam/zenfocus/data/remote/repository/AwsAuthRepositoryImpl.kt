@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.data.remote.repository
 
 import android.app.Activity
-import com.amplifyframework.auth.cognito.AWSCognitoAuthSession
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
