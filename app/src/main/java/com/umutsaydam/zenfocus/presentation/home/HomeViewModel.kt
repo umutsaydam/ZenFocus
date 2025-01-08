@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.umutsaydam.zenfocus.R
-import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
+import com.umutsaydam.zenfocus.data.foregroundService.PomodoroForegroundService
 import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.domain.model.UserTypeEnum

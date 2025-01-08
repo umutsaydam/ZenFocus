@@ -3,7 +3,7 @@ package com.umutsaydam.zenfocus.presentation.focusMode
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
+import com.umutsaydam.zenfocus.data.foregroundService.PomodoroForegroundService
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase

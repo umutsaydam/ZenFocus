@@ -3,7 +3,7 @@ package com.umutsaydam.zenfocus.data.local.manager
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import com.umutsaydam.zenfocus.data.service.PomodoroForegroundService
+import com.umutsaydam.zenfocus.data.foregroundService.PomodoroForegroundService
 import com.umutsaydam.zenfocus.domain.manager.PomodoroServiceManager
 
 class PomodoroServiceManagerImpl(

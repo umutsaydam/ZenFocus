@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.data.service
+package com.umutsaydam.zenfocus.data.foregroundService
 
 import android.app.Notification
 import android.app.NotificationChannel
