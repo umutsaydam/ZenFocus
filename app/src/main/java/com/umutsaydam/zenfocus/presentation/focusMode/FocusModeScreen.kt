@@ -80,7 +80,7 @@ fun FocusModeScreen(
     }
 
     KeepScreenOn()
-    StatusBarSwitcher()
+    StatusBarSwitcher(false)
 
     var alpha by remember { mutableFloatStateOf(1f) }
     val animatedAlpha by animateFloatAsState(
