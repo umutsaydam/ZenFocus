@@ -62,3 +62,14 @@
     *;
 }
 -dontwarn com.google.android.gms.**
+
+# Gson
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.google.gson.** { *; }
+-dontwarn com.google.gson.**
+
+# Gson Model Classes
+-keep class com.umutsaydam.zenfocus.data.remote.dto.APIResponse { *; }
+-keep class com.umutsaydam.zenfocus.data.remote.dto.Items { *; }
+-keep class com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo { *; }
