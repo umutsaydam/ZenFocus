@@ -109,10 +109,12 @@ fun AppearanceScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            if (appearanceViewModel.willShowAd()) {
-                                appearanceViewModel.showRewardedAd()
-                            } else {
-                                appearanceViewModel.saveTheme()
+                            if (appearanceViewModel.isConnected()) {
+                                if (appearanceViewModel.willShowAd()) {
+                                    appearanceViewModel.showRewardedAd()
+                                } else {
+                                    appearanceViewModel.saveTheme()
+                                }
                             }
                         }
                     ) {
