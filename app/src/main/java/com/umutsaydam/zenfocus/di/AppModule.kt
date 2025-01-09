@@ -13,7 +13,6 @@ import com.umutsaydam.zenfocus.data.local.manager.TimeOutRingerManagerImpl
 import com.umutsaydam.zenfocus.data.local.manager.VibrationManagerImpl
 import com.umutsaydam.zenfocus.data.remote.repository.AwsStorageServiceRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.service.AwsAuthServiceImpl
-import com.umutsaydam.zenfocus.data.remote.service.AwsStorageServiceImpl
 import com.umutsaydam.zenfocus.data.local.repository.RingerModeRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.manager.FocusSoundManagerImpl
 import com.umutsaydam.zenfocus.data.local.repository.NetworkCheckerRepositoryImpl
@@ -32,7 +31,6 @@ import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
-import com.umutsaydam.zenfocus.domain.service.AwsStorageService
 import com.umutsaydam.zenfocus.domain.service.GoogleAdService
 import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
@@ -280,8 +278,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideStorageRepository(
-        awsStorageService: AwsStorageService
-    ): AwsStorageServiceRepository = AwsStorageServiceRepositoryImpl(awsStorageService)
+        application: Application
+    ): AwsStorageServiceRepository = AwsStorageServiceRepositoryImpl(application)
 
     @Provides
     @Singleton
@@ -303,14 +301,6 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAwsAuthService(): AwsAuthService = AwsAuthServiceImpl()
-
-    @Provides
-    @Singleton
-    fun provideAwsStorageService(
-        application: Application
-    ): AwsStorageService = AwsStorageServiceImpl(
-        context = application
-    )
 
     @Provides
     @Singleton
