@@ -1,13 +1,12 @@
 package com.umutsaydam.zenfocus.domain.usecases.remote.authCases
 
-import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.model.AwsAuthSignUpResult
-import javax.inject.Inject
+import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 
-class AwsUserSignUpConfirm @Inject constructor(
-    private val awsAuthRepository: AwsAuthRepository
+class AwsUserSignUpConfirm(
+    private val awsAuthService: AwsAuthService
 ) {
     suspend operator fun invoke(email: String, confirmCode: String): AwsAuthSignUpResult {
-       return awsAuthRepository.confirmAccount(email, confirmCode)
+        return awsAuthService.confirmAccount(email, confirmCode)
     }
 }

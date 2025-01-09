@@ -2,12 +2,12 @@ package com.umutsaydam.zenfocus.domain.usecases.remote.authCases
 
 import android.app.Activity
 import com.umutsaydam.zenfocus.domain.model.Resource
-import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
+import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 
 class AwsSignInWithGoogle(
-    private val awsAuthRepository: AwsAuthRepository
+    private val awsAuthService: AwsAuthService
 ) {
     suspend operator fun invoke(activity: Activity): Resource<String> {
-        return awsAuthRepository.signUpOrInWithGoogle(activity)
+        return awsAuthService.signUpOrInWithGoogle(activity)
     }
 }

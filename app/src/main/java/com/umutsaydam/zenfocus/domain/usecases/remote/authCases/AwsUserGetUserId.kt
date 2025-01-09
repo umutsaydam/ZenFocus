@@ -1,13 +1,12 @@
 package com.umutsaydam.zenfocus.domain.usecases.remote.authCases
 
-import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.model.Resource
-import javax.inject.Inject
+import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 
-class AwsUserGetUserId @Inject constructor(
-    private val awsAuthRepository: AwsAuthRepository
+class AwsUserGetUserId(
+    private val awsAuthService: AwsAuthService
 ) {
     suspend operator fun invoke(): Resource<String> {
-        return awsAuthRepository.getCurrentUserId()
+        return awsAuthService.getCurrentUserId()
     }
 }

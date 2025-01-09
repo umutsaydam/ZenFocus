@@ -1,13 +1,13 @@
 package com.umutsaydam.zenfocus.domain.usecases.remote.authCases
 
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
-import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.model.Resource
+import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 
 class AwsReadUserInfo(
-    private val awsAuthRepository: AwsAuthRepository
+    private val awsAuthService: AwsAuthService
 ) {
     suspend operator fun invoke(userId: String): Resource<UserInfo> {
-        return awsAuthRepository.getUserInfo(userId)
+        return awsAuthService.getUserInfo(userId)
     }
 }

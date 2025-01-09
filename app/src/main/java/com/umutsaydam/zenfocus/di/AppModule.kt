@@ -11,7 +11,6 @@ import com.umutsaydam.zenfocus.data.local.manager.PomodoroManagerImpl
 import com.umutsaydam.zenfocus.data.local.manager.PomodoroServiceManagerImpl
 import com.umutsaydam.zenfocus.data.local.manager.TimeOutRingerManagerImpl
 import com.umutsaydam.zenfocus.data.local.manager.VibrationManagerImpl
-import com.umutsaydam.zenfocus.data.remote.repository.AwsAuthRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.repository.AwsStorageServiceRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.service.AwsAuthServiceImpl
 import com.umutsaydam.zenfocus.data.remote.service.AwsStorageServiceImpl
@@ -30,7 +29,6 @@ import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.repository.local.NetworkCheckerRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
-import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
@@ -168,18 +166,18 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAwsAuthUsesCases(
-        awsAuthRepository: AwsAuthRepository
+        awsAuthService: AwsAuthService
     ): AwsAuthCases {
         return AwsAuthCases(
-            userSignIn = AwsUserSignIn(awsAuthRepository),
-            userSignUp = AwsUserSignUp(awsAuthRepository),
-            userSignUpConfirm = AwsUserSignUpConfirm(awsAuthRepository),
-            awsResendConfirmationCode = AwsResendConfirmationCode(awsAuthRepository),
-            userGetId = AwsUserGetUserId(awsAuthRepository),
-            readUserInfo = AwsReadUserInfo(awsAuthRepository),
-            updateUserInfo = AwsUpdateUserInfo(awsAuthRepository),
-            signInWithGoogle = AwsSignInWithGoogle(awsAuthRepository),
-            signOut = AwsSignOut(awsAuthRepository)
+            userSignIn = AwsUserSignIn(awsAuthService),
+            userSignUp = AwsUserSignUp(awsAuthService),
+            userSignUpConfirm = AwsUserSignUpConfirm(awsAuthService),
+            awsResendConfirmationCode = AwsResendConfirmationCode(awsAuthService),
+            userGetId = AwsUserGetUserId(awsAuthService),
+            readUserInfo = AwsReadUserInfo(awsAuthService),
+            updateUserInfo = AwsUpdateUserInfo(awsAuthService),
+            signInWithGoogle = AwsSignInWithGoogle(awsAuthService),
+            signOut = AwsSignOut(awsAuthService)
         )
     }
 
@@ -278,12 +276,6 @@ object AppModule {
     fun provideRepository(
         tasksDao: TasksDao
     ): ToDoRepository = ToDoRepositoryImpl(tasksDao)
-
-    @Provides
-    @Singleton
-    fun provideAuthRepository(
-        awsAuthService: AwsAuthService
-    ): AwsAuthRepository = AwsAuthRepositoryImpl(awsAuthService)
 
     @Provides
     @Singleton

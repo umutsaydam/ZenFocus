@@ -1,11 +1,11 @@
 package com.umutsaydam.zenfocus.domain.usecases.remote.authCases
 
-import com.umutsaydam.zenfocus.domain.repository.remote.AwsAuthRepository
+import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 
 class AwsSignOut(
-    private val awsAuthRepository: AwsAuthRepository
+    private val awsAuthService: AwsAuthService
 ) {
     suspend operator fun invoke(){
-        awsAuthRepository.signOut()
+        awsAuthService.signOut()
     }
 }
