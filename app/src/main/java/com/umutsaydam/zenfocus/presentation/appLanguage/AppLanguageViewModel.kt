@@ -50,7 +50,7 @@ class AppLanguageViewModel @Inject constructor(
 
     private fun saveAppLang() {
         viewModelScope.launch {
-            localUserDataStoreCases.saveAppLang.invoke(_defaultLang.value)
+            localUserDataStoreCases.saveAppLang(_defaultLang.value)
         }
     }
 

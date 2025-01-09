@@ -95,7 +95,7 @@ class AuthViewModel @Inject constructor(
 
     private fun getUserId() {
         viewModelScope.launch {
-            when (val result = awsAuthCases.userGetId.invoke()) {
+            when (val result = awsAuthCases.userGetId()) {
                 is Resource.Success -> {
                     val userId = result.data
                     userId?.let { id ->

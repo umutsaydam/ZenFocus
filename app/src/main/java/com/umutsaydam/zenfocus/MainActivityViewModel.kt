@@ -18,7 +18,7 @@ class MainActivityViewModel @Inject constructor(
     private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val themeRepository: ThemeRepository
 ) : ViewModel() {
-    private val readAppEntry: Flow<Boolean> = localUserDataStoreCases.readAppEntry.invoke()
+    private val readAppEntry: Flow<Boolean> = localUserDataStoreCases.readAppEntry()
     val defaultAppLang: MutableStateFlow<String?> = MutableStateFlow(null)
 
     init {

@@ -39,7 +39,7 @@ class SettingsViewModel @Inject constructor(
 
     private fun readVibrateState() {
         viewModelScope.launch {
-            localUserDataStoreCases.readVibrateState.invoke().collect { state ->
+            localUserDataStoreCases.readVibrateState().collect { state ->
                 updateUiState { copy(defaultVibrateState = state) }
             }
         }
@@ -49,13 +49,13 @@ class SettingsViewModel @Inject constructor(
         updateUiState { copy(defaultVibrateState = state) }
 
         viewModelScope.launch {
-            localUserDataStoreCases.saveVibrateState.invoke(state)
+            localUserDataStoreCases.saveVibrateState(state)
         }
     }
 
     private fun isSignedIn() {
         viewModelScope.launch {
-            val userId = localUserDataStoreCases.readUserId.invoke()
+            val userId = localUserDataStoreCases.readUserId()
             userId.collect { value ->
                 updateUiState { copy(isSignedInState = value.isNotEmpty()) }
             }
@@ -65,9 +65,9 @@ class SettingsViewModel @Inject constructor(
     fun signOut() {
         viewModelScope.launch {
             updateUiState { copy(isSignedInState = false) }
-            awsAuthCases.signOut.invoke()
-            localUserDataStoreCases.deleteUserId.invoke()
-            localUserDataStoreCases.deleteUserType.invoke()
+            awsAuthCases.signOut()
+            localUserDataStoreCases.deleteUserId()
+            localUserDataStoreCases.deleteUserType()
         }
     }
 
