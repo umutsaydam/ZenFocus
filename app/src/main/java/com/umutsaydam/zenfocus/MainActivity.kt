@@ -5,6 +5,7 @@ import android.app.LocaleManager
 import android.os.Build
 import android.os.Bundle
 import android.os.LocaleList
+import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -49,6 +50,7 @@ class MainActivity(
                 splash.setKeepOnScreenCondition {
                     isLoading
                 }
+                removeActionBar()
 
                 val mainActivityViewModel: MainActivityViewModel = hiltViewModel()
                 mainActivityViewModel.startInitialSetupIfFirstEntry(Locale.getDefault())
@@ -72,6 +74,13 @@ class MainActivity(
                 MainNavHost()
             }
         }
+    }
+
+    private fun removeActionBar() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
     }
 
     private fun initGoogleAds(activity: Activity) {
