@@ -12,7 +12,7 @@ import com.umutsaydam.zenfocus.presentation.navigation.Route
 
 class NavigationTransitionManager {
 
-    private val animationDuration = 700
+    private val animationDuration = 400
     private val easing = LinearOutSlowInEasing
 
     fun getEnterTransition(targetRoute: String, fromRoute: String?): EnterTransition {
