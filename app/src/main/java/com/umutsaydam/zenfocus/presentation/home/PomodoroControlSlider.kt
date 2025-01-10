@@ -63,7 +63,7 @@ fun PomodoroControlSlider(
                 )
             }
         )
-        Text(text = defaultSliderPosition.toString())
+        Text(text = defaultSliderPosition.toInt().toString())
 
         Button(
             modifier = Modifier

@@ -330,6 +330,7 @@ fun HomeScreen(
                                     valueRange = 1f..4f
                                 ) { newSliderPosition ->
                                     homeViewModel.setSliderPosition(newSliderPosition)
+                                    homeViewModel.setBottomSheetState(false)
                                 }
                             }
 

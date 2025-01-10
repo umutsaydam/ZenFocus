@@ -74,6 +74,7 @@ class HomeViewModel @Inject constructor(
         isTimerRunning()
         setTimer()
         getDefaultFocusSound()
+        getSliderPosition()
     }
 
     private fun updateHomeUiState(update: HomeUiState.() -> HomeUiState) {
@@ -252,6 +253,14 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             toDoUsesCases.deleteTask(taskModel)
             getTasks()
+        }
+    }
+
+    fun getSliderPosition(){
+        viewModelScope.launch {
+            val cycle = localUserDataStoreCases.readPomodoroCycle().first()
+
+            updateHomeUiState { copy(sliderPosition = cycle.toFloat()) }
         }
     }
 
