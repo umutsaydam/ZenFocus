@@ -56,12 +56,24 @@
 -keepattributes Signature
 -dontwarn com.amazonaws.**
 
-# Google Play (Ads, Billing)
+# Google Services
 -keep class com.google.android.gms.** {
     <init>();
     *;
 }
 -dontwarn com.google.android.gms.**
+
+# Google Billing
+-keep class com.android.billingclient.** { *; }
+-keepclassmembers class * extends java.util.ListResourceBundle {
+        *;
+}
+-keep public class * extends android.app.Activity
+-keep class com.android.billingclient.api.** { *; }
+-keep class com.android.billingclient.** { *; }
+-dontwarn com.android.billingclient.**
+-keepattributes Exceptions
+-keepattributes Signature
 
 # Gson
 -keepattributes Signature
@@ -73,3 +85,7 @@
 -keep class com.umutsaydam.zenfocus.data.remote.dto.APIResponse { *; }
 -keep class com.umutsaydam.zenfocus.data.remote.dto.Items { *; }
 -keep class com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo { *; }
+-keep class com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl {
+    <init>();
+    *;
+ }
