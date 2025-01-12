@@ -50,7 +50,6 @@ class MainActivity(
                 splash.setKeepOnScreenCondition {
                     isLoading
                 }
-                removeActionBar()
 
                 val mainActivityViewModel: MainActivityViewModel = hiltViewModel()
                 mainActivityViewModel.startInitialSetupIfFirstEntry(Locale.getDefault())
@@ -74,13 +73,6 @@ class MainActivity(
                 MainNavHost()
             }
         }
-    }
-
-    private fun removeActionBar() {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
     }
 
     private fun initGoogleAds(activity: Activity) {
