@@ -64,6 +64,7 @@
     <string name="code_mismatch">Confirmation code entered is not correct</string>
     <string name="limit_exceeded">Code submission limit exceeded. Please try again later.</string>
     <string name="account_verified">Your account verified.</string>
+    <string name="must_sign_in_remove_ad">To remove ads, you must first log in</string>
 
     <string-array name="app_langs">
         <item>Turkish-tr</item>

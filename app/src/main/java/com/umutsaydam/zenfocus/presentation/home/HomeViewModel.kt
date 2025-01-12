@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.home
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdSize
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class HomeUiState(
-    val userId: String? = null,
+    val userId: String = "",
     val userType: String? = null,
     val remainingTime: String = "00:00",
     val remainingPercent: Float = 0f,
@@ -293,17 +294,18 @@ class HomeViewModel @Inject constructor(
 
     private fun getUserId() {
         viewModelScope.launch {
-            val userId = localUserDataStoreCases.readUserId().first()
-            updateHomeUiState { copy(userId = userId) }
+            localUserDataStoreCases.readUserId().collectLatest{ id ->
+                updateHomeUiState { copy(userId = id) }
+            }
         }
     }
 
     private fun changeUserTypeAsAdFree() {
         viewModelScope.launch {
             val adFreeUser = UserTypeEnum.AD_FREE_USER.type
-            if (homeUiState.value.userId != null && homeUiState.value.userType != adFreeUser) {
+            if (homeUiState.value.userId.isNotEmpty() && homeUiState.value.userType != adFreeUser) {
                 val result = authCases.updateUserInfo(
-                    userId = homeUiState.value.userId!!,
+                    userId = homeUiState.value.userId,
                     userType = adFreeUser
                 )
 
@@ -332,16 +334,20 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun startProductsInApp() {
-        googleProductsInAppUseCases.startConnection()
+    fun startProductsInApp(activity: Activity) {
+       if (_homeUiState.value.userId.isNotEmpty()){
+           googleProductsInAppUseCases.startConnection(activity)
 
-        viewModelScope.launch {
-            googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
-                if (purchaseState) {
-                    changeUserTypeAsAdFree()
-                }
-            }
-        }
+           viewModelScope.launch {
+               googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
+                   if (purchaseState) {
+                       changeUserTypeAsAdFree()
+                   }
+               }
+           }
+       }else{
+           updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
+       }
     }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {
@@ -365,5 +371,9 @@ class HomeViewModel @Inject constructor(
     fun showAddToDoBottomSheet() {
         setBottomSheetContent(BottomSheetContent.AddToDo)
         setBottomSheetState(true)
+    }
+
+    fun clearUiMessage() {
+        updateHomeUiState { copy(uiMessage = null) }
     }
 }
