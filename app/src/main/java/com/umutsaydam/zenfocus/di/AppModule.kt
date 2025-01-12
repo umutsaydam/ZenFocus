@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.umutsaydam.zenfocus.data.local.db.TasksDao
 import com.umutsaydam.zenfocus.data.local.db.TasksDatabase
@@ -89,6 +90,7 @@ import com.umutsaydam.zenfocus.domain.usecases.tasks.cases.UpsertTask
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -259,8 +261,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideGoogleProductsInAppRepository(
-        application: Application
-    ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(application)
+        @ApplicationContext context: Context
+    ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(context)
 
     @Provides
     @Singleton
