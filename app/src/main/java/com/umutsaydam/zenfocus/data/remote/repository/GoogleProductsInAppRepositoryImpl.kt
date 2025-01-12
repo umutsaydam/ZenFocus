@@ -23,7 +23,7 @@ class GoogleProductsInAppRepositoryImpl(
 ) : GoogleProductsInAppRepository {
     private lateinit var purchasesUpdatedListener: PurchasesUpdatedListener
     private lateinit var billingClient: BillingClient
-
+    private var activity: Activity? = null
     private val _purchaseStateFlow = MutableStateFlow(false)
     override val purchaseStateFlow: StateFlow<Boolean> = _purchaseStateFlow
 
@@ -51,7 +51,8 @@ class GoogleProductsInAppRepositoryImpl(
             .build()
     }
 
-    override fun startConnection() {
+    override fun startConnection(activity: Activity) {
+        this.activity = activity
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
 //                Log.i("R/AD", "Billing Service Disconnected")
@@ -78,21 +79,15 @@ class GoogleProductsInAppRepositoryImpl(
                 .setProductType(BillingClient.ProductType.INAPP)
                 .build()
         )
-
         val params = QueryProductDetailsParams.newBuilder()
             .setProductList(productList)
             .build()
-
         billingClient.queryProductDetailsAsync(params) { billingResult, productDetailsList ->
             if (billingResult.responseCode == BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
                 val productDetails = productDetailsList.first()
-
-                val activity = context as? Activity
-                activity?.let {
-                    launchPurchaseFlow(
-                        productDetails
-                    )
-                }
+                launchPurchaseFlow(
+                    productDetails
+                )
             }
         }
     }
@@ -101,12 +96,9 @@ class GoogleProductsInAppRepositoryImpl(
         val productDetailsParams = BillingFlowParams.ProductDetailsParams.newBuilder()
             .setProductDetails(productDetails)
             .build()
-
         val billingFlowParams = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(listOf(productDetailsParams))
             .build()
-
-        val activity = context as? Activity
         activity?.let {
             billingClient.launchBillingFlow(it, billingFlowParams)
         }
@@ -118,7 +110,6 @@ class GoogleProductsInAppRepositoryImpl(
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                     .setPurchaseToken(purchase.purchaseToken)
                     .build()
-
                 billingClient.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                     if (billingResult.responseCode == BillingResponseCode.OK) {
                         _purchaseStateFlow.value = true
