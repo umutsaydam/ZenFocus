@@ -5,7 +5,7 @@ import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
 import com.umutsaydam.zenfocus.domain.manager.TimeOutRingerManager
-import com.umutsaydam.zenfocus.domain.manager.VibrationManager
+import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_VIBRATION_DURATION
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 class PomodoroManagerImpl(
     private val focusSoundManager: FocusSoundManager,
     private val timeOutRingerManager: TimeOutRingerManager,
-    private val vibrationManager: VibrationManager
+    private val vibrationManagerUseCases: VibrationManagerUseCases
 ) : PomodoroManager {
     private var _initTime = 0L
     private val _remainingTime = MutableStateFlow<Long>(0)
@@ -40,9 +40,6 @@ class PomodoroManagerImpl(
 
     private val _isWorkingSession = MutableStateFlow(true)
     override val isWorkingSession: StateFlow<Boolean> = _isWorkingSession
-
-    private val _isVibrateEnabled = MutableStateFlow(true)
-    override val isVibrateEnabled: StateFlow<Boolean> = _isVibrateEnabled
 
     override fun setPomodoroTimeAsMinute(minute: Int) {
         val convertedTime = TimeConverter.minuteToMilli(minute)
@@ -155,13 +152,11 @@ class PomodoroManagerImpl(
     }
 
     override fun setVibrateState(isEnabled: Boolean) {
-        _isVibrateEnabled.value = isEnabled
+        vibrationManagerUseCases.setVibrateState(isEnabled)
     }
 
     override fun vibrateIfAvailable() {
-        if (_isVibrateEnabled.value) {
-            vibrationManager.vibrate(DEFAULT_VIBRATION_DURATION)
-        }
+        vibrationManagerUseCases.vibrate(DEFAULT_VIBRATION_DURATION)
     }
 
     override fun notifyIfAvailable(soundResource: Int) {

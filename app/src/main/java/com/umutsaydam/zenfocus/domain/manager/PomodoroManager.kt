@@ -10,7 +10,6 @@ interface PomodoroManager {
     val breakDuration: StateFlow<Long>
     val pomodoroWorkCycle: StateFlow<Int>
     val isWorkingSession: StateFlow<Boolean>
-    val isVibrateEnabled: StateFlow<Boolean>
 
     fun startTimer()
     fun pauseTimer()

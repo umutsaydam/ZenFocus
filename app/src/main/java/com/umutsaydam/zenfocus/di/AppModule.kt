@@ -43,6 +43,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCaseImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCasesImpl
+import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.DeleteUserId
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.DeleteUserType
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.ReadAppEntry
@@ -128,6 +130,12 @@ object AppModule {
             readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager)
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideVibrationUseCases(
+        vibrationManager: VibrationManager
+    ): VibrationManagerUseCases = VibrationManagerUseCasesImpl(vibrationManager)
 
     @Provides
     @Singleton
@@ -234,9 +242,9 @@ object AppModule {
     fun providePomodoroManager(
         focusSoundManager: FocusSoundManager,
         timeOutRingerManager: TimeOutRingerManager,
-        vibrationManager: VibrationManager
+        vibrationManagerUseCases: VibrationManagerUseCases
     ): PomodoroManager =
-        PomodoroManagerImpl(focusSoundManager, timeOutRingerManager, vibrationManager)
+        PomodoroManagerImpl(focusSoundManager, timeOutRingerManager, vibrationManagerUseCases)
 
     @Provides
     @Singleton

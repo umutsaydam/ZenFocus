@@ -15,6 +15,7 @@ import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
@@ -51,6 +52,7 @@ data class GoogleBannerAdState(
 class HomeViewModel @Inject constructor(
     private val toDoUsesCases: ToDoUsesCases,
     private val localUserDataStoreCases: LocalUserDataStoreCases,
+    private val vibrationManagerUseCases: VibrationManagerUseCases,
     private val pomodoroManagerUseCase: PomodoroManagerUseCase,
     private val pomodoroServiceUseCases: PomodoroServiceUseCases,
     private val focusSoundUseCases: FocusSoundUseCases,
@@ -199,11 +201,9 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun setVibrateState() {
-        val isVibrateEnabled = localUserDataStoreCases.readVibrateState()
-
         viewModelScope.launch {
-            isVibrateEnabled.collectLatest { isEnabled ->
-                pomodoroManagerUseCase.setVibrateState(isEnabled)
+            localUserDataStoreCases.readVibrateState().collectLatest { isEnabled ->
+                vibrationManagerUseCases.setVibrateState(isEnabled)
             }
         }
     }
