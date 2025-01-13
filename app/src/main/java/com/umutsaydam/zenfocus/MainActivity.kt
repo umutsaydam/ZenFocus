@@ -24,7 +24,8 @@ import com.amplifyframework.api.aws.AWSApiPlugin
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin
-import com.google.android.gms.ads.MobileAds
+// These line is commented for the open source contribution.
+//import com.google.android.gms.ads.MobileAds
 import com.umutsaydam.zenfocus.presentation.navigation.MainNavHost
 import com.umutsaydam.zenfocus.ui.theme.ZenFocusTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +42,8 @@ class MainActivity : AppCompatActivity() {
         actionBar?.hide()
         enableEdgeToEdge()
         initAmplify()
-        initGoogleAds(this)
+// These line is commented for the open source contribution.
+//        initGoogleAds(this)
         setContent {
             ZenFocusTheme {
                 var isLoading by remember { mutableStateOf(true) }
@@ -72,10 +74,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun initGoogleAds(activity: Activity) {
-        MobileAds.initialize(activity) {}
-    }
+// These lines are commented for the open source contribution.
+//    private fun initGoogleAds(activity: Activity) {
+//        MobileAds.initialize(activity) {}
+//    }
 
     private fun initAmplify() {
         try {

@@ -23,34 +23,34 @@ android {
         properties.load(
             project.rootProject.file("local.properties").inputStream()
         )
-
-        buildConfigField(
-            type = "String",
-            name = "GOOGLE_ADS_APP_ID",
-            value = "\"${properties.getProperty("GOOGLE_ADS_APP_ID")}\""
-        )
+// These lines are commented for the open source contribution.
+//        buildConfigField(
+//            type = "String",
+//            name = "GOOGLE_ADS_APP_ID",
+//            value = "\"${properties.getProperty("GOOGLE_ADS_APP_ID")}\""
+//        )
 
         bundle {
             language {
                 enableSplit = false
             }
         }
-
-        buildConfigField(
-            type = "String",
-            name = "AD_BANNER_UNIT_ID",
-            value = "\"${properties.getProperty("AD_BANNER_UNIT_ID")}\""
-        )
-
-        buildConfigField(
-            type = "String",
-            name = "AD_REWARD_THEME_UNIT_ID",
-            value = "\"${properties.getProperty("AD_REWARD_THEME_UNIT_ID")}\""
-        )
-
-        manifestPlaceholders["GOOGLE_ADS_APP_ID"] = properties.getProperty("GOOGLE_ADS_APP_ID")
-        manifestPlaceholders["AD_BANNER_UNIT_ID"] = properties.getProperty("AD_BANNER_UNIT_ID")
-        manifestPlaceholders["AD_REWARD_THEME_UNIT_ID"] = properties.getProperty("AD_REWARD_THEME_UNIT_ID")
+// These lines are commented for the open source contribution.
+//        buildConfigField(
+//            type = "String",
+//            name = "AD_BANNER_UNIT_ID",
+//            value = "\"${properties.getProperty("AD_BANNER_UNIT_ID")}\""
+//        )
+//
+//        buildConfigField(
+//            type = "String",
+//            name = "AD_REWARD_THEME_UNIT_ID",
+//            value = "\"${properties.getProperty("AD_REWARD_THEME_UNIT_ID")}\""
+//        )
+//
+//        manifestPlaceholders["GOOGLE_ADS_APP_ID"] = properties.getProperty("GOOGLE_ADS_APP_ID")
+//        manifestPlaceholders["AD_BANNER_UNIT_ID"] = properties.getProperty("AD_BANNER_UNIT_ID")
+//        manifestPlaceholders["AD_REWARD_THEME_UNIT_ID"] = properties.getProperty("AD_REWARD_THEME_UNIT_ID")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -128,10 +128,11 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     // Google Credentials Play Services
     implementation(libs.androidx.credentials.play.services.auth)
-    // Google Mobile Ads SDK
-    implementation(libs.play.services.ads)
-    // Google Billing
-    implementation(libs.billing)
+// These lines are commented for the open source contribution.
+//    // Google Mobile Ads SDK
+//    implementation(libs.play.services.ads)
+//    // Google Billing
+//    implementation(libs.billing)
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
 }

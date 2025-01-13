@@ -17,8 +17,9 @@ import com.umutsaydam.zenfocus.data.remote.service.AwsAuthServiceImpl
 import com.umutsaydam.zenfocus.data.local.repository.RingerModeRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.manager.FocusSoundManagerImpl
 import com.umutsaydam.zenfocus.data.local.repository.NetworkCheckerRepositoryImpl
-import com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl
-import com.umutsaydam.zenfocus.data.remote.service.GoogleAdServiceImpl
+// These lines are commented for the open source contribution.
+//import com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl
+//import com.umutsaydam.zenfocus.data.remote.service.GoogleAdServiceImpl
 import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroServiceManager
@@ -30,9 +31,11 @@ import com.umutsaydam.zenfocus.domain.repository.local.NetworkCheckerRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
-import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
+// These line is commented for the open source contribution.
+//import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
-import com.umutsaydam.zenfocus.domain.service.GoogleAdService
+// These line is commented for the open source contribution.
+//import com.umutsaydam.zenfocus.domain.service.GoogleAdService
 import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCasesImpl
@@ -74,10 +77,11 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.SaveUse
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
-import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
-import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCasesImpl
-import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
-import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCasesImpl
+// These lines are commented for the open source contribution.
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCasesImpl
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsReadUserInfo
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignInWithGoogle
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignOut
@@ -224,18 +228,18 @@ object AppModule {
             deleteTask = DeleteTask(toDoRepository)
         )
     }
-
-    @Provides
-    @Singleton
-    fun provideGoogleAdServiceUseCases(
-        googleAdService: GoogleAdService
-    ): GoogleAdUseCases = GoogleAdUseCasesImpl(googleAdService)
-
-    @Provides
-    @Singleton
-    fun provideGoogleProductsInAppUseCases(
-        googleProductsInAppRepository: GoogleProductsInAppRepository
-    ): GoogleProductsInAppUseCases = GoogleProductsInAppUseCasesImpl(googleProductsInAppRepository)
+// These lines are commented for the open source contribution.
+//    @Provides
+//    @Singleton
+//    fun provideGoogleAdServiceUseCases(
+//        googleAdService: GoogleAdService
+//    ): GoogleAdUseCases = GoogleAdUseCasesImpl(googleAdService)
+//
+//    @Provides
+//    @Singleton
+//    fun provideGoogleProductsInAppUseCases(
+//        googleProductsInAppRepository: GoogleProductsInAppRepository
+//    ): GoogleProductsInAppUseCases = GoogleProductsInAppUseCasesImpl(googleProductsInAppRepository)
 
     @Provides
     @Singleton
@@ -277,12 +281,12 @@ object AppModule {
     fun provideNetworkChecker(
         application: Application
     ): NetworkCheckerRepository = NetworkCheckerRepositoryImpl(application)
-
-    @Provides
-    @Singleton
-    fun provideGoogleProductsInAppRepository(
-        @ApplicationContext context: Context
-    ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(context)
+// These lines are commented for the open source contribution.
+//    @Provides
+//    @Singleton
+//    fun provideGoogleProductsInAppRepository(
+//        @ApplicationContext context: Context
+//    ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(context)
 
     @Provides
     @Singleton
@@ -314,11 +318,11 @@ object AppModule {
     fun provideRingerModeRepository(
         application: Application
     ): RingerModeRepository = RingerModeRepositoryImpl(application)
-
-    @Provides
-    @Singleton
-    fun provideGoogleAdService(application: Application): GoogleAdService =
-        GoogleAdServiceImpl(application)
+// These lines are commented for the open source contribution.
+//    @Provides
+//    @Singleton
+//    fun provideGoogleAdService(application: Application): GoogleAdService =
+//        GoogleAdServiceImpl(application)
 
     @Provides
     @Singleton

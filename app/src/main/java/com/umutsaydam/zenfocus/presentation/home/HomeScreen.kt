@@ -46,7 +46,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.google.android.gms.ads.AdSize
+// These line is commented for the open source contribution.
+//import com.google.android.gms.ads.AdSize
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
@@ -69,7 +70,8 @@ fun HomeScreen(
     var selectedTaskModel: TaskModel? = null
     val context = LocalContext.current
     val adState by homeViewModel.adState.collectAsState()
-    val adSize: AdSize by remember { derivedStateOf { getAdSize(context) } }
+// These lines are commented for the open source contribution.
+//    val adSize: AdSize by remember { derivedStateOf { getAdSize(context) } }
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(homeUiState.uiMessage) {
@@ -133,7 +135,8 @@ fun HomeScreen(
                             onClick = {
                                 val activity = context as? Activity
                                 activity?.let {
-                                    homeViewModel.startProductsInApp(it)
+//                                    These line is commented for the open source contribution.
+//                                    homeViewModel.startProductsInApp(it)
                                 }
                             }
                         ) {
@@ -277,21 +280,21 @@ fun HomeScreen(
                     }
                 )
             }
-
-            if (homeViewModel.isNetworkConnected() && homeViewModel.shouldShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.BottomEnd
-                ) {
-                    AndroidView(
-                        modifier = Modifier.fillMaxWidth(),
-                        factory = {
-                            homeViewModel.showBannerAd(adSize)
-                        }
-                    )
-                }
-            }
+// These lines are commented for the open source contribution.
+//            if (homeViewModel.isNetworkConnected() && homeViewModel.shouldShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize(),
+//                    contentAlignment = Alignment.BottomEnd
+//                ) {
+//                    AndroidView(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        factory = {
+//                            homeViewModel.showBannerAd(adSize)
+//                        }
+//                    )
+//                }
+//            }
 
             if (homeUiState.bottomSheetState) {
                 CustomBottomSheet(
@@ -346,21 +349,21 @@ fun HomeScreen(
         }
     }
 }
-
-private fun getAdSize(context: Context): AdSize {
-    val activity = context as? Activity
-    activity?.let {
-        val displayMetrics = context.resources.displayMetrics
-        val adWithPixels =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val windowMetrics: WindowMetrics = it.window.windowManager.currentWindowMetrics
-                windowMetrics.bounds.width()
-            } else {
-                displayMetrics.widthPixels
-            }
-        val density = displayMetrics.density
-        val adWidth = (adWithPixels / density).toInt()
-        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
-    }
-    return AdSize.BANNER
-}
+// These lines are commented for the open source contribution.
+//private fun getAdSize(context: Context): AdSize {
+//    val activity = context as? Activity
+//    activity?.let {
+//        val displayMetrics = context.resources.displayMetrics
+//        val adWithPixels =
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                val windowMetrics: WindowMetrics = it.window.windowManager.currentWindowMetrics
+//                windowMetrics.bounds.width()
+//            } else {
+//                displayMetrics.widthPixels
+//            }
+//        val density = displayMetrics.density
+//        val adWidth = (adWithPixels / density).toInt()
+//        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
+//    }
+//    return AdSize.BANNER
+//}
