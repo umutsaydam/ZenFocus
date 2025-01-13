@@ -5,7 +5,7 @@
 
 
 
-# <p id="uygulama-icerik"># ZenFocus</p>
+# <p id="uygulama-icerik">ZenFocus</p>
 
 ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve yapılacaklar listesiyle zamanınızı etkili bir şekilde yönetin. Kullanıcı dostu ara yüzüyle odaklanma deneyiminizi kişiselleştirin: istediğiniz temayı seçerek tam odak modunu aktif hale getirin ve motivasyonunuzu artırın. Ayrıca, favori odak seslerinizi seçerek çalışma sürecinizi daha keyifli ve verimli hale getirin. ZenFocus, konsantrasyonunuzu artırırken hedeflerinize ulaşmanız için en iyi yol arkadaşı olacak.
 
@@ -19,8 +19,8 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 - [Lisans](#lisans)
 
 ---
-### <p id="özellikler"></p>
-## 🚀 Özellikler
+
+## <p id="özellikler">🚀 Özellikler</p>
 
 - Odak sürelerini belirleme ve yönetme.
 - Görev takibi.
@@ -28,8 +28,8 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 - Kullanıcıya özel tam odak modunda kullanabileceği temalar.
 - Birçok odak sesleri
 ---
-### <p id="kullanilan-teknolojiler"></p>
-## 🛠 Kullanılan Teknolojiler
+
+## <p id="kullanilan-teknolojiler">🛠 Kullanılan Teknolojiler</p>
 
 - **Kotlin**: Uygulama programlama dili.
 - **Jetpack Compose**: Kullanıcı arayüzü oluşturmak için modern Android araç takımı.
@@ -52,8 +52,8 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 - **Foreground Service**: Android uygulamalarında, uygulama kullanıcının görsel olarak etkileşimde olmasa bile sürekli bir işlem gerektiren durumlar için kullanılan bir servis türüdür.
 
 ---
-### <p id="kurulum"></p>
-## 📦 Kurulum
+
+## <p id="kurulum">📦 Kurulum</p>
 
 1. Bu projeyi klonlayın (forContribution branch olduğundan emin olun):
     ```bash
@@ -64,27 +64,27 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 4. Uygulamayı çalıştırın.
 
 ---
-### <p id="kullanim"></p>
-## 🧑‍💻 Kullanım
+
+## <p id="kullanim">🧑‍💻 Kullanım</p>
 
 - ![zenfocus_screens_tr](https://github.com/user-attachments/assets/2786a5aa-43d8-4e91-9fad-0ecd5292a4cb)
 
 ---
-### <p id="katkida-bulunma"></p>
-## 🤝 Katkıda Bulunma
+
+## <p id="katkida-bulunma">🤝 Katkıda Bulunma</p>
 
 Katkıda bulunmak istiyorsanız, lütfen bir `pull request` gönderin veya bir `issue` açın. Katkılarınız memnuniyetle karşılanacaktır!
 
 ---
-### <p id="lisans"></p>
-## 📜 Lisans
+
+## <p id="lisans">📜 Lisans</p>
 
 Bu proje MIT Lisansı ile lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atabilirsiniz.
 
 ---
 
-### <p id="app-content"></p>
-# ZenFocus
+
+# <p id="app-content">ZenFocus</p>
 
 Maximize your productivity with ZenFocus! Manage your time effectively with the Pomodoro technique and to-do lists. Personalize your focus experience with the user-friendly interface: activate the focus mode by selecting your preferred theme and boost your motivation. Additionally, make your work process more enjoyable and efficient by selecting your favorite focus sounds. ZenFocus will be the best companion to help you stay focused and reach your goals.
 
@@ -98,8 +98,8 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 - [License](#license)
 
 ---
-### <p id="features"></p>
-## 🚀 Features
+
+## <p id="features">🚀 Features</p>
 
 - Set and manage focus durations.
 - Task tracking.
@@ -107,8 +107,8 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 - Customizable focus modes with personalized themes.
 - Multiple focus sounds.
 ---
-### <p id="technologies-used"></p>
-## 🛠 Technologies Used
+
+## <p id="technologies-used">🛠 Technologies Used</p>
 
 - **Kotlin**: Programming language for the application.
 - **Jetpack Compose**: A modern toolkit for building user interfaces on Android.
@@ -131,8 +131,8 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 - **Foreground Service**:  A service used in Android applications that requires continuous operation even when the user is not interacting with the app visually.
 
 ---
-### <p id="installation"></p>
-## 📦 Installation
+
+## <p id="installation">📦 Installation</p>
 
 1. Clone this project (Make sure you are on the forContribution branch):
     ```bash
@@ -143,20 +143,20 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 4. Run the app.
 
 ---
-### <p id="usage"></p>
-## 🧑‍💻 Usage
+
+## <p id="usage">🧑‍💻 Usage</p>
 
 - ![zenfocus_screens_en](https://github.com/user-attachments/assets/1fb4e207-f1a3-4fb9-9954-0c570771531a)
 
 ---
-### <p id="contributing"></p>
-## 🤝 Contributing
+
+## <p id="contributing">🤝 Contributing</p>
 
 If you'd like to contribute, please submit a `pull request` or open an `issue`. Your contributions are welcome!
 
 ---
-### <p id="license"></p>
-## 📜 License
+
+## <p id="license">📜 License</p>
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
