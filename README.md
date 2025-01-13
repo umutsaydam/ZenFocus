@@ -1,1 +1,160 @@
+<div>
+<h3><a href="#uygulama-icerik">TR</a></h3>
+<h3><a href="#app-content">EN</a></h3>
+</div>
+
 # ZenFocus
+
+ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve yapılacaklar listesiyle zamanınızı etkili bir şekilde yönetin. Kullanıcı dostu ara yüzüyle odaklanma deneyiminizi kişiselleştirin: istediğiniz temayı seçerek tam odak modunu aktif hale getirin ve motivasyonunuzu artırın. Ayrıca, favori odak seslerinizi seçerek çalışma sürecinizi daha keyifli ve verimli hale getirin. ZenFocus, konsantrasyonunuzu artırırken hedeflerinize ulaşmanız için en iyi yol arkadaşı olacak.
+### <p id="uygulama-icerik"></p>
+
+# 📋 İçindekiler
+
+- [Özellikler](#özellikler)
+- [Kullanılan Teknolojiler](#kullanılan-teknolojiler)
+- [Kurulum](#kurulum)
+- [Kullanım](#kullanım)
+- [Katkıda Bulunma](#katkıda-bulunma)
+- [Lisans](#lisans)
+
+---
+
+## 🚀 Özellikler
+
+- Odak sürelerini belirleme ve yönetme.
+- Görev takibi.
+- Kullanıcı dostu ve minimal tasarım.
+- Kullanıcıya özel tam odak modunda kullanabileceği temalar.
+- Birçok odak sesleri
+---
+
+## 🛠 Kullanılan Teknolojiler
+
+- **Kotlin**: Uygulama programlama dili.
+- **Jetpack Compose**: Kullanıcı arayüzü oluşturmak için modern Android araç takımı.
+- **Navigation Component**: Sayfa geçişlerinin yönetimi.
+- **Room Database**: Lokal veritabanı işlemlerin gerçekleştirilmesi.
+- **Data Store**: Anahtar/değer çiftlerini veya türlenmiş nesneleri depolanmasını sağlayan bir veri depolama çözümüdür.
+- **Dagger Hilt Dependency Injection (Bağımlılık Enjeksiyonu)**: Hilt, bağımlılıkları merkezi bir yerde tanımlayıp yöneterek kod tekrarını azaltır ve kodun okunabilirliğini artırır. Aynı zamanda test edilebilirliği kolaylaştırır ve uygulamanın daha modüler bir yapıya kavuşmasını sağlar.
+- **Coroutines**: işlemleri ana iş parcacığından (main thread) ayırarak arka planda çalışmasını sağlar. Bu sayede uzun süren işlemler (ağ istekleri, veritabanı işlemleri vs.) sırasında uygulamanın kullanıcı arayüzünün donmasını engeller.
+- **Aws Amplify**: Bulut tabanlı uygulamalar geliştirmek için kullanılan güçlü bir araç setidir. Kullanıcı kimlik doğrulama, veri depolama, dosya yükleme, API oluşturma ve barındırma gibi işlemleri kolaylaştırır.
+- **Cognito Auth**: Amazon Cognito, kullanıcı kimlik doğrulama, yetkilendirme ve kullanıcı yönetimi için bulut tabanlı bir çözümdür.
+- **S3 Storage**: Amazon S3 (Simple Storage Service), verilerin güvenli, ölçeklenebilir ve yüksek erişilebilir bir şekilde depolanmasını sağlayan bulut tabanlı bir hizmettir.
+- **Amazon DynamoDB**: Amazon DynamoDB, tamamen yönetilen, yüksek performanslı ve ölçeklenebilir bir NoSQL veritabanı hizmetidir.
+- **Amazon API Gateway**: RESTful API'ler ve WebSocket API'leri oluşturmak, yönetmek ve güvenli hale getirmek için kullanılan tamamen yönetilen bir hizmettir.
+- **Coil**: Android uygulamalarında görsel yükleme işlemlerini basitleştiren ve hızlandıran bir kütüphanedir. Görsellerin önbelleğe alınması, dönüşüm yapılması ve yerel dosyalarla entegrasyon gibi işlemleri verimli bir şekilde yönetir.
+- **Google Credentials Play Services**: Android cihazlarda Google hizmetlerine erişimi yöneten bir API setidir. Google Credentials ise bu hizmetler üzerinden kullanıcı kimlik doğrulaması, sosyal medya hesaplarıyla giriş, oturum yönetimi ve güvenlik gibi işlemleri kolaylaştırır.
+- **Google Mobile Ads SDK**: Android ve iOS uygulamaları için mobil reklam gösterimini sağlayan bir yazılım geliştirme kitidir.
+- **Google Billing**: Android uygulamalarında uygulama içi satın alımlar (in-app purchases) ve abonelikler gibi ödeme işlemlerini yönetmek için kullanılan bir hizmettir.
+- **Splash Screen**: Uygulamanın başlatılma sürecinde kullanıcıya görsel bir geçiş sağlar ve uygulamanın daha hızlı açılabilmesi için arka planda işlemler yapılırken kullanıcıyı bilgilendirir.
+- **Notification**: Kullanıcılara uygulama hakkında önemli bilgiler, güncellemeler veya hatırlatıcılar göndermeyi sağlayan bir mekanizmadır.
+- **Foreground Service**: Android uygulamalarında, uygulama kullanıcının görsel olarak etkileşimde olmasa bile sürekli bir işlem gerektiren durumlar için kullanılan bir servis türüdür.
+
+---
+
+## 📦 Kurulum
+
+1. Bu projeyi klonlayın:
+    ```bash
+    https://github.com/umutsaydam/ZenFocus.git
+    ```
+2. Android Studio'da açın.
+3. Gerekli bağımlılıkları yüklemek için `Gradle Sync` işlemini gerçekleştirin.
+4. Uygulamayı çalıştırın.
+
+---
+
+## 🧑‍💻 Kullanım
+
+- ![zenfocus_screens_tr](https://github.com/user-attachments/assets/2786a5aa-43d8-4e91-9fad-0ecd5292a4cb)
+
+---
+
+## 🤝 Katkıda Bulunma
+
+Katkıda bulunmak istiyorsanız, lütfen bir `pull request` gönderin veya bir `issue` açın. Katkılarınız memnuniyetle karşılanacaktır!
+
+---
+
+## 📜 Lisans
+
+Bu proje MIT Lisansı ile lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atabilirsiniz.
+
+---
+# ZenFocus
+
+Maximize your productivity with ZenFocus! Manage your time effectively with the Pomodoro technique and to-do lists. Personalize your focus experience with the user-friendly interface: activate the focus mode by selecting your preferred theme and boost your motivation. Additionally, make your work process more enjoyable and efficient by selecting your favorite focus sounds. ZenFocus will be the best companion to help you stay focused and reach your goals.
+### <p id="app-content"></p>
+
+# 📋 Table of Contents
+
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## 🚀 Features
+
+- Set and manage focus durations.
+- Task tracking.
+- User-friendly and minimal design.
+- Customizable focus modes with personalized themes.
+- Multiple focus sounds.
+---
+
+## 🛠 Technologies Used
+
+- **Kotlin**: Programming language for the application.
+- **Jetpack Compose**: A modern toolkit for building user interfaces on Android.
+- **Navigation Component**: Manages page transitions.
+- **Room Database**: Local database operations.
+- **Data Store**: A data storage solution for storing key-value pairs or typed objects.
+- **Dagger Hilt Dependency Injection**: Hilt reduces code repetition and increases readability by centralizing dependency management. It also facilitates easier testing and promotes a more modular architecture.
+- **Coroutines**: Runs tasks asynchronously, off the main thread. This helps prevent UI freezing during long-running operations such as network requests or database operations.
+- **Aws Amplify**: A powerful toolset for building cloud-powered applications. It simplifies user authentication, data storage, file uploads, API creation, and hosting.
+- **Cognito Auth**: Amazon Cognito is a cloud-based solution for user authentication, authorization, and user management.
+- **S3 Storage**: Amazon S3 (Simple Storage Service) is a cloud-based service for securely storing data in a scalable and highly accessible manner.
+- **Amazon DynamoDB**: Amazon DynamoDB is a fully managed, high-performance, and scalable NoSQL database service.
+- **Amazon API Gateway**: A fully managed service for creating, managing, and securing RESTful and WebSocket APIs.
+- **Coil**: A library for simplifying and speeding up image loading in Android applications. It efficiently handles image caching, transformations, and integration with local files.
+- **Google Credentials Play Services**: A set of APIs that manage access to Google services on Android devices, including user authentication, social media logins, session management, and security features.
+- **Google Mobile Ads SDK**: A software development kit that enables mobile ads to be displayed in Android and iOS applications.
+- **Google Billing**: A service for managing in-app purchases and subscriptions in Android applications.
+- **Splash Screen**: Provides a visual transition during the app launch process, informing the user while background operations are being performed to allow faster app startup.
+- **Notification**: A mechanism that allows sending important updates, information, or reminders to users about the app.
+- **Foreground Service**:  A service used in Android applications that requires continuous operation even when the user is not interacting with the app visually.
+
+---
+
+## 📦 Installation
+
+1. Clone this project:
+    ```bash
+    https://github.com/umutsaydam/ZenFocus.git
+    ```
+2. Open it in Android Studio.
+3. Perform a `Gradle Sync` to download the necessary dependencies.
+4. Run the app.
+
+---
+
+## 🧑‍💻 Usage
+
+- ![zenfocus_screens_en](https://github.com/user-attachments/assets/1fb4e207-f1a3-4fb9-9954-0c570771531a)
+
+---
+
+## 🤝 Contributing
+
+If you'd like to contribute, please submit a `pull request` or open an `issue`. Your contributions are welcome!
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
