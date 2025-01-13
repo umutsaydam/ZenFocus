@@ -47,12 +47,12 @@ class PomodoroForegroundService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            "ACTION_PAUSE" -> {
+            PomodoroAction.ACTION_PAUSE.name -> {
                 pauseTimer()
                 updateNotification(remainingTimeText.value)
             }
 
-            "ACTION_RESUME" -> {
+            PomodoroAction.ACTION_RESUME.name -> {
                 resumeTimer()
             }
 
@@ -80,7 +80,7 @@ class PomodoroForegroundService : Service() {
         )
 
         val actionIntent = Intent(this, PomodoroForegroundService::class.java).apply {
-            action = if (isTimerRunning) "ACTION_PAUSE" else "ACTION_RESUME"
+            action = if (isTimerRunning) PomodoroAction.ACTION_PAUSE.name else PomodoroAction.ACTION_RESUME.name
         }
         val actionPendingIntent: PendingIntent = PendingIntent.getService(
             this,
@@ -91,13 +91,14 @@ class PomodoroForegroundService : Service() {
 
         val actionIcon =
             if (isTimerRunning) R.drawable.ic_pause_white else R.drawable.ic_play_arrow_white
-        val actionTitle = if (isTimerRunning) "Pause" else "Resume"
+        val actionTitle = getString(if (isTimerRunning) R.string.pause else R.string.resume)
 
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle("Pomodoro Timer")
             .setContentText(contentText)
             .setSmallIcon(R.drawable.ic_time)
-            .setVibrate(null)
+            .setVibrate(longArrayOf(0))
+            .setSilent(true)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
@@ -106,7 +107,7 @@ class PomodoroForegroundService : Service() {
                 actionTitle,
                 actionPendingIntent
             )
-            .setAutoCancel(true)
+            .setAutoCancel(false)
             .build()
     }
 
@@ -169,4 +170,9 @@ class PomodoroForegroundService : Service() {
         super.onDestroy()
         cleanUpService()
     }
+}
+
+private enum class PomodoroAction {
+    ACTION_PAUSE,
+    ACTION_RESUME
 }
