@@ -1,12 +1,13 @@
-<div>
-<h3><a href="#uygulama-icerik">TR</a></h3>
-<h3><a href="#app-content">EN</a></h3>
+<div align="center">
+  <span><a href="#uygulama-icerik">TR</a></span>
+  <span><a href="#app-content">EN</a></span>
 </div>
 
+
+### <p id="uygulama-icerik"></p>
 # ZenFocus
 
 ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve yapılacaklar listesiyle zamanınızı etkili bir şekilde yönetin. Kullanıcı dostu ara yüzüyle odaklanma deneyiminizi kişiselleştirin: istediğiniz temayı seçerek tam odak modunu aktif hale getirin ve motivasyonunuzu artırın. Ayrıca, favori odak seslerinizi seçerek çalışma sürecinizi daha keyifli ve verimli hale getirin. ZenFocus, konsantrasyonunuzu artırırken hedeflerinize ulaşmanız için en iyi yol arkadaşı olacak.
-### <p id="uygulama-icerik"></p>
 
 # 📋 İçindekiler
 
@@ -81,10 +82,11 @@ Katkıda bulunmak istiyorsanız, lütfen bir `pull request` gönderin veya bir `
 Bu proje MIT Lisansı ile lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atabilirsiniz.
 
 ---
+
+### <p id="app-content"></p>
 # ZenFocus
 
 Maximize your productivity with ZenFocus! Manage your time effectively with the Pomodoro technique and to-do lists. Personalize your focus experience with the user-friendly interface: activate the focus mode by selecting your preferred theme and boost your motivation. Additionally, make your work process more enjoyable and efficient by selecting your favorite focus sounds. ZenFocus will be the best companion to help you stay focused and reach your goals.
-### <p id="app-content"></p>
 
 # 📋 Table of Contents
 
