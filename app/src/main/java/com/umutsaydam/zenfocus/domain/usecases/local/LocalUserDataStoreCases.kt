@@ -19,6 +19,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroWorkDurationC
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroWorkDurationCases.SavePomodoroWorkDuration
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.themeCases.ReadTheme
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.themeCases.SaveTheme
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.timeOutRingerStateCases.ReadTimeOutRingerState
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.timeOutRingerStateCases.SaveTimeOutRingerState
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.SaveUserId
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.SaveUserType
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibrateState
@@ -28,6 +30,8 @@ data class LocalUserDataStoreCases(
     val readAppEntry: ReadAppEntry,
     val saveVibrateState: SaveVibrateState,
     val readVibrateState: ReadVibrateState,
+    val saveTimeOutRingerState: SaveTimeOutRingerState,
+    val readTimeOutRingerState: ReadTimeOutRingerState,
     val readAppLang: ReadAppLang,
     val saveAppLang: SaveAppLang,
     val readFocusSound: ReadFocusSound,

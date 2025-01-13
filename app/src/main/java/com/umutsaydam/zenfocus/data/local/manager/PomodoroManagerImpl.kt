@@ -4,7 +4,7 @@ import android.os.CountDownTimer
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
-import com.umutsaydam.zenfocus.domain.manager.TimeOutRingerManager
+import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_VIBRATION_DURATION
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class PomodoroManagerImpl(
     private val focusSoundManager: FocusSoundManager,
-    private val timeOutRingerManager: TimeOutRingerManager,
+    private val timeOutRingerManagerUseCases: TimeOutRingerManagerUseCases,
     private val vibrationManagerUseCases: VibrationManagerUseCases
 ) : PomodoroManager {
     private var _initTime = 0L
@@ -112,7 +112,7 @@ class PomodoroManagerImpl(
                             // Pomodoro is completely complete.
                             stopTimer()
                             vibrateIfAvailable()
-                            timeOutRingerManager.playSound(R.raw.completed_all_sessions)
+                            playIfAvailable()
                         }
                     } else {
                         vibrateIfAvailable()
@@ -159,8 +159,12 @@ class PomodoroManagerImpl(
         vibrationManagerUseCases.vibrate(DEFAULT_VIBRATION_DURATION)
     }
 
+    override fun playIfAvailable() {
+        timeOutRingerManagerUseCases.playSound(R.raw.completed_all_sessions)
+    }
+
     override fun notifyIfAvailable(soundResource: Int) {
-        timeOutRingerManager.playSound(soundResource)
+        timeOutRingerManagerUseCases.playSound(soundResource)
     }
 
     override fun pauseTimer() {
@@ -195,7 +199,8 @@ class PomodoroManagerImpl(
 
 private object TimeConverter {
     fun minuteToMilli(minute: Int): Long {
-        return minute * 60 * 1000L
+//        return minute * 60 * 1000L
+        return minute * 1000L
     }
 
     fun convertMinutesAndSecondsToTextFormat(minutes: Long, seconds: Long): String {

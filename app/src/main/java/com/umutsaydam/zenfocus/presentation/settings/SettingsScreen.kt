@@ -174,6 +174,13 @@ fun SettingsScreen(
                         },
                         isChecked = uiState.defaultVibrateState
                     )
+                    MenuItemSwitch(
+                        menuTitle = stringResource(R.string.time_out_ringer),
+                        onClick = { newState ->
+                            settingsViewModel.setTimeOutRingerState(newState)
+                        },
+                        isChecked = uiState.defaultTimeOutRingerState
+                    )
                     MenuItem(
                         menuTitle = stringResource(R.string.working_time),
                         onClick = {

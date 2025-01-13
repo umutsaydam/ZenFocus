@@ -9,6 +9,9 @@ interface LocalUserManager {
     suspend fun saveVibrateState(isEnable: Boolean)
     fun readVibrateState(): Flow<Boolean>
 
+    suspend fun saveTimeOutRingerState(isEnable: Boolean)
+    fun readTimeOutRingerState(): Flow<Boolean>
+
     suspend fun saveAppLang(appLang: String)
     fun readAppLang(): Flow<String>
 

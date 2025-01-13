@@ -15,6 +15,7 @@ import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
@@ -52,6 +53,7 @@ data class GoogleBannerAdState(
 class HomeViewModel @Inject constructor(
     private val toDoUsesCases: ToDoUsesCases,
     private val localUserDataStoreCases: LocalUserDataStoreCases,
+    private val timeOutRingerManagerUseCases: TimeOutRingerManagerUseCases,
     private val vibrationManagerUseCases: VibrationManagerUseCases,
     private val pomodoroManagerUseCase: PomodoroManagerUseCase,
     private val pomodoroServiceUseCases: PomodoroServiceUseCases,
@@ -132,6 +134,7 @@ class HomeViewModel @Inject constructor(
             setDefaultPomodoroCycle()
             setDefaultPomodoroBreakDuration()
             setVibrateState()
+            setTimeOutRingerState()
             setDefaultPomodoroWorkDuration()
         }
         getRemainingTime()
@@ -204,6 +207,14 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             localUserDataStoreCases.readVibrateState().collectLatest { isEnabled ->
                 vibrationManagerUseCases.setVibrateState(isEnabled)
+            }
+        }
+    }
+
+    private fun setTimeOutRingerState() {
+        viewModelScope.launch {
+            localUserDataStoreCases.readTimeOutRingerState().collectLatest { isEnabled ->
+                timeOutRingerManagerUseCases.isRingerEnabled(isEnabled)
             }
         }
     }

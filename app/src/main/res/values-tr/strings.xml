@@ -9,6 +9,7 @@
     <string name="stop_pomodoro">Pomodoro\'yu durdur</string>
     <string name="pomodoro_will_stop">Pomodoro sonlanacak emin misin?</string>
     <string name="vibrate">Titreşim</string>
+    <string name="time_out_ringer">Pomodoro bitiş zil sesi</string>
     <string name="policy">Politika</string>
     <string name="version">Versiyon</string>
     <string name="sign_in_sign_up">Giriş yap | Kayıt ol</string>

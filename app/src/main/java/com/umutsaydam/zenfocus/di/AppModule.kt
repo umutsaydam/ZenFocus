@@ -43,6 +43,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCaseImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCasesImpl
+import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.DeleteUserId
@@ -65,6 +67,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroWorkDurationC
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.ringerModeCases.ReadRingerMode
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.themeCases.ReadTheme
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.themeCases.SaveTheme
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.timeOutRingerStateCases.ReadTimeOutRingerState
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.timeOutRingerStateCases.SaveTimeOutRingerState
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.SaveUserId
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.SaveUserType
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibrateState
@@ -110,6 +114,8 @@ object AppModule {
             readAppEntry = ReadAppEntry(localUserManager),
             saveVibrateState = SaveVibrateState(localUserManager),
             readVibrateState = ReadVibrateState(localUserManager),
+            saveTimeOutRingerState = SaveTimeOutRingerState(localUserManager),
+            readTimeOutRingerState = ReadTimeOutRingerState(localUserManager),
             saveAppLang = SaveAppLang(localUserManager),
             readAppLang = ReadAppLang(localUserManager),
             saveFocusSound = SaveFocusSound(localUserManager),
@@ -130,6 +136,12 @@ object AppModule {
             readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager)
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideTimeOutRingerManagerUseCases(
+        timeOutRingerManager: TimeOutRingerManager
+    ): TimeOutRingerManagerUseCases = TimeOutRingerManagerUseCasesImpl(timeOutRingerManager)
 
     @Provides
     @Singleton
@@ -241,10 +253,10 @@ object AppModule {
     @Singleton
     fun providePomodoroManager(
         focusSoundManager: FocusSoundManager,
-        timeOutRingerManager: TimeOutRingerManager,
+        timeOutRingerManagerUseCases: TimeOutRingerManagerUseCases,
         vibrationManagerUseCases: VibrationManagerUseCases
     ): PomodoroManager =
-        PomodoroManagerImpl(focusSoundManager, timeOutRingerManager, vibrationManagerUseCases)
+        PomodoroManagerImpl(focusSoundManager, timeOutRingerManagerUseCases, vibrationManagerUseCases)
 
     @Provides
     @Singleton

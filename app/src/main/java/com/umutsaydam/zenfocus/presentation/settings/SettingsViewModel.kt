@@ -7,12 +7,14 @@ import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class SettingsUiState(
     val defaultVibrateState: Boolean = false,
+    val defaultTimeOutRingerState: Boolean = false,
     val isSignedInState: Boolean = false,
     val pomodoroWorkDuration: Int = 0,
     val pomodoroBreakDuration: Int = 0
@@ -28,6 +30,7 @@ class SettingsViewModel @Inject constructor(
 
     init {
         readVibrateState()
+        readTimeOutRingerState()
         isSignedIn()
         getPomodoroWorkDuration()
         getPomodoroBreakDuration()
@@ -50,6 +53,20 @@ class SettingsViewModel @Inject constructor(
 
         viewModelScope.launch {
             localUserDataStoreCases.saveVibrateState(state)
+        }
+    }
+
+    private fun readTimeOutRingerState(){
+        viewModelScope.launch {
+            localUserDataStoreCases.readTimeOutRingerState().collectLatest{ state ->
+                updateUiState { copy(defaultTimeOutRingerState = state) }
+            }
+        }
+    }
+
+    fun setTimeOutRingerState(state: Boolean){
+        viewModelScope.launch {
+            localUserDataStoreCases.saveTimeOutRingerState(state)
         }
     }
 

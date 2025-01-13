@@ -36,5 +36,7 @@ interface PomodoroManager {
     fun setVibrateState(isEnabled: Boolean)
     fun vibrateIfAvailable()
 
+    fun playIfAvailable()
+
     fun notifyIfAvailable(soundResource: Int)
 }

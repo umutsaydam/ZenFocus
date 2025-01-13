@@ -46,6 +46,19 @@ class LocalUserManagerImpl(
         }
     }
 
+    override suspend fun saveTimeOutRingerState(isEnable: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.TIME_OUT_RINGER_STATE] = isEnable
+        }
+    }
+
+    override fun readTimeOutRingerState(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.TIME_OUT_RINGER_STATE] ?: true
+        }
+    }
+
+
     override suspend fun saveAppLang(appLang: String) {
         context.dataStore.edit { settings ->
             settings[PreferencesKeys.APP_LANG] = appLang
@@ -160,6 +173,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 private object PreferencesKeys {
     val APP_ENTRY = booleanPreferencesKey(name = Constants.APP_ENTRY)
     val VIBRATE_STATE = booleanPreferencesKey(name = Constants.VIBRATE_STATE)
+    val TIME_OUT_RINGER_STATE = booleanPreferencesKey(name = Constants.TIME_OUT_RINGER_STATE)
     val APP_LANG = stringPreferencesKey(name = Constants.APP_LANG)
     val USER_ID = stringPreferencesKey(name = Constants.USER_ID)
     val USER_TYPE = stringPreferencesKey(name = Constants.USER_TYPE)

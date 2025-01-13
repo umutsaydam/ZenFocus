@@ -9,6 +9,7 @@
     <string name="stop_pomodoro">Stop pomodoro</string>
     <string name="pomodoro_will_stop">Are you sure the pomodoro will end?</string>
     <string name="vibrate">Vibrate</string>
+    <string name="time_out_ringer">Pomodoro end ringtone</string>
     <string name="policy">Policy</string>
     <string name="version">Version</string>
     <string name="sign_in_sign_up">Sign in | Sign up</string>
