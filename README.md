@@ -73,7 +73,7 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 
 ## <p id="katkida-bulunma">🤝 Katkıda Bulunma</p>
 
-Katkıda bulunmak istiyorsanız, lütfen bir `pull request` gönderin veya bir `issue` açın. Katkılarınız memnuniyetle karşılanacaktır!
+Katkıda bulunmak istiyorsanız, lütfen bir `pull request` gönderin veya bir `issue` açın. Katkılarınız memnuniyetle karşılanacaktır! (forContribution branch'inde olduğundan emin olun.)
 
 ---
 
@@ -152,7 +152,7 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 
 ## <p id="contributing">🤝 Contributing</p>
 
-If you'd like to contribute, please submit a `pull request` or open an `issue`. Your contributions are welcome!
+If you'd like to contribute, please submit a `pull request` or open an `issue`. Your contributions are welcome! (Make sure you are on the forContribution branch)
 
 ---
 
