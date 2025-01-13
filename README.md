@@ -4,8 +4,8 @@
 </div>
 
 
-### <p id="uygulama-icerik"></p>
-# ZenFocus
+
+# <p id="uygulama-icerik"># ZenFocus</p>
 
 ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve yapılacaklar listesiyle zamanınızı etkili bir şekilde yönetin. Kullanıcı dostu ara yüzüyle odaklanma deneyiminizi kişiselleştirin: istediğiniz temayı seçerek tam odak modunu aktif hale getirin ve motivasyonunuzu artırın. Ayrıca, favori odak seslerinizi seçerek çalışma sürecinizi daha keyifli ve verimli hale getirin. ZenFocus, konsantrasyonunuzu artırırken hedeflerinize ulaşmanız için en iyi yol arkadaşı olacak.
 
