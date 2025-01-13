@@ -55,7 +55,7 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 
 ## 📦 Kurulum
 
-1. Bu projeyi klonlayın:
+1. Bu projeyi klonlayın (forContribution branch olduğundan emin olun):
     ```bash
     https://github.com/umutsaydam/ZenFocus.git
     ```
@@ -134,7 +134,7 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 
 ## 📦 Installation
 
-1. Clone this project:
+1. Clone this project (Make sure you are on the forContribution branch):
     ```bash
     https://github.com/umutsaydam/ZenFocus.git
     ```
