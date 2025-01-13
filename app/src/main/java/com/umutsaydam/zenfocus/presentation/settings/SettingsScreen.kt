@@ -207,7 +207,7 @@ fun SettingsScreen(
                     )
                     MenuItemDescription(
                         menuTitle = stringResource(R.string.version),
-                        description = "1.2",
+                        description = "1.0",
                         onClick = {
                             //TODO: perform onClick
                         }
