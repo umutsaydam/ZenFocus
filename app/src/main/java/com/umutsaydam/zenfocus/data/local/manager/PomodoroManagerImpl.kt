@@ -199,8 +199,7 @@ class PomodoroManagerImpl(
 
 private object TimeConverter {
     fun minuteToMilli(minute: Int): Long {
-//        return minute * 60 * 1000L
-        return minute * 1000L
+        return minute * 60 * 1000L
     }
 
     fun convertMinutesAndSecondsToTextFormat(minutes: Long, seconds: Long): String {
