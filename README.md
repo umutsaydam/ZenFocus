@@ -12,14 +12,14 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 # 📋 İçindekiler
 
 - [Özellikler](#özellikler)
-- [Kullanılan Teknolojiler](#kullanılan-teknolojiler)
+- [Kullanılan Teknolojiler](#kullanilan-teknolojiler)
 - [Kurulum](#kurulum)
-- [Kullanım](#kullanım)
-- [Katkıda Bulunma](#katkıda-bulunma)
+- [Kullanım](#kullanim)
+- [Katkıda Bulunma](#katkida-bulunma)
 - [Lisans](#lisans)
 
 ---
-
+### <p id="özellikler"></p>
 ## 🚀 Özellikler
 
 - Odak sürelerini belirleme ve yönetme.
@@ -28,7 +28,7 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 - Kullanıcıya özel tam odak modunda kullanabileceği temalar.
 - Birçok odak sesleri
 ---
-
+### <p id="kullanilan-teknolojiler"></p>
 ## 🛠 Kullanılan Teknolojiler
 
 - **Kotlin**: Uygulama programlama dili.
@@ -52,7 +52,7 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 - **Foreground Service**: Android uygulamalarında, uygulama kullanıcının görsel olarak etkileşimde olmasa bile sürekli bir işlem gerektiren durumlar için kullanılan bir servis türüdür.
 
 ---
-
+### <p id="kurulum"></p>
 ## 📦 Kurulum
 
 1. Bu projeyi klonlayın (forContribution branch olduğundan emin olun):
@@ -64,19 +64,19 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 4. Uygulamayı çalıştırın.
 
 ---
-
+### <p id="kullanim"></p>
 ## 🧑‍💻 Kullanım
 
 - ![zenfocus_screens_tr](https://github.com/user-attachments/assets/2786a5aa-43d8-4e91-9fad-0ecd5292a4cb)
 
 ---
-
+### <p id="katkida-bulunma"></p>
 ## 🤝 Katkıda Bulunma
 
 Katkıda bulunmak istiyorsanız, lütfen bir `pull request` gönderin veya bir `issue` açın. Katkılarınız memnuniyetle karşılanacaktır!
 
 ---
-
+### <p id="lisans"></p>
 ## 📜 Lisans
 
 Bu proje MIT Lisansı ile lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atabilirsiniz.
@@ -98,7 +98,7 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 - [License](#license)
 
 ---
-
+### <p id="features"></p>
 ## 🚀 Features
 
 - Set and manage focus durations.
@@ -107,7 +107,7 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 - Customizable focus modes with personalized themes.
 - Multiple focus sounds.
 ---
-
+### <p id="technologies-used"></p>
 ## 🛠 Technologies Used
 
 - **Kotlin**: Programming language for the application.
@@ -131,7 +131,7 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 - **Foreground Service**:  A service used in Android applications that requires continuous operation even when the user is not interacting with the app visually.
 
 ---
-
+### <p id="installation"></p>
 ## 📦 Installation
 
 1. Clone this project (Make sure you are on the forContribution branch):
@@ -143,19 +143,19 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 4. Run the app.
 
 ---
-
+### <p id="usage"></p>
 ## 🧑‍💻 Usage
 
 - ![zenfocus_screens_en](https://github.com/user-attachments/assets/1fb4e207-f1a3-4fb9-9954-0c570771531a)
 
 ---
-
+### <p id="contributing"></p>
 ## 🤝 Contributing
 
 If you'd like to contribute, please submit a `pull request` or open an `issue`. Your contributions are welcome!
 
 ---
-
+### <p id="license"></p>
 ## 📜 License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
