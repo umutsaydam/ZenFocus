@@ -198,4 +198,8 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    fun clearUiMessage() {
+        updateUiState { copy(uiMessage = null) }
+    }
 }

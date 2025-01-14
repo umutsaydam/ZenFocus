@@ -69,6 +69,7 @@ fun AppearanceScreen(
     LaunchedEffect(uiState.uiMessage, uiState.rewardedAd) {
         uiState.uiMessage?.let { message ->
             Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
+            appearanceViewModel.clearUiMessage()
         }
 
         uiState.rewardedAd?.let { rewardAd ->

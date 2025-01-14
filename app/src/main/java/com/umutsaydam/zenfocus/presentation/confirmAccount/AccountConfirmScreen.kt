@@ -50,6 +50,7 @@ fun AccountConfirmScreen(
     LaunchedEffect(uiMessage) {
         uiMessage?.let { message ->
             Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
+            authConfirmViewModel.clearUiMessage()
         }
     }
 

@@ -74,4 +74,8 @@ class AuthConfirmViewModel @Inject constructor(
             }
         }
     }
+
+    fun clearUiMessage() {
+        _uiMessage.value = null
+    }
 }

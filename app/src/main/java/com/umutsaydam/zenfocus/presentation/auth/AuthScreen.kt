@@ -86,6 +86,7 @@ fun AuthScreen(
     LaunchedEffect(uiState.uiMessage, uiState.signInStep, uiState.signUpStep) {
         uiState.uiMessage?.let { message ->
             Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
+            authViewModel.clearUiMessage()
         }
 
         when (uiState.signInStep) {

@@ -150,4 +150,8 @@ class AppearanceViewModel @Inject constructor(
             updateUiState { copy(rewardedAd = rewardResult) }
         }
     }
+
+    fun clearUiMessage() {
+        updateHomeUiState { copy(uiMessage = null) }
+    }
 }
