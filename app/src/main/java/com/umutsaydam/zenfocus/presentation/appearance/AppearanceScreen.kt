@@ -65,27 +65,28 @@ fun AppearanceScreen(
     val configuration = LocalConfiguration.current
     val isTablet = remember { configuration.screenWidthDp.dp > 600.dp }
     val themeSpace = remember { if (isTablet) 380.dp else 150.dp }
-
-    LaunchedEffect(uiState.uiMessage, uiState.rewardedAd) {
+// These line is commented for the open source contribution.
+//    LaunchedEffect(uiState.uiMessage, uiState.rewardedAd) {
+    LaunchedEffect(uiState.uiMessage) {
         uiState.uiMessage?.let { message ->
             Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
             appearanceViewModel.clearUiMessage()
         }
-
-        uiState.rewardedAd?.let { rewardAd ->
-            val activity = context as? Activity
-            activity?.let {
-                rewardAd.show(
-                    it
-                ) { rewardItem ->
-//                    val rewardAmount = rewardItem.amount
-//                    val rewardType = rewardItem.type
-//                    Log.i("A/D", "user earned the reward")
-//                    Log.i("A/D", "$rewardAmount, $rewardType")
-                    appearanceViewModel.setDefaultTheme(uiState.selectedTheme)
-                }
-            }
-        }
+// These lines are commented for the open source contribution.
+//        uiState.rewardedAd?.let { rewardAd ->
+//            val activity = context as? Activity
+//            activity?.let {
+//                rewardAd.show(
+//                    it
+//                ) { rewardItem ->
+////                    val rewardAmount = rewardItem.amount
+////                    val rewardType = rewardItem.type
+////                    Log.i("A/D", "user earned the reward")
+////                    Log.i("A/D", "$rewardAmount, $rewardType")
+//                    appearanceViewModel.setDefaultTheme(uiState.selectedTheme)
+//                }
+//            }
+//        }
     }
 
     Scaffold(
@@ -110,13 +111,15 @@ fun AppearanceScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            if (appearanceViewModel.isConnected()) {
-                                if (appearanceViewModel.willShowAd()) {
-                                    appearanceViewModel.showRewardedAd()
-                                } else {
-                                    appearanceViewModel.saveTheme()
-                                }
-                            }
+// These lines are commented for the open source contribution.
+// Due to Amplify configuration doesn't include, theme can not download.
+//                            if (appearanceViewModel.isConnected()) {
+//                                if (appearanceViewModel.willShowAd()) {
+//                                    appearanceViewModel.showRewardedAd()
+//                                } else {
+//                                    appearanceViewModel.saveTheme()
+//                                }
+//                            }
                         }
                     ) {
                         Icon(
@@ -144,7 +147,8 @@ fun AppearanceScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM)
             ) {
-                ThemeImage(uiState.selectedTheme)
+// These line is commented for the open source contribution.
+//                ThemeImage(uiState.selectedTheme)
                 CenterFocusedCarousel(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     listOfTheme = uiState.themeList,

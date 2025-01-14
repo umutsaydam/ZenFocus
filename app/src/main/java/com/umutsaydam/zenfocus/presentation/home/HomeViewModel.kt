@@ -3,8 +3,9 @@ package com.umutsaydam.zenfocus.presentation.home
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
+// These lines are commented for the open source contribution.
+//import com.google.android.gms.ads.AdSize
+//import com.google.android.gms.ads.AdView
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.data.foregroundService.PomodoroForegroundService
 import com.umutsaydam.zenfocus.domain.model.Resource
@@ -18,8 +19,9 @@ import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
-import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
-import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
+// These lines are commented for the open source contribution.
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
 import com.umutsaydam.zenfocus.util.Constants.NONE
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,8 +62,9 @@ class HomeViewModel @Inject constructor(
     private val focusSoundUseCases: FocusSoundUseCases,
     private val checkerUseCases: NetworkCheckerUseCases,
     private val authCases: AwsAuthCases,
-    private val googleProductsInAppUseCases: GoogleProductsInAppUseCases,
-    private val googleAdUseCases: GoogleAdUseCases
+// These lines are commented for the open source contribution.
+//    private val googleProductsInAppUseCases: GoogleProductsInAppUseCases,
+//    private val googleAdUseCases: GoogleAdUseCases
 ) : ViewModel() {
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState
@@ -332,34 +335,34 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
-    fun showBannerAd(adSize: AdSize): AdView {
-        return googleAdUseCases.showBannerAd(
-            adSize = adSize,
-            onAdLoaded = { isLoaded ->
-                _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
-            },
-            onFirstAdRequested = { isFirstAdRequested ->
-                _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
-            }
-        )
-    }
-
-    fun startProductsInApp(activity: Activity) {
-       if (_homeUiState.value.userId.isNotEmpty()){
-           googleProductsInAppUseCases.startConnection(activity)
-
-           viewModelScope.launch {
-               googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
-                   if (purchaseState) {
-                       changeUserTypeAsAdFree()
-                   }
-               }
-           }
-       }else{
-           updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
-       }
-    }
+// These lines are commented for the open source contribution.
+//    fun showBannerAd(adSize: AdSize): AdView {
+//        return googleAdUseCases.showBannerAd(
+//            adSize = adSize,
+//            onAdLoaded = { isLoaded ->
+//                _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
+//            },
+//            onFirstAdRequested = { isFirstAdRequested ->
+//                _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
+//            }
+//        )
+//    }
+// These lines are commented for the open source contribution.
+//    fun startProductsInApp(activity: Activity) {
+//       if (_homeUiState.value.userId.isNotEmpty()){
+//           googleProductsInAppUseCases.startConnection(activity)
+//
+//           viewModelScope.launch {
+//               googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
+//                   if (purchaseState) {
+//                       changeUserTypeAsAdFree()
+//                   }
+//               }
+//           }
+//       }else{
+//           updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
+//       }
+//    }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {
         updateHomeUiState { copy(bottomSheetContent = content) }

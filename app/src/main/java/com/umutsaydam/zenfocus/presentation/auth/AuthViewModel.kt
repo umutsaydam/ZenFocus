@@ -44,160 +44,160 @@ class AuthViewModel @Inject constructor(
     fun isConnected(): Boolean {
         return networkCheckerUseCases.isConnected()
     }
-
-    fun signIn(email: String, password: String) {
-        viewModelScope.launch {
-            when (val result: AwsAuthSignInResult = awsAuthCases.userSignIn(email, password)) {
-                is AwsAuthSignInResult.IsSignedIn -> {
-                    updateUiState { copy(uiMessage = R.string.signing_in) }
-                    getUserId()
-                }
-
-                is AwsAuthSignInResult.ConfirmSignIn -> {
-                    updateUiState {
-                        copy(
-                            userId = null,
-                            signUpStep = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
-                        )
-                    }
-                }
-
-                is AwsAuthSignInResult.Error -> {
-                    updateUiState { copy(userId = null) }
-
-                    when (result.exception) {
-                        is NotAuthorizedException -> {
-                            updateUiState { copy(uiMessage = R.string.incorrect_email_or_password) }
-                        }
-
-                        is UserNotConfirmedException -> {
-                            updateUiState {
-                                copy(
-                                    uiMessage = R.string.confirm_account,
-                                    signInStep = AuthSignInStep.CONFIRM_SIGN_UP
-                                )
-                            }
-                        }
-
-                        else -> {
-                            updateUiState {
-                                copy(
-                                    uiMessage = R.string.error_while_signing_in,
-                                    signInStep = null
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getUserId() {
-        viewModelScope.launch {
-            when (val result = awsAuthCases.userGetId()) {
-                is Resource.Success -> {
-                    val userId = result.data
-                    userId?.let { id ->
-                        saveUserId(id)
-                        getUserInfo(userId)
-                    }
-                    updateUiState { copy(userId = result.data) }
-                }
-
-                is Resource.Error -> {
-                    updateUiState { copy(userId = null) }
-                }
-            }
-        }
-    }
+// These lines are commented for the open source contribution.
+//    fun signIn(email: String, password: String) {
+//        viewModelScope.launch {
+//            when (val result: AwsAuthSignInResult = awsAuthCases.userSignIn(email, password)) {
+//                is AwsAuthSignInResult.IsSignedIn -> {
+//                    updateUiState { copy(uiMessage = R.string.signing_in) }
+//                    getUserId()
+//                }
+//
+//                is AwsAuthSignInResult.ConfirmSignIn -> {
+//                    updateUiState {
+//                        copy(
+//                            userId = null,
+//                            signUpStep = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
+//                        )
+//                    }
+//                }
+//
+//                is AwsAuthSignInResult.Error -> {
+//                    updateUiState { copy(userId = null) }
+//
+//                    when (result.exception) {
+//                        is NotAuthorizedException -> {
+//                            updateUiState { copy(uiMessage = R.string.incorrect_email_or_password) }
+//                        }
+//
+//                        is UserNotConfirmedException -> {
+//                            updateUiState {
+//                                copy(
+//                                    uiMessage = R.string.confirm_account,
+//                                    signInStep = AuthSignInStep.CONFIRM_SIGN_UP
+//                                )
+//                            }
+//                        }
+//
+//                        else -> {
+//                            updateUiState {
+//                                copy(
+//                                    uiMessage = R.string.error_while_signing_in,
+//                                    signInStep = null
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun getUserId() {
+//        viewModelScope.launch {
+//            when (val result = awsAuthCases.userGetId()) {
+//                is Resource.Success -> {
+//                    val userId = result.data
+//                    userId?.let { id ->
+//                        saveUserId(id)
+//                        getUserInfo(userId)
+//                    }
+//                    updateUiState { copy(userId = result.data) }
+//                }
+//
+//                is Resource.Error -> {
+//                    updateUiState { copy(userId = null) }
+//                }
+//            }
+//        }
+//    }
 
     private fun saveUserId(userId: String) {
         viewModelScope.launch {
             localUserDataStoreCases.saveUserId(userId)
         }
     }
-
-    private fun getUserInfo(userId: String) {
-        viewModelScope.launch {
-            when (val result = awsAuthCases.readUserInfo(userId)) {
-                is Resource.Success -> {
-                    result.data?.let { userInfo ->
-                        saveUserType(userInfo.userType)
-                        updateUiState { copy(signInStep = AuthSignInStep.DONE) }
-                    }
-                }
-
-                is Resource.Error -> {
-                    updateUiState { copy(uiMessage = R.string.error_while_signing_in) }
-                }
-            }
-        }
-    }
+// These lines are commented for the open source contribution.
+//    private fun getUserInfo(userId: String) {
+//        viewModelScope.launch {
+//            when (val result = awsAuthCases.readUserInfo(userId)) {
+//                is Resource.Success -> {
+//                    result.data?.let { userInfo ->
+//                        saveUserType(userInfo.userType)
+//                        updateUiState { copy(signInStep = AuthSignInStep.DONE) }
+//                    }
+//                }
+//
+//                is Resource.Error -> {
+//                    updateUiState { copy(uiMessage = R.string.error_while_signing_in) }
+//                }
+//            }
+//        }
+//    }
 
     private fun saveUserType(userType: String) {
         viewModelScope.launch {
             localUserDataStoreCases.saveUserType(userType)
         }
     }
-
-    fun signUp(email: String, password: String) {
-        viewModelScope.launch {
-            val result = awsAuthCases.userSignUp(email, password)
-
-            when (result) {
-                is AwsAuthSignUpResult.IsSignedUp -> {
-                    updateUiState {
-                        copy(
-                            uiMessage = R.string.signed_up,
-                            signUpStep = AuthSignUpStep.DONE
-                        )
-                    }
-                }
-
-                is AwsAuthSignUpResult.ConfirmSignUp -> {
-                    updateUiState {
-                        copy(
-                            uiMessage = R.string.verify_account,
-                            signUpStep = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
-                        )
-                    }
-                }
-
-                is AwsAuthSignUpResult.Error -> {
-                    updateUiState {
-                        copy(
-                            signUpStep = null,
-                            uiMessage = R.string.error_while_sign_up
-                        )
-                    }
-                }
-
-                is AwsAuthSignUpResult.ResentCode -> {
-                    //TODO: resend code
-                }
-            }
-        }
-    }
-
-    fun signInWithGoogle(activity: Activity) {
-        viewModelScope.launch {
-            when (val result = awsAuthCases.signInWithGoogle(activity)) {
-                is Resource.Success -> {
-                    val currUserId = result.data
-                    currUserId?.let { id ->
-                        updateUiState { copy(userId = id) }
-                        saveUserId(id)
-                        getUserInfo(id)
-                    }
-                }
-
-                is Resource.Error -> {
-                    updateUiState { copy(uiMessage = R.string.error_while_signing_in) }
-                }
-            }
-        }
-    }
+// These lines are commented for the open source contribution.
+//    fun signUp(email: String, password: String) {
+//        viewModelScope.launch {
+//            val result = awsAuthCases.userSignUp(email, password)
+//
+//            when (result) {
+//                is AwsAuthSignUpResult.IsSignedUp -> {
+//                    updateUiState {
+//                        copy(
+//                            uiMessage = R.string.signed_up,
+//                            signUpStep = AuthSignUpStep.DONE
+//                        )
+//                    }
+//                }
+//
+//                is AwsAuthSignUpResult.ConfirmSignUp -> {
+//                    updateUiState {
+//                        copy(
+//                            uiMessage = R.string.verify_account,
+//                            signUpStep = AuthSignUpStep.CONFIRM_SIGN_UP_STEP
+//                        )
+//                    }
+//                }
+//
+//                is AwsAuthSignUpResult.Error -> {
+//                    updateUiState {
+//                        copy(
+//                            signUpStep = null,
+//                            uiMessage = R.string.error_while_sign_up
+//                        )
+//                    }
+//                }
+//
+//                is AwsAuthSignUpResult.ResentCode -> {
+//                    //TODO: resend code
+//                }
+//            }
+//        }
+//    }
+//
+//    fun signInWithGoogle(activity: Activity) {
+//        viewModelScope.launch {
+//            when (val result = awsAuthCases.signInWithGoogle(activity)) {
+//                is Resource.Success -> {
+//                    val currUserId = result.data
+//                    currUserId?.let { id ->
+//                        updateUiState { copy(userId = id) }
+//                        saveUserId(id)
+//                        getUserInfo(id)
+//                    }
+//                }
+//
+//                is Resource.Error -> {
+//                    updateUiState { copy(uiMessage = R.string.error_while_signing_in) }
+//                }
+//            }
+//        }
+//    }
 
     fun clearUiMessage() {
         updateUiState { copy(uiMessage = null) }

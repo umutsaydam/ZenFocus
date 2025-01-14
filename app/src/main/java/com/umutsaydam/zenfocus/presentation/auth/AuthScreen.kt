@@ -230,10 +230,12 @@ fun AuthScreen(
                                 onClick = {
                                     if (authViewModel.isConnected()) {
                                         if (isSignInSection) {
-                                            authViewModel.signIn(email, password)
+//                                            These line is commented for the open source contribution.
+//                                            authViewModel.signIn(email, password)
                                         } else {
                                             if (password.length > 7) {
-                                                authViewModel.signUp(email, password)
+//                                                These line is commented for the open source contribution.
+//                                                authViewModel.signUp(email, password)
                                             } else {
                                                 Toast.makeText(
                                                     context,
@@ -277,7 +279,8 @@ fun AuthScreen(
                         onClick = {
                             activity?.let {
                                 if (authViewModel.isConnected()) {
-                                    authViewModel.signInWithGoogle(it)
+//                                    These line is commented for the open source contribution.
+//                                    authViewModel.signInWithGoogle(it)
                                 } else {
                                     Toast.makeText(
                                         context,
