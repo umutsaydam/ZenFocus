@@ -202,4 +202,8 @@ class AuthViewModel @Inject constructor(
     fun clearUiMessage() {
         updateUiState { copy(uiMessage = null) }
     }
+
+    fun clearAuthSignInStep() {
+        updateUiState { copy(signUpStep = null) }
+    }
 }

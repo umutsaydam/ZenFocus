@@ -59,12 +59,14 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.ui.theme.Black
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import com.umutsaydam.zenfocus.util.safeNavigate
+import com.umutsaydam.zenfocus.util.safeNavigateAndClearBackStack
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -91,7 +93,7 @@ fun AuthScreen(
 
         when (uiState.signInStep) {
             AuthSignInStep.DONE -> {
-                navController.popBackStackOrIgnore()
+                navController.safeNavigateAndClearBackStack(Route.Settings.route)
             }
 
             AuthSignInStep.CONFIRM_SIGN_UP -> {
@@ -101,6 +103,7 @@ fun AuthScreen(
                     Toast.LENGTH_SHORT
                 ).show()
                 val confirmRoute = "AccountConfirm/$email/true"
+                authViewModel.clearAuthSignInStep()
                 navController.safeNavigate(confirmRoute)
             }
 
