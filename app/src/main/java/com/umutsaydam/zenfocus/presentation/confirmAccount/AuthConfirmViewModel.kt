@@ -26,6 +26,10 @@ class AuthConfirmViewModel @Inject constructor(
     private val _uiMessage = MutableStateFlow<Int?>(null)
     val uiMessage: StateFlow<Int?> = _uiMessage
 
+    init {
+        _uiMessage.value = R.string.verify_account
+    }
+
     fun isConnected(): Boolean {
         return networkCheckerUseCases.isConnected()
     }
@@ -47,8 +51,8 @@ class AuthConfirmViewModel @Inject constructor(
     private fun confirmationResultHandle(result: AwsAuthSignUpResult) {
         when (result) {
             is AwsAuthSignUpResult.IsSignedUp -> {
+                _uiMessage.value = R.string.account_verified
                 _userConfirmState.value = AuthSignUpStep.DONE
-                _uiMessage.value = R.string.verify_account
             }
 
             is AwsAuthSignUpResult.Error -> {

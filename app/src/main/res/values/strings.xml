@@ -19,6 +19,7 @@
     <string name="sign_up">Sign up</string>
     <string name="signed_up">You signed up successfully.</string>
     <string name="confirm_account">Please confirm your account.</string>
+    <string name="sent_code_confirm_account">The verification code has been sent to your email address. Please verify your account.</string>
     <string name="email" translatable="false">Email</string>
     <string name="enter_email">Enter your email</string>
     <string name="password">Password</string>
