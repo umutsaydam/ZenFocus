@@ -9,6 +9,14 @@ fun NavController.safeNavigate(route: String) {
     }
 }
 
+fun NavController.safeNavigateAndClearBackStack(route: String) {
+    if (currentBackStackEntry?.destination?.route != route) {
+        navigate(route) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
+}
+
 fun NavController.popBackStackOrIgnore() {
     if (currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
         popBackStack()
