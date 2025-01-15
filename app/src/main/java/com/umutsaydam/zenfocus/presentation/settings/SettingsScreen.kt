@@ -152,7 +152,6 @@ fun SettingsScreen(
                 .padding(paddingValue),
             verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM)
         ) {
-            Spacer(modifier = Modifier.height(SPACE_MEDIUM))
             SettingsSection(
                 content = {
                     MenuItem(
