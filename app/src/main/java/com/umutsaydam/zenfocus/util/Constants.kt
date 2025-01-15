@@ -2,7 +2,6 @@ package com.umutsaydam.zenfocus.util
 
 object Constants {
     const val APP_ENTRY = "App_Entry"
-    const val USER_SETTINGS = "User_Settings"
     const val VIBRATE_STATE = "Vibrate_State"
     const val TIME_OUT_RINGER_STATE = "Time_Out_Ringer_State"
     const val APP_LANG = "App_Lang"
@@ -16,14 +15,13 @@ object Constants {
     const val POMODORO_WORK_DURATION = "Pomodoro_Work_Duration"
     const val POMODORO_BREAK_DURATION = "Pomodoro_Break_Duration"
     const val DEFAULT_THEME = "default_theme.jpg"
-    const val DOWNLOADED_FOCUS_THEMES = "Downloaded_Focus_Themes"
     const val POMODORO_SERVICE_CHANNEL_ID = "Pomodoro_Foreground_Service"
     const val POMODORO_NOTIFICATION_ID = 1
     const val NONE = "None"
 
     // POMODORO DEFAULT SETTINGS
-    const val DEFAULT_POMODORO_CYCLE = 4 // 1
-    const val DEFAULT_POMODORO_WORK_DURATION = 10 // 25 minute
+    const val DEFAULT_POMODORO_CYCLE = 4
+    const val DEFAULT_POMODORO_WORK_DURATION = 25
     const val DEFAULT_POMODORO_BREAK_DURATION = 5
 
     // VIBRATION
