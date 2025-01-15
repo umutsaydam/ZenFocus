@@ -152,6 +152,6 @@ class AppearanceViewModel @Inject constructor(
     }
 
     fun clearUiMessage() {
-        updateHomeUiState { copy(uiMessage = null) }
+        updateUiState { copy(uiMessage = null) }
     }
 }
