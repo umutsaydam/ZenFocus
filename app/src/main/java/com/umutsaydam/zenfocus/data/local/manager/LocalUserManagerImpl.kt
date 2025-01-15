@@ -42,7 +42,7 @@ class LocalUserManagerImpl(
 
     override fun readVibrateState(): Flow<Boolean> {
         return context.dataStore.data.map { preferences ->
-            preferences[PreferencesKeys.VIBRATE_STATE] ?: false
+            preferences[PreferencesKeys.VIBRATE_STATE] ?: true
         }
     }
 
