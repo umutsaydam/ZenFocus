@@ -1,9 +1,11 @@
 package com.umutsaydam.zenfocus.presentation.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,7 +37,9 @@ fun MenuItem(
         modifier = modifier.fillMaxWidth()
     ) {
         TextButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
             onClick = { onClick() },
             enabled = isEnable,
             shape = RectangleShape
@@ -44,9 +48,9 @@ fun MenuItem(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (headIcon != null) {
+                headIcon?.let {
                     Icon(
-                        painter = painterResource(headIcon),
+                        painter = painterResource(it),
                         contentDescription = contentDescription,
                         tint = iconTint
                     )
