@@ -82,7 +82,7 @@ fun AppearanceScreen(
 //                    val rewardType = rewardItem.type
 //                    Log.i("A/D", "user earned the reward")
 //                    Log.i("A/D", "$rewardAmount, $rewardType")
-                    appearanceViewModel.setDefaultTheme(uiState.selectedTheme)
+                    appearanceViewModel.saveTheme()
                 }
             }
         }
