@@ -35,7 +35,8 @@ class NavigationTransitionManager {
                 Route.Auth.route,
                 Route.Policy.route,
                 Route.AppLanguage.route,
-                Route.Appearance.route
+                Route.Appearance.route,
+                Route.AccountConfirm.route
             ) -> {
                 slideInHorizontally(
                     initialOffsetX = { it },
@@ -69,7 +70,8 @@ class NavigationTransitionManager {
                 Route.Auth.route,
                 Route.Policy.route,
                 Route.AppLanguage.route,
-                Route.Appearance.route
+                Route.Appearance.route,
+                Route.AccountConfirm.route
             ) -> {
                 slideOutHorizontally(
                     targetOffsetX = { it },
