@@ -34,9 +34,8 @@ import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.auth.FormTextField
-import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
-import com.umutsaydam.zenfocus.util.safeNavigateAndClearBackStack
+import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
 fun AccountConfirmScreen(
@@ -60,7 +59,7 @@ fun AccountConfirmScreen(
 
     LaunchedEffect(userConfirmState) {
         if (userConfirmState == AuthSignUpStep.DONE) {
-            navController.safeNavigateAndClearBackStack(Route.Auth.route)
+            navController.popBackStackOrIgnore()
         }
     }
 
