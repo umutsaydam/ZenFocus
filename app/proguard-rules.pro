@@ -39,22 +39,17 @@
 }
 
 # Amplify
--keep class com.amplifyframework.** {
-    <init>();
-    *;
-}
--keepattributes Signature
+-keep class com.amplifyframework.api.** { *; }
+-keep class com.amplifyframework.storage.** { *; }
+-keep class com.amplifyframework.auth.cognito.** { *; }
 -keepattributes *Annotation*
--dontwarn com.amazonaws.mobileconnectors.**
--dontwarn org.apache.commons.logging.**
+-dontwarn com.amazonaws.**
 
 # AWS SDK
--keep class com.amazonaws.** {
-    <init>();
-    *;
-}
--keepattributes Signature
--dontwarn com.amazonaws.**
+-keep class com.amazonaws.services.** { *; }
+-keep class com.amazonaws.mobileconnectors.s3.** { *; }
+-dontwarn com.amazonaws.services.**
+-dontwarn software.amazon.awssdk.**
 
 # Google Services
 -keep class com.google.android.gms.** {
@@ -62,6 +57,10 @@
     *;
 }
 -dontwarn com.google.android.gms.**
+
+# Google Mobile Ads SDK
+-keep class com.google.android.gms.ads.** { *; }
+-dontwarn com.google.android.gms.ads.**
 
 # Google Billing
 -keep class com.android.billingclient.** { *; }
@@ -80,12 +79,21 @@
 -keepattributes *Annotation*
 -keep class com.google.gson.** { *; }
 -dontwarn com.google.gson.**
+-keep class com.google.gson.stream.** { *; }
+-keep class com.google.gson.internal.bind.** { *; }
 
 # Gson Model Classes
--keep class com.umutsaydam.zenfocus.data.remote.dto.APIResponse { *; }
--keep class com.umutsaydam.zenfocus.data.remote.dto.Items { *; }
--keep class com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo { *; }
+-keep class com.umutsaydam.zenfocus.data.remote.dto.** { *; }
+-keep class com.umutsaydam.zenfocus.domain.model.** { *; }
+
+# Google Products In App
 -keep class com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl {
     <init>();
     *;
  }
+
+ # Google Ads Service
+ -keep class com.umutsaydam.zenfocus.data.remote.service.GoogleAdServiceImpl {
+     <init>();
+     *;
+  }
