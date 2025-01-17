@@ -126,11 +126,11 @@ fun MainNavHost() {
             arguments = Route.AccountConfirm.arguments,
             enterTransition = {
                 val fromRoute = navController.previousBackStackEntry?.destination?.route
-                navTransitionManager.getEnterTransition(Route.FocusMode.route, fromRoute)
+                navTransitionManager.getEnterTransition(Route.AccountConfirm.route, fromRoute)
             },
             exitTransition = {
                 val fromRoute = navController.previousBackStackEntry?.destination?.route
-                navTransitionManager.getExitTransition(Route.FocusMode.route, fromRoute)
+                navTransitionManager.getExitTransition(Route.AccountConfirm.route, fromRoute)
             }
         ) { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email")
