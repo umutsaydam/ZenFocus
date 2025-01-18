@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.cognito.exceptions.service.UserNotConfirmedException
-import com.amplifyframework.auth.exceptions.NotAuthorizedException
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
@@ -63,13 +62,9 @@ class AuthViewModel @Inject constructor(
                 }
 
                 is AwsAuthSignInResult.Error -> {
-                    updateUiState { copy(userId = null) }
+                    updateUiState { copy(userId = null, uiMessage = result.message) }
 
                     when (result.exception) {
-                        is NotAuthorizedException -> {
-                            updateUiState { copy(uiMessage = R.string.incorrect_email_or_password) }
-                        }
-
                         is UserNotConfirmedException -> {
                             updateUiState {
                                 copy(
@@ -143,9 +138,7 @@ class AuthViewModel @Inject constructor(
 
     fun signUp(email: String, password: String) {
         viewModelScope.launch {
-            val result = awsAuthCases.userSignUp(email, password)
-
-            when (result) {
+            when (val result = awsAuthCases.userSignUp(email, password)) {
                 is AwsAuthSignUpResult.IsSignedUp -> {
                     updateUiState {
                         copy(
@@ -168,7 +161,7 @@ class AuthViewModel @Inject constructor(
                     updateUiState {
                         copy(
                             signUpStep = null,
-                            uiMessage = R.string.error_while_sign_up
+                            uiMessage = result.message
                         )
                     }
                 }
@@ -193,7 +186,7 @@ class AuthViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    updateUiState { copy(uiMessage = R.string.error_while_signing_in) }
+                    updateUiState { copy(uiMessage = result.message) }
                 }
             }
         }

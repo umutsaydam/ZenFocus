@@ -69,6 +69,12 @@
     <string name="limit_exceeded">Code submission limit exceeded. Please try again later.</string>
     <string name="account_verified">Your account verified.</string>
     <string name="must_sign_in_remove_ad">To remove ads, you must first log in</string>
+    <string name="validation_exception">Invalid input information. Please check the form and try again.</string>
+    <string name="session_expired_exception">Your session has expired. Please log in again.</string>
+    <string name="invalid_state_exception">An unexpected situation occurred. Please try again.</string>
+    <string name="username_exists_exception">This email is already registered. Please choose a different username.</string>
+    <string name="service_exception">A service-related error occurred. Please try again later.</string>
+    <string name="unknown_error">An unexpected error occurred. Please try again later.</string>
 
     <string-array name="app_langs">
         <item>Turkish-tr</item>

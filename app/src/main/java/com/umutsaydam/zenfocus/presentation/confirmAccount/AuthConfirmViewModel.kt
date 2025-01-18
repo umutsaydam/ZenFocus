@@ -2,8 +2,6 @@ package com.umutsaydam.zenfocus.presentation.confirmAccount
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amplifyframework.auth.cognito.exceptions.service.CodeMismatchException
-import com.amplifyframework.auth.cognito.exceptions.service.LimitExceededException
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
@@ -57,20 +55,7 @@ class AuthConfirmViewModel @Inject constructor(
 
             is AwsAuthSignUpResult.Error -> {
                 _userConfirmState.value = null
-
-                when (result.exception) {
-                    is CodeMismatchException -> {
-                        _uiMessage.value = R.string.code_mismatch
-                    }
-
-                    is LimitExceededException -> {
-                        _uiMessage.value = R.string.limit_exceeded
-                    }
-
-                    else -> {
-                        _uiMessage.value = R.string.error_while_sign_up
-                    }
-                }
+                _uiMessage.value = result.message
             }
 
             else -> {

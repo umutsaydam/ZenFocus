@@ -67,4 +67,10 @@
     <string name="limit_exceeded">Kod gönderim hakkı aşıldı. Lütfen daha sonra tekrar deneyin.</string>
     <string name="account_verified">Hesabınız doğrulandı.</string>
     <string name="must_sign_in_remove_ad">Reklamları kaldırmak için önce giriş yapmalısınız</string>
+    <string name="validation_exception">Geçersiz giriş bilgisi. Lütfen formdaki bilgileri kontrol edip tekrar deneyin</string>
+    <string name="session_expired_exception">Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın</string>
+    <string name="invalid_state_exception">Beklenmeyen bir durum oluştu. Lütfen tekrar deneyin</string>
+    <string name="username_exists_exception">Bu kullanıcı adı zaten kayıtlı. Farklı bir kullanıcı adı seçin</string>
+    <string name="service_exception">Hizmetle ilgili bir hata oluştu. Lütfen daha sonra tekrar deneyin</string>
+    <string name="unknown_error">Beklenmeyen bir hata oluştu.Lütfen daha sonra tekrar deneyin</string>
 </resources>
