@@ -74,23 +74,3 @@ fun MenuItemSwitch(
         )
     }
 }
-
-@Preview(
-    name = "Dark Mode",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(
-    name = "Light Mode",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-fun MenuItemSwitchPreview(modifier: Modifier = Modifier) {
-    MenuItemSwitch(
-        menuTitle = "Vibrate",
-        onClick = {
-
-        },
-    )
-}
