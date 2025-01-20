@@ -2,7 +2,6 @@ package com.umutsaydam.zenfocus.data.remote.service
 
 import android.app.Activity
 import com.amplifyframework.api.rest.RestOptions
-import com.amplifyframework.auth.AuthException
 import com.amplifyframework.auth.AuthProvider
 import com.amplifyframework.auth.AuthUserAttribute
 import com.amplifyframework.auth.AuthUserAttributeKey
@@ -13,6 +12,7 @@ import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.amplifyframework.core.Amplify
 import com.google.gson.Gson
 import com.umutsaydam.zenfocus.data.remote.dto.UserInfo
+import com.umutsaydam.zenfocus.domain.model.AuthExceptionMessages
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 import com.umutsaydam.zenfocus.domain.model.AwsAuthSignInResult
 import com.umutsaydam.zenfocus.domain.model.AwsAuthSignUpResult
@@ -35,19 +35,15 @@ class AwsAuthServiceImpl : AwsAuthService {
                     result.nextStep.signInStep == AuthSignInStep.CONFIRM_SIGN_UP -> {
                         continuation.resume(AwsAuthSignInResult.ConfirmSignIn(result.nextStep.signInStep)) { _, _, _ -> }
                     }
-
-                    else -> {
-                        continuation.resume(
-                            AwsAuthSignInResult.Error(
-                                AuthException(
-                                    message = "Unexpected sign-in step", recoverySuggestion = ""
-                                )
-                            )
-                        ) { _, _, _ -> }
-                    }
                 }
             }, { error ->
-                continuation.resume(AwsAuthSignInResult.Error(error)) { _, _, _ -> }
+                val errorMessage = AuthExceptionMessages.exceptionToMessage(error)
+                continuation.resume(
+                    AwsAuthSignInResult.Error(
+                        exception = error,
+                        message = errorMessage.messageId
+                    )
+                ) { _, _, _ -> }
             })
         }
     }
@@ -55,10 +51,10 @@ class AwsAuthServiceImpl : AwsAuthService {
     override suspend fun signUp(email: String, password: String): AwsAuthSignUpResult {
         return suspendCancellableCoroutine { continuation ->
             val options = AuthSignUpOptions.builder().userAttributes(
-                    listOf(
-                        AuthUserAttribute(AuthUserAttributeKey.email(), email)
-                    )
-                ).build()
+                listOf(
+                    AuthUserAttribute(AuthUserAttributeKey.email(), email)
+                )
+            ).build()
 
             Amplify.Auth.signUp(email, password, options, { result ->
                 when {
@@ -69,19 +65,15 @@ class AwsAuthServiceImpl : AwsAuthService {
                     result.nextStep.signUpStep == AuthSignUpStep.CONFIRM_SIGN_UP_STEP -> {
                         continuation.resume(AwsAuthSignUpResult.ConfirmSignUp(AuthSignUpStep.CONFIRM_SIGN_UP_STEP)) { _, _, _ -> }
                     }
-
-                    else -> {
-                        continuation.resume(
-                            AwsAuthSignUpResult.Error(
-                                AuthException(
-                                    message = "Unexpected sign-up step", recoverySuggestion = ""
-                                )
-                            )
-                        ) { _, _, _ -> }
-                    }
                 }
-            }, { onError ->
-                continuation.resume(AwsAuthSignUpResult.Error(onError)) { _, _, _ -> }
+            }, { error ->
+                val errorMessage = AuthExceptionMessages.exceptionToMessage(error)
+                continuation.resume(
+                    AwsAuthSignUpResult.Error(
+                        exception = error,
+                        message = errorMessage.messageId
+                    )
+                ) { _, _, _ -> }
             })
         }
     }
@@ -91,7 +83,13 @@ class AwsAuthServiceImpl : AwsAuthService {
             Amplify.Auth.confirmSignUp(email, confirmCode, { result ->
                 continuation.resume(AwsAuthSignUpResult.IsSignedUp(result.isSignUpComplete)) { _, _, _ -> }
             }, { error ->
-                continuation.resume(AwsAuthSignUpResult.Error(error)) { _, _, _ -> }
+                val errorMessage = AuthExceptionMessages.exceptionToMessage(error)
+                continuation.resume(
+                    AwsAuthSignUpResult.Error(
+                        exception = error,
+                        message = errorMessage.messageId
+                    )
+                ) { _, _, _ -> }
             })
         }
     }
@@ -101,7 +99,13 @@ class AwsAuthServiceImpl : AwsAuthService {
             Amplify.Auth.resendSignUpCode(email, { result ->
                 continuation.resume(AwsAuthSignUpResult.ResentCode(result.destination)) { _, _, _ -> }
             }, { error ->
-                continuation.resume(AwsAuthSignUpResult.Error(error)) { _, _, _ -> }
+                val errorMessage = AuthExceptionMessages.exceptionToMessage(error)
+                continuation.resume(
+                    AwsAuthSignUpResult.Error(
+                        exception = error,
+                        message = errorMessage.messageId
+                    )
+                ) { _, _, _ -> }
             })
         }
     }
@@ -111,10 +115,9 @@ class AwsAuthServiceImpl : AwsAuthService {
             Amplify.Auth.getCurrentUser({ onSuccess ->
                 continuation.resume(Resource.Success(data = onSuccess.userId)) { _, _, _ -> }
             }, { error ->
+                val errorMessage = AuthExceptionMessages.exceptionToMessage(error)
                 continuation.resume(
-                    Resource.Error(
-                        message = error.message ?: "Unknown error"
-                    )
+                    Resource.Error(message = errorMessage.messageId)
                 ) { _, _, _ -> }
             })
         }
@@ -199,7 +202,8 @@ class AwsAuthServiceImpl : AwsAuthService {
                     continuation.resume(Resource.Error()) { _, _, _ -> }
                 }
             }, { error ->
-                continuation.resume(Resource.Error(message = error.message)) { _, _, _ -> }
+                val errorMessage = AuthExceptionMessages.exceptionToMessage(error)
+                continuation.resume(Resource.Error(message = errorMessage.messageId)) { _, _, _ -> }
             })
         }
     }
@@ -218,7 +222,8 @@ class AwsAuthServiceImpl : AwsAuthService {
                     }
                 }
             }, { error ->
-                continuation.resume(Resource.Error(message = error.message)) { _, _, _ -> }
+                val errorMessage = AuthExceptionMessages.exceptionToMessage(error)
+                continuation.resume(Resource.Error(message = errorMessage.messageId)) { _, _, _ -> }
             })
         }
     }

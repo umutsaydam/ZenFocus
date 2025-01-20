@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.confirmAccount
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,8 +31,10 @@ import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
+import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.auth.FormTextField
+import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
@@ -61,7 +64,7 @@ fun AccountConfirmScreen(
     }
 
     LaunchedEffect(key1 = Unit) {
-        if (shouldResend){
+        if (shouldResend) {
             authConfirmViewModel.resendConfirmationCode(email)
         }
     }
@@ -69,12 +72,13 @@ fun AccountConfirmScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(SurfaceContainerLow)
             .padding(PADDING_MEDIUM2),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM1, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         FormTextField(
-            formTitle = stringResource(R.string.verify_account),
+            formTitle = stringResource(R.string.sent_code_confirm_account),
             value = confirmCode,
             onValueChanged = {
                 confirmCode = it

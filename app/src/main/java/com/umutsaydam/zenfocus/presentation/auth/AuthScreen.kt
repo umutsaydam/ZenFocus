@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.auth
 
 import android.app.Activity
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,10 +43,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
@@ -101,6 +98,7 @@ fun AuthScreen(
                     Toast.LENGTH_SHORT
                 ).show()
                 val confirmRoute = "AccountConfirm/$email/true"
+                authViewModel.clearAuthSignInStep()
                 navController.safeNavigate(confirmRoute)
             }
 
@@ -115,6 +113,7 @@ fun AuthScreen(
                     Toast.LENGTH_SHORT
                 ).show()
                 val confirmRoute = "AccountConfirm/$email/false"
+                authViewModel.clearAuthSignUpStep()
                 navController.safeNavigate(confirmRoute)
             }
 
@@ -312,14 +311,4 @@ fun AuthScreen(
             }
         }
     }
-}
-
-@Preview(
-    name = "Light Mode",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-fun AuthScreenPreview(modifier: Modifier = Modifier) {
-    AuthScreen(navController = rememberNavController())
 }

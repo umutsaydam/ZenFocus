@@ -72,24 +72,3 @@ fun FormTextField(
         colors = colors
     )
 }
-
-
-@Preview(
-    name = "Light Mode",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-fun FormTextFieldPreview(modifier: Modifier = Modifier) {
-    Column(
-        modifier = Modifier.padding(all = 50.dp)
-    ) {
-        FormTextField(
-            formTitle = "Email",
-            value = "",
-            onValueChanged = {},
-            placeHolder = "",
-            keyboardOptions = KeyboardOptions()
-        )
-    }
-}

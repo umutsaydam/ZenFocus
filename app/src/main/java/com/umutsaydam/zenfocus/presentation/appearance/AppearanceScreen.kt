@@ -1,7 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.appearance
 
 import android.app.Activity
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,12 +31,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
@@ -221,14 +218,4 @@ private fun calculateImageSize(isTablet: Boolean, isBigger: Boolean): Pair<Dp, D
     } else {
         if (isBigger) 100.dp to 110.dp else 80.dp to 90.dp
     }
-}
-
-@Preview(
-    name = "Light Mode",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-fun AppearanceScreenPreview(modifier: Modifier = Modifier) {
-    AppearanceScreen(navController = rememberNavController())
 }

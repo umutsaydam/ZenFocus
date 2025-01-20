@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amplifyframework.auth.cognito.exceptions.service.UserNotConfirmedException
-import com.amplifyframework.auth.exceptions.NotAuthorizedException
 import com.amplifyframework.auth.result.step.AuthSignInStep
 import com.amplifyframework.auth.result.step.AuthSignUpStep
 import com.umutsaydam.zenfocus.R
@@ -44,7 +43,7 @@ class AuthViewModel @Inject constructor(
     fun isConnected(): Boolean {
         return networkCheckerUseCases.isConnected()
     }
-// These lines are commented for the open source contribution.
+
 //    fun signIn(email: String, password: String) {
 //        viewModelScope.launch {
 //            when (val result: AwsAuthSignInResult = awsAuthCases.userSignIn(email, password)) {
@@ -63,13 +62,9 @@ class AuthViewModel @Inject constructor(
 //                }
 //
 //                is AwsAuthSignInResult.Error -> {
-//                    updateUiState { copy(userId = null) }
+//                    updateUiState { copy(userId = null, uiMessage = result.message) }
 //
 //                    when (result.exception) {
-//                        is NotAuthorizedException -> {
-//                            updateUiState { copy(uiMessage = R.string.incorrect_email_or_password) }
-//                        }
-//
 //                        is UserNotConfirmedException -> {
 //                            updateUiState {
 //                                copy(
@@ -92,25 +87,25 @@ class AuthViewModel @Inject constructor(
 //            }
 //        }
 //    }
-//
-//    private fun getUserId() {
-//        viewModelScope.launch {
-//            when (val result = awsAuthCases.userGetId()) {
-//                is Resource.Success -> {
-//                    val userId = result.data
-//                    userId?.let { id ->
-//                        saveUserId(id)
+
+    private fun getUserId() {
+        viewModelScope.launch {
+            when (val result = awsAuthCases.userGetId()) {
+                is Resource.Success -> {
+                    val userId = result.data
+                    userId?.let { id ->
+                        saveUserId(id)
 //                        getUserInfo(userId)
-//                    }
-//                    updateUiState { copy(userId = result.data) }
-//                }
-//
-//                is Resource.Error -> {
-//                    updateUiState { copy(userId = null) }
-//                }
-//            }
-//        }
-//    }
+                    }
+                    updateUiState { copy(userId = result.data) }
+                }
+
+                is Resource.Error -> {
+                    updateUiState { copy(userId = null) }
+                }
+            }
+        }
+    }
 
     private fun saveUserId(userId: String) {
         viewModelScope.launch {
@@ -140,12 +135,10 @@ class AuthViewModel @Inject constructor(
             localUserDataStoreCases.saveUserType(userType)
         }
     }
-// These lines are commented for the open source contribution.
+
 //    fun signUp(email: String, password: String) {
 //        viewModelScope.launch {
-//            val result = awsAuthCases.userSignUp(email, password)
-//
-//            when (result) {
+//            when (val result = awsAuthCases.userSignUp(email, password)) {
 //                is AwsAuthSignUpResult.IsSignedUp -> {
 //                    updateUiState {
 //                        copy(
@@ -168,7 +161,7 @@ class AuthViewModel @Inject constructor(
 //                    updateUiState {
 //                        copy(
 //                            signUpStep = null,
-//                            uiMessage = R.string.error_while_sign_up
+//                            uiMessage = result.message
 //                        )
 //                    }
 //                }
@@ -179,7 +172,7 @@ class AuthViewModel @Inject constructor(
 //            }
 //        }
 //    }
-//
+
 //    fun signInWithGoogle(activity: Activity) {
 //        viewModelScope.launch {
 //            when (val result = awsAuthCases.signInWithGoogle(activity)) {
@@ -193,7 +186,7 @@ class AuthViewModel @Inject constructor(
 //                }
 //
 //                is Resource.Error -> {
-//                    updateUiState { copy(uiMessage = R.string.error_while_signing_in) }
+//                    updateUiState { copy(uiMessage = result.message) }
 //                }
 //            }
 //        }
@@ -201,5 +194,13 @@ class AuthViewModel @Inject constructor(
 
     fun clearUiMessage() {
         updateUiState { copy(uiMessage = null) }
+    }
+
+    fun clearAuthSignUpStep() {
+        updateUiState { copy(signUpStep = null) }
+    }
+
+    fun clearAuthSignInStep() {
+        updateUiState { copy(signInStep = null) }
     }
 }

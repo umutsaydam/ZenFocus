@@ -2,8 +2,10 @@ package com.umutsaydam.zenfocus.presentation.settings
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -15,6 +17,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
+import com.umutsaydam.zenfocus.presentation.Dimens.THICKNESS_SMALL
 import com.umutsaydam.zenfocus.ui.theme.LightGray
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.Primary
@@ -27,59 +30,47 @@ fun MenuItemSwitch(
     onClick: (Boolean) -> Unit,
     isChecked: Boolean = true
 ) {
-    TextButton(
-        modifier = modifier.fillMaxWidth(),
-        onClick = {
-            onClick(!isChecked)
-        },
-        shape = RectangleShape
+    Column(
+        modifier = modifier.fillMaxWidth()
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+        TextButton(
+            modifier = modifier.fillMaxWidth(),
+            onClick = {
+                onClick(!isChecked)
+            },
+            shape = RectangleShape
         ) {
-            Text(
-                modifier = Modifier.weight(0.8f),
-                text = menuTitle,
-                color = textColor,
-            )
-
-            Switch(
-                modifier = Modifier
-                    .scale(0.7f)
-                    .weight(0.2f),
-                checked = isChecked,
-                onCheckedChange = { newState ->
-                    onClick(newState)
-                },
-                colors = SwitchDefaults.colors().copy(
-                    checkedThumbColor = Primary,
-                    checkedTrackColor = LightGray,
-                    uncheckedThumbColor = LightGray,
-                    uncheckedTrackColor = Primary,
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    modifier = Modifier.weight(0.8f),
+                    text = menuTitle,
+                    color = textColor,
                 )
-            )
+
+                Switch(
+                    modifier = Modifier
+                        .scale(0.7f)
+                        .weight(0.2f),
+                    checked = isChecked,
+                    onCheckedChange = { newState ->
+                        onClick(newState)
+                    },
+                    colors = SwitchDefaults.colors().copy(
+                        checkedThumbColor = Primary,
+                        checkedTrackColor = LightGray,
+                        uncheckedThumbColor = LightGray,
+                        uncheckedTrackColor = Primary,
+                    )
+                )
+            }
         }
+        HorizontalDivider(
+            thickness = THICKNESS_SMALL,
+            color = LightGray
+        )
     }
-}
-
-@Preview(
-    name = "Dark Mode",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(
-    name = "Light Mode",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-fun MenuItemSwitchPreview(modifier: Modifier = Modifier) {
-    MenuItemSwitch(
-        menuTitle = "Vibrate",
-        onClick = {
-
-        },
-    )
 }
