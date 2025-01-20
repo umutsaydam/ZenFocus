@@ -57,7 +57,7 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 
 1. Bu projeyi klonlayın (forContribution branch olduğundan emin olun):
     ```bash
-    https://github.com/umutsaydam/ZenFocus.git
+     git clone --branch forContribution https://github.com/umutsaydam/ZenFocus.git
     ```
 2. Android Studio'da açın.
 3. Gerekli bağımlılıkları yüklemek için `Gradle Sync` işlemini gerçekleştirin.
@@ -136,7 +136,7 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 
 1. Clone this project (Make sure you are on the forContribution branch):
     ```bash
-    https://github.com/umutsaydam/ZenFocus.git
+     git clone --branch forContribution https://github.com/umutsaydam/ZenFocus.git
     ```
 2. Open it in Android Studio.
 3. Perform a `Gradle Sync` to download the necessary dependencies.
