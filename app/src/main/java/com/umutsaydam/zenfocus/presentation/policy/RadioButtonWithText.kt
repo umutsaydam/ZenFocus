@@ -18,6 +18,8 @@ import androidx.compose.ui.text.font.FontWeight
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.THICKNESS_SMALL
 import com.umutsaydam.zenfocus.ui.theme.LightGray
+import com.umutsaydam.zenfocus.ui.theme.Primary
+import com.umutsaydam.zenfocus.ui.theme.Secondary
 
 @Composable
 fun RadioButtonWithText(
@@ -25,7 +27,10 @@ fun RadioButtonWithText(
     radioSelected: Boolean,
     radioText: String,
     onClick: () -> Unit,
-    radioColors: RadioButtonColors = RadioButtonDefaults.colors()
+    radioColors: RadioButtonColors = RadioButtonDefaults.colors(
+        selectedColor = Primary,
+        unselectedColor = Secondary
+    )
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
