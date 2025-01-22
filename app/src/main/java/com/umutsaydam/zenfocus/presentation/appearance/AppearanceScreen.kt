@@ -91,10 +91,11 @@ fun AppearanceScreen(
         topBar = {
             IconWithTopAppBar(
                 navigationIcon = {
+                    val onClickAction = remember {
+                        { navController.popBackStackOrIgnore() }
+                    }
                     IconButton(
-                        onClick = {
-                            navController.popBackStackOrIgnore()
-                        }
+                        onClick = onClickAction
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_close),
@@ -106,12 +107,14 @@ fun AppearanceScreen(
                 containerColor = Color.Transparent,
                 actions = {
                     IconButton(
-                        onClick = {
-                            if (appearanceViewModel.isConnected()) {
-                                if (appearanceViewModel.willShowAd()) {
-                                    appearanceViewModel.showRewardedAd()
-                                } else {
-                                    appearanceViewModel.saveTheme()
+                        onClick = remember {
+                            {
+                                if (appearanceViewModel.isConnected()) {
+                                    if (appearanceViewModel.willShowAd()) {
+                                        appearanceViewModel.showRewardedAd()
+                                    } else {
+                                        appearanceViewModel.saveTheme()
+                                    }
                                 }
                             }
                         }
