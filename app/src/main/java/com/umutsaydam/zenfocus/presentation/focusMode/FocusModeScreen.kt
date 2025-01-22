@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +48,7 @@ fun FocusModeScreen(
     val defaultTheme by focusModeViewModel.defaultTheme.collectAsState()
     val uiState by focusModeViewModel.uiState.collectAsState()
     var isBackPressed by remember { mutableStateOf(false) }
+    val rememberedBitmap by remember { derivedStateOf { defaultTheme?.asImageBitmap() } }
 
     BackHandler(
         enabled = true
@@ -110,10 +112,10 @@ fun FocusModeScreen(
                 alpha = 1f
             }
     ) {
-        defaultTheme?.let {
+        rememberedBitmap?.let { bitmap ->
             Image(
                 modifier = Modifier.fillMaxSize(),
-                bitmap = it.asImageBitmap(),
+                bitmap = bitmap,
                 contentDescription = "Selected theme",
                 contentScale = ContentScale.FillBounds
             )
