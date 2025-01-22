@@ -82,7 +82,7 @@ Katkıda bulunmak istiyorsanız, lütfen bir `pull request` gönderin veya bir `
 
 ## <p id="lisans">📜 Lisans</p>
 
-Bu proje MIT Lisansı ile lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atabilirsiniz.
+Bilgi için `LICENSE` dosyasına göz atabilirsiniz.
 
 ---
 
@@ -161,5 +161,5 @@ If you'd like to contribute, please submit a `pull request` or open an `issue`. 
 
 ## <p id="license">📜 License</p>
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+Please, see the `LICENSE` file.
 
