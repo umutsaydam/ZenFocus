@@ -1,4 +1,5 @@
 *.apk
+*.ap_
 *.aab
 *.iml
 .gradle
