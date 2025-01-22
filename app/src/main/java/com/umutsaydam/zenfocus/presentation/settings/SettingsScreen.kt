@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ fun SettingsScreen(
     val gridState = rememberLazyListState()
     var isDurationDialogOpened by remember { mutableStateOf(false) }
     var isWorkDurationDialogOpened by remember { mutableStateOf(true) }
+    val isSignedInState by remember { derivedStateOf { uiState.isSignedInState } }
 
     if (isDurationDialogOpened) {
         coroutine.launch {
@@ -209,7 +211,7 @@ fun SettingsScreen(
             )
             SettingsSection(
                 content = {
-                    if (uiState.isSignedInState) {
+                    if (isSignedInState) {
                         MenuItem(
                             headIcon = R.drawable.ic_log_out,
                             menuTitle = stringResource(R.string.log_out),
