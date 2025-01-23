@@ -29,35 +29,56 @@ fun PolicyScreen(
     Scaffold(
         contentColor = SurfaceContainerLow,
         topBar = {
-            IconWithTopAppBar(
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            navController.popBackStackOrIgnore()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_close),
-                            contentDescription = stringResource(R.string.back_to_settings),
-                            tint = Outline
-                        )
-                    }
-                }
-            )
+            PolicyScreenTopBar(navController)
         }
     ) { paddingValues ->
-        if (policyViewModel.isNetworkConnected()){
-            AndroidView(
-                modifier = modifier.padding(paddingValues),
-                factory = {
-                    WebView(it).apply {
-                        webViewClient = WebViewClient()
-                        loadUrl("https://www.privacypolicies.com/live/c96570eb-49c3-4ebb-b14d-421bd0d5edc6")
-                    }
-                }
-            )
-        }else{
-            NotConnectedMessage()
-        }
+        PolicyContent(
+            modifier = modifier.padding(paddingValues),
+            isNetworkConnected = policyViewModel.isNetworkConnected()
+        )
     }
+}
+
+@Composable
+fun PolicyScreenTopBar(navController: NavHostController) {
+    IconWithTopAppBar(
+        navigationIcon = {
+            IconButton(
+                onClick = {
+                    navController.popBackStackOrIgnore()
+                }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = stringResource(R.string.back_to_settings),
+                    tint = Outline
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun PolicyContent(
+    modifier: Modifier = Modifier,
+    isNetworkConnected: Boolean
+) {
+    if (isNetworkConnected) {
+        PolicyWebView(modifier = modifier)
+    } else {
+        NotConnectedMessage()
+    }
+}
+
+@Composable
+fun PolicyWebView(modifier: Modifier) {
+    AndroidView(
+        modifier = modifier,
+        factory = {
+            WebView(it).apply {
+                webViewClient = WebViewClient()
+                loadUrl("https://www.privacypolicies.com/live/c96570eb-49c3-4ebb-b14d-421bd0d5edc6")
+            }
+        }
+    )
 }
