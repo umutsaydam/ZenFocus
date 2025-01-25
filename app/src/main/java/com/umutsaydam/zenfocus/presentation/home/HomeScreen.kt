@@ -65,7 +65,7 @@ fun HomeScreen(
     reviewViewModel: IntegrateInAppReviewViewModel = hiltViewModel()
 ) {
     val homeUiState by homeViewModel.homeUiState.collectAsState()
-    val soundList by remember { derivedStateOf { homeViewModel.focusSoundList } }
+    val soundList by homeViewModel.focusSoundList.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var showDeleteTaskDialog by remember { mutableStateOf(false) }
     var selectedTaskModel: TaskModel? = null
@@ -97,7 +97,7 @@ fun HomeScreen(
                 BottomSheetContentHandler(
                     homeUiState = homeUiState,
                     viewModel = homeViewModel,
-                    soundList = soundList.value
+                    soundList = soundList
                 )
             })
         }
