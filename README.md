@@ -3,7 +3,10 @@
   <span><a href="#app-content">EN</a></span>
 </div>
 
-
+<div align="center">
+<a href="https://play.google.com/store/apps/details?id=com.umutsaydam.zenfocus" rel="nofollow">
+<img src="https://camo.githubusercontent.com/1ddf90e524a4bfe8b77f9a6902d54fc708380389b7e0d7f9ad29196a799e77db/68747470733a2f2f706c61792e676f6f676c652e636f6d2f696e746c2f656e5f75732f6261646765732f696d616765732f67656e657269632f656e2d706c61792d62616467652e706e67" alt="Get it on Google Play" height="80" data-canonical-src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" style="max-width: 100%;"></a>
+</div>
 
 # <p id="uygulama-icerik">ZenFocus</p>
 
@@ -57,7 +60,7 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 
 1. Bu projeyi klonlayın (forContribution branch olduğundan emin olun):
     ```bash
-    https://github.com/umutsaydam/ZenFocus.git
+     git clone --branch forContribution https://github.com/umutsaydam/ZenFocus.git
     ```
 2. Android Studio'da açın.
 3. Gerekli bağımlılıkları yüklemek için `Gradle Sync` işlemini gerçekleştirin.
@@ -79,7 +82,7 @@ Katkıda bulunmak istiyorsanız, lütfen bir `pull request` gönderin veya bir `
 
 ## <p id="lisans">📜 Lisans</p>
 
-Bu proje MIT Lisansı ile lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atabilirsiniz.
+Bilgi için `LICENSE` dosyasına göz atabilirsiniz.
 
 ---
 
@@ -136,7 +139,7 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 
 1. Clone this project (Make sure you are on the forContribution branch):
     ```bash
-    https://github.com/umutsaydam/ZenFocus.git
+     git clone --branch forContribution https://github.com/umutsaydam/ZenFocus.git
     ```
 2. Open it in Android Studio.
 3. Perform a `Gradle Sync` to download the necessary dependencies.
@@ -158,5 +161,5 @@ If you'd like to contribute, please submit a `pull request` or open an `issue`. 
 
 ## <p id="license">📜 License</p>
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+Please, see the `LICENSE` file.
 
