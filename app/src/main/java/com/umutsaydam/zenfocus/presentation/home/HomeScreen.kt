@@ -60,7 +60,8 @@ import com.umutsaydam.zenfocus.util.safeNavigate
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    reviewViewModel: IntegrateInAppReviewViewModel = hiltViewModel()
 ) {
     val homeUiState by homeViewModel.homeUiState.collectAsState()
     val soundList by remember { derivedStateOf { homeViewModel.focusSoundList } }
@@ -100,6 +101,59 @@ fun HomeScreen(
     }
 
     StatusBarSwitcher(false)
+
+    if (homeUiState.bottomSheetState) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CustomBottomSheet(
+                onDismissRequest = {
+                    homeViewModel.setBottomSheetState(false)
+                    if (!homeUiState.isTimerRunning) {
+                        homeViewModel.stopSound()
+                    }
+                },
+                content = {
+                    when (homeUiState.bottomSheetContent) {
+                        BottomSheetContent.AddToDo -> {
+                            AddToDo { newTask ->
+                                homeViewModel.upsertTask(newTask)
+                            }
+                        }
+
+                        BottomSheetContent.PomodoroSounds -> {
+                            LazySoundList(
+                                soundList = soundList.value,
+                                content = { index ->
+                                    val sound = soundList.value[index]
+                                    RadioButtonWithText(
+                                        modifier = Modifier.background(White),
+                                        radioSelected = sound == homeUiState.defaultSound,
+                                        radioText = sound,
+                                        onClick = {
+                                            homeViewModel.setDefaultSoundAndPlay(sound)
+                                        }
+                                    )
+                                },
+                                fixedContent = { index -> }
+                            )
+                        }
+
+                        BottomSheetContent.PomodoroTimes -> {
+                            PomodoroControlSlider(
+                                sliderPosition = homeUiState.sliderPosition,
+                                steps = 2,
+                                valueRange = 1f..4f
+                            ) { newSliderPosition ->
+                                homeViewModel.setSliderPosition(newSliderPosition)
+                                homeViewModel.setBottomSheetState(false)
+                            }
+                        }
+
+                        null -> Unit
+                    }
+                }
+            )
+        }
+    }
 
     Scaffold(
         modifier = modifier
@@ -155,6 +209,9 @@ fun HomeScreen(
                 isConfirmed = { confirmedState ->
                     if (confirmedState) {
                         homeViewModel.stopTimer()
+                        if (reviewViewModel.isAvailableForReview.value) {
+                            reviewViewModel.launchReview(context)
+                        }
                     }
                     showDialog = false
                 }
@@ -291,57 +348,6 @@ fun HomeScreen(
                         }
                     )
                 }
-            }
-
-            if (homeUiState.bottomSheetState) {
-                CustomBottomSheet(
-                    onDismissRequest = {
-                        homeViewModel.setBottomSheetState(false)
-                        if (!homeUiState.isTimerRunning) {
-                            homeViewModel.stopSound()
-                        }
-                    },
-                    content = {
-                        when (homeUiState.bottomSheetContent) {
-                            BottomSheetContent.AddToDo -> {
-                                AddToDo { newTask ->
-                                    homeViewModel.upsertTask(newTask)
-                                }
-                            }
-
-                            BottomSheetContent.PomodoroSounds -> {
-                                LazySoundList(
-                                    soundList = soundList.value,
-                                    content = { index ->
-                                        val sound = soundList.value[index]
-                                        RadioButtonWithText(
-                                            modifier = Modifier.background(White),
-                                            radioSelected = sound == homeUiState.defaultSound,
-                                            radioText = sound,
-                                            onClick = {
-                                                homeViewModel.setDefaultSoundAndPlay(sound)
-                                            }
-                                        )
-                                    },
-                                    fixedContent = { index -> }
-                                )
-                            }
-
-                            BottomSheetContent.PomodoroTimes -> {
-                                PomodoroControlSlider(
-                                    sliderPosition = homeUiState.sliderPosition,
-                                    steps = 2,
-                                    valueRange = 1f..4f
-                                ) { newSliderPosition ->
-                                    homeViewModel.setSliderPosition(newSliderPosition)
-                                    homeViewModel.setBottomSheetState(false)
-                                }
-                            }
-
-                            null -> Unit
-                        }
-                    }
-                )
             }
         }
     }

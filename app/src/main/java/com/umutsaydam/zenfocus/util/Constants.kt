@@ -16,6 +16,7 @@ object Constants {
     const val POMODORO_BREAK_DURATION = "Pomodoro_Break_Duration"
     const val DEFAULT_THEME = "default_theme.jpg"
     const val POMODORO_SERVICE_CHANNEL_ID = "Pomodoro_Foreground_Service"
+    const val AVAILABLE_FOR_REVIEW = "Available_For_Review"
     const val POMODORO_NOTIFICATION_ID = 1
     const val NONE = "None"
 

@@ -18,6 +18,7 @@ import com.umutsaydam.zenfocus.data.local.repository.RingerModeRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.manager.FocusSoundManagerImpl
 import com.umutsaydam.zenfocus.data.local.repository.NetworkCheckerRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl
+import com.umutsaydam.zenfocus.data.remote.repository.IntegrateInAppReviewsRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.service.GoogleAdServiceImpl
 import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
@@ -31,6 +32,7 @@ import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
+import com.umutsaydam.zenfocus.domain.repository.remote.IntegrateInAppReviewsRepository
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 import com.umutsaydam.zenfocus.domain.service.GoogleAdService
 import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
@@ -56,6 +58,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.ReadUse
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.ReadVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.SaveAppEntry
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appLangCases.SaveAppLang
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.ReadAvailableForReview
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.SaveAvailableForReview
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.ReadFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.SaveFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.ReadPomodoroBreakDuration
@@ -78,6 +82,8 @@ import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCasesImpl
+import com.umutsaydam.zenfocus.domain.usecases.remote.IntegrateInAppReviewsUseCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.IntegrateInAppReviewsUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsReadUserInfo
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignInWithGoogle
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignOut
@@ -133,7 +139,9 @@ object AppModule {
             savePomodoroBreakDuration = SavePomodoroBreakDuration(localUserManager),
             readPomodoroBreakDuration = ReadPomodoroBreakDuration(localUserManager),
             savePomodoroWorkDuration = SavePomodoroWorkDuration(localUserManager),
-            readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager)
+            readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager),
+            saveAvailableForReview = SaveAvailableForReview(localUserManager),
+            readAvailableForReview = ReadAvailableForReview(localUserManager)
         )
     }
 
@@ -169,6 +177,13 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideIntegrateInAppReviewsUseCases(
+        integrateInAppReviewsRepository: IntegrateInAppReviewsRepository
+    ): IntegrateInAppReviewsUseCases =
+        IntegrateInAppReviewsUseCasesImpl(integrateInAppReviewsRepository)
+
+    @Provides
+    @Singleton
     fun provideDeviceRingerModeCases(
         ringerModeRepository: RingerModeRepository
     ): DeviceRingerModeCases {
@@ -176,6 +191,10 @@ object AppModule {
             readRingerMode = ReadRingerMode(ringerModeRepository)
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideIntegrateInAppReviewsRepository(): IntegrateInAppReviewsRepository = IntegrateInAppReviewsRepositoryImpl()
 
     @Provides
     @Singleton
@@ -256,7 +275,11 @@ object AppModule {
         timeOutRingerManagerUseCases: TimeOutRingerManagerUseCases,
         vibrationManagerUseCases: VibrationManagerUseCases
     ): PomodoroManager =
-        PomodoroManagerImpl(focusSoundManager, timeOutRingerManagerUseCases, vibrationManagerUseCases)
+        PomodoroManagerImpl(
+            focusSoundManager,
+            timeOutRingerManagerUseCases,
+            vibrationManagerUseCases
+        )
 
     @Provides
     @Singleton

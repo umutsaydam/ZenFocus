@@ -16,8 +16,8 @@ android {
         applicationId = "com.umutsaydam.zenfocus"
         minSdk = 24
         targetSdk = 35
-        versionCode = 22
-        versionName = "1.0.1"
+        versionCode = 26
+        versionName = "1.0.2"
 
         val properties: Properties = Properties()
         properties.load(
@@ -134,4 +134,7 @@ dependencies {
     implementation(libs.billing)
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
+    // Google In App Reviews
+    implementation(libs.review)
+    implementation(libs.review.ktx)
 }

@@ -97,3 +97,11 @@
      <init>();
      *;
   }
+
+# Google Integrate In App Reviews
+-keep class com.umutsaydam.zenfocus.data.remote.repository.IntegrateInAppReviewsRepositoryImpl { *; }
+
+# Google Play Core
+#-keep public class com.google.android.play.core.** { *; }
+#-keepclassmembers class com.google.android.play.core.** { *; }
+#-dontwarn com.google.android.play.core.**
