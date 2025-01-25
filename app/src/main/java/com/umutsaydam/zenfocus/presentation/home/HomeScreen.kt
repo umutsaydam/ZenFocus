@@ -45,6 +45,7 @@ import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.android.gms.ads.AdSize
 import com.umutsaydam.zenfocus.domain.model.TaskModel
@@ -70,7 +71,6 @@ fun HomeScreen(
     var selectedTaskModel: TaskModel? = null
     val context = LocalContext.current
     val adState by homeViewModel.adState.collectAsState()
-    val adSize: AdSize by remember { derivedStateOf { getAdSize(context) } }
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(homeUiState.uiMessage) {
@@ -80,15 +80,107 @@ fun HomeScreen(
         }
     }
 
+    ObserverLifecycleEvents(
+        lifecycleOwner = lifecycleOwner, viewModel = homeViewModel
+    )
+
+    StatusBarSwitcher(false)
+
+    if (homeUiState.bottomSheetState) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CustomBottomSheet(onDismissRequest = {
+                homeViewModel.setBottomSheetState(false)
+                if (!homeUiState.isTimerRunning) {
+                    homeViewModel.stopSound()
+                }
+            }, content = {
+                BottomSheetContentHandler(
+                    homeUiState = homeUiState,
+                    viewModel = homeViewModel,
+                    soundList = soundList.value
+                )
+            })
+        }
+    }
+
+    Scaffold(modifier = modifier
+        .fillMaxSize()
+        .background(
+            color = DarkBackground
+        ), containerColor = Transparent, topBar = {
+        HomeAppBar(
+            navController = navController, viewModel = homeViewModel
+        )
+    }) { paddingValues ->
+
+        StopPomodoroDialog(showDialog = showDialog) { confirmedState ->
+            if (confirmedState) {
+                homeViewModel.stopTimer()
+                if (reviewViewModel.isAvailableForReview.value) {
+                    reviewViewModel.launchReview(context)
+                }
+            }
+            showDialog = false
+        }
+
+        DeleteTaskDialog(
+            showDialog = showDeleteTaskDialog, taskModel = selectedTaskModel
+        ) { confirmedState ->
+            if (confirmedState) {
+                homeViewModel.deleteTask(selectedTaskModel!!)
+            }
+            showDeleteTaskDialog = false
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            HomeCircularProgress(
+                remainingPercent = homeUiState.remainingPercent, homeUiState.remainingTime
+            )
+
+            Spacer(modifier = Modifier.height(SPACE_MEDIUM))
+
+            FocusControlButtonGroup(isTimerRunning = homeUiState.isTimerRunning,
+                navController = navController,
+                viewModel = homeViewModel,
+                onShowDialog = { showDialog = true })
+
+            HomeToDoList(toDoList = homeUiState.toDoList, onClick = { newTaskModel ->
+                homeViewModel.upsertTask(newTaskModel)
+            }, onLongClick = { selectedTask ->
+                selectedTaskModel = selectedTask
+                showDeleteTaskDialog = true
+            })
+
+            HomeFab(
+                viewModel = homeViewModel, adState = adState
+            )
+
+            BannerAdView(
+                viewModel = homeViewModel, adState = adState
+            )
+        }
+    }
+}
+
+@Composable
+fun ObserverLifecycleEvents(
+    lifecycleOwner: LifecycleOwner, viewModel: HomeViewModel
+) {
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> {
-                    homeViewModel.setTimer()
+                    viewModel.setTimer()
                 }
 
                 Lifecycle.Event.ON_STOP -> {
-                    homeViewModel.startPomodoroService()
+                    viewModel.startPomodoroService()
                 }
 
                 else -> {}
@@ -99,256 +191,221 @@ fun HomeScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+}
 
-    StatusBarSwitcher(false)
+@Composable
+fun BottomSheetContentHandler(
+    homeUiState: HomeUiState, viewModel: HomeViewModel, soundList: Array<String>
+) {
+    when (homeUiState.bottomSheetContent) {
+        BottomSheetContent.AddToDo -> {
+            AddToDo { newTask ->
+                viewModel.upsertTask(newTask)
+            }
+        }
 
-    if (homeUiState.bottomSheetState) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CustomBottomSheet(
-                onDismissRequest = {
-                    homeViewModel.setBottomSheetState(false)
-                    if (!homeUiState.isTimerRunning) {
-                        homeViewModel.stopSound()
-                    }
-                },
-                content = {
-                    when (homeUiState.bottomSheetContent) {
-                        BottomSheetContent.AddToDo -> {
-                            AddToDo { newTask ->
-                                homeViewModel.upsertTask(newTask)
-                            }
-                        }
+        BottomSheetContent.PomodoroSounds -> {
+            LazySoundList(soundList = soundList, content = { index ->
+                val sound = soundList[index]
+                RadioButtonWithText(modifier = Modifier.background(White),
+                    radioSelected = sound == homeUiState.defaultSound,
+                    radioText = sound,
+                    onClick = {
+                        viewModel.setDefaultSoundAndPlay(sound)
+                    })
+            }, fixedContent = { index -> })
+        }
 
-                        BottomSheetContent.PomodoroSounds -> {
-                            LazySoundList(
-                                soundList = soundList.value,
-                                content = { index ->
-                                    val sound = soundList.value[index]
-                                    RadioButtonWithText(
-                                        modifier = Modifier.background(White),
-                                        radioSelected = sound == homeUiState.defaultSound,
-                                        radioText = sound,
-                                        onClick = {
-                                            homeViewModel.setDefaultSoundAndPlay(sound)
-                                        }
-                                    )
-                                },
-                                fixedContent = { index -> }
-                            )
-                        }
+        BottomSheetContent.PomodoroTimes -> {
+            PomodoroControlSlider(
+                sliderPosition = homeUiState.sliderPosition, steps = 2, valueRange = 1f..4f
+            ) { newSliderPosition ->
+                viewModel.setSliderPosition(newSliderPosition)
+                viewModel.setBottomSheetState(false)
+            }
+        }
 
-                        BottomSheetContent.PomodoroTimes -> {
-                            PomodoroControlSlider(
-                                sliderPosition = homeUiState.sliderPosition,
-                                steps = 2,
-                                valueRange = 1f..4f
-                            ) { newSliderPosition ->
-                                homeViewModel.setSliderPosition(newSliderPosition)
-                                homeViewModel.setBottomSheetState(false)
-                            }
-                        }
+        null -> Unit
+    }
+}
 
-                        null -> Unit
-                    }
+@Composable
+fun HomeAppBar(
+    navController: NavHostController, viewModel: HomeViewModel
+) {
+    val context = LocalContext.current
+
+    IconWithTopAppBar(title = {
+
+    }, containerColor = Transparent, navigationIcon = {
+        IconButton(onClick = {
+            navController.safeNavigate(Route.Settings.route)
+        }) {
+            Icon(
+                painter = painterResource(R.drawable.ic_menu),
+                contentDescription = stringResource(R.string.open_side_menu),
+                tint = White
+            )
+        }
+    }, actions = {
+        if (viewModel.shouldShowAd()) {
+            TextButton(onClick = {
+                val activity = context as? Activity
+                activity?.let {
+                    viewModel.startProductsInApp(it)
                 }
+            }) {
+                Text(
+                    text = stringResource(R.string.remove_ad)
+                )
+            }
+        }
+    })
+}
+
+@Composable
+fun StopPomodoroDialog(
+    showDialog: Boolean, isConfirmed: (Boolean) -> Unit
+) {
+    if (showDialog) {
+        CustomAlertDialog(icon = painterResource(R.drawable.ic_timer_off),
+            title = stringResource(R.string.stop_pomodoro),
+            text = stringResource(R.string.pomodoro_will_stop),
+            isConfirmed = { confirmedState ->
+                isConfirmed(confirmedState)
+            })
+    }
+}
+
+@Composable
+fun DeleteTaskDialog(
+    showDialog: Boolean, taskModel: TaskModel?, isConfirmed: (Boolean) -> Unit
+) {
+    if (showDialog && taskModel != null) {
+        CustomAlertDialog(icon = painterResource(R.drawable.ic_delete),
+            title = stringResource(R.string.delete_task),
+            text = stringResource(R.string.task_will_delete),
+            isConfirmed = { confirmedState ->
+                isConfirmed(confirmedState)
+            })
+    }
+}
+
+@Composable
+fun FocusControlButtonGroup(
+    isTimerRunning: Boolean,
+    navController: NavHostController,
+    viewModel: HomeViewModel,
+    onShowDialog: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(
+            PADDING_SMALL, Alignment.CenterHorizontally
+        )
+    ) {
+        if (isTimerRunning) {
+            FocusControlButtons(
+                onClick = { viewModel.pauseTimer() },
+                painterResource = painterResource(R.drawable.ic_pause_black),
+                contentDescription = stringResource(R.string.pomodoro_pause)
+            )
+            FocusControlButtons(
+                onClick = { onShowDialog() },
+                painterResource = painterResource(R.drawable.ic_timer_off),
+                contentDescription = stringResource(R.string.pomodoro_stop)
+            )
+        } else {
+            FocusControlButtons(
+                onClick = { viewModel.showPomodoroTimesBottomSheet() },
+                painterResource = painterResource(R.drawable.ic_time),
+                contentDescription = stringResource(R.string.pomodoro_times)
+            )
+            FocusControlButtons(
+                onClick = { viewModel.playOrResumeTimer() },
+                painterResource = painterResource(R.drawable.ic_play_arrow_black),
+                contentDescription = stringResource(R.string.pomodoro_start)
+            )
+        }
+        FocusControlButtons(
+            onClick = {
+                viewModel.getSoundList()
+                viewModel.showPomodoroSoundsBottomSheet()
+            },
+            painterResource = painterResource(R.drawable.ic_music),
+            contentDescription = stringResource(R.string.pomodoro_sounds)
+        )
+        if (isTimerRunning) {
+            FocusControlButtons(
+                onClick = { navController.safeNavigate(Route.FocusMode.route) },
+                painterResource = painterResource(R.drawable.ic_focus_black),
+                contentDescription = stringResource(R.string.back_to_focus_mode)
             )
         }
     }
+}
 
-    Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .background(
-                color = DarkBackground
-            ),
-        containerColor = Transparent,
-        topBar = {
-            IconWithTopAppBar(
-                title = {
 
-                },
-                containerColor = Transparent,
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            navController.safeNavigate(Route.Settings.route)
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_menu),
-                            contentDescription = stringResource(R.string.open_side_menu),
-                            tint = White
-                        )
-                    }
-                },
-                actions = {
-                    if (homeViewModel.shouldShowAd()) {
-                        TextButton(
-                            onClick = {
-                                val activity = context as? Activity
-                                activity?.let {
-                                    homeViewModel.startProductsInApp(it)
-                                }
-                            }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.remove_ad)
-                            )
-                        }
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
+@Composable
+fun HomeCircularProgress(
+    remainingPercent: Float, remainingTime: String
+) {
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressWithText(
+            progress = remainingPercent, text = remainingTime
+        )
+    }
+}
 
-        if (showDialog) {
-            CustomAlertDialog(
-                icon = painterResource(R.drawable.ic_timer_off),
-                title = stringResource(R.string.stop_pomodoro),
-                text = stringResource(R.string.pomodoro_will_stop),
-                isConfirmed = { confirmedState ->
-                    if (confirmedState) {
-                        homeViewModel.stopTimer()
-                        if (reviewViewModel.isAvailableForReview.value) {
-                            reviewViewModel.launchReview(context)
-                        }
-                    }
-                    showDialog = false
-                }
-            )
-        }
+@Composable
+fun HomeToDoList(
+    toDoList: List<TaskModel>, onClick: (TaskModel) -> Unit, onLongClick: (TaskModel) -> Unit
+) {
+    LazyToDoList(
+        toDoList = toDoList
+    ) { index ->
+        val currTaskModel = toDoList[index]
+        ToDoListItem(taskModel = currTaskModel, onClick = { newState ->
+            onClick(currTaskModel.copy(isTaskCompleted = newState))
+        }, onLongClick = { taskModel ->
+            onLongClick(taskModel)
+        })
+    }
+}
 
-        if (showDeleteTaskDialog && selectedTaskModel != null) {
-            CustomAlertDialog(
-                icon = painterResource(R.drawable.ic_delete),
-                title = stringResource(R.string.delete_task),
-                text = stringResource(R.string.task_will_delete),
-                isConfirmed = { confirmedState ->
-                    if (confirmedState) {
-                        homeViewModel.deleteTask(selectedTaskModel!!)
-                    }
-                    showDeleteTaskDialog = false
-                }
-            )
-        }
+@Composable
+fun HomeFab(
+    viewModel: HomeViewModel, adState: GoogleBannerAdState
+) {
+    Box(
+        modifier = if (adState.isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
+    ) {
+        CustomFab(alignment = Alignment.BottomEnd,
+            containerColor = OutLineVariant,
+            fabIcon = painterResource(R.drawable.ic_add),
+            contentDescription = stringResource(R.string.add_to_do_button),
+            onClick = {
+                viewModel.showAddToDoBottomSheet()
+            })
+    }
+}
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally
+@Composable
+fun BannerAdView(
+    viewModel: HomeViewModel, adState: GoogleBannerAdState
+) {
+    if (viewModel.isNetworkConnected() && viewModel.shouldShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
+        val context = LocalContext.current
+        val adSize: AdSize by remember { derivedStateOf { getAdSize(context) } }
+
+        Box(
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd
         ) {
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressWithText(
-                    progress = homeUiState.remainingPercent,
-                    text = homeUiState.remainingTime
-                )
-            }
-            Spacer(modifier = Modifier.height(SPACE_MEDIUM))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(
-                    PADDING_SMALL,
-                    Alignment.CenterHorizontally
-                )
-            ) {
-                if (homeUiState.isTimerRunning) {
-                    FocusControlButtons(
-                        onClick = {
-                            homeViewModel.pauseTimer()
-                        },
-                        painterResource = painterResource(R.drawable.ic_pause_black),
-                        contentDescription = stringResource(R.string.pomodoro_pause)
-                    )
-                    FocusControlButtons(
-                        onClick = {
-                            showDialog = true
-                        },
-                        painterResource = painterResource(R.drawable.ic_timer_off),
-                        contentDescription = stringResource(R.string.pomodoro_stop)
-                    )
-                } else {
-                    FocusControlButtons(
-                        onClick = {
-                            homeViewModel.showPomodoroTimesBottomSheet()
-                        },
-                        painterResource = painterResource(R.drawable.ic_time),
-                        contentDescription = stringResource(R.string.pomodoro_times)
-                    )
-                    FocusControlButtons(
-                        onClick = {
-                            homeViewModel.playOrResumeTimer()
-                        },
-                        painterResource = painterResource(R.drawable.ic_play_arrow_black),
-                        contentDescription = stringResource(R.string.pomodoro_start)
-                    )
-                }
-                FocusControlButtons(
-                    onClick = {
-                        homeViewModel.getSoundList()
-                        homeViewModel.showPomodoroSoundsBottomSheet()
-                    },
-                    painterResource = painterResource(R.drawable.ic_music),
-                    contentDescription = stringResource(R.string.pomodoro_sounds)
-                )
-                if (homeUiState.isTimerRunning) {
-                    FocusControlButtons(
-                        onClick = {
-                            navController.safeNavigate(Route.FocusMode.route)
-                        },
-                        painterResource = painterResource(R.drawable.ic_focus_black),
-                        contentDescription = stringResource(R.string.back_to_focus_mode)
-                    )
-                }
-            }
-
-            LazyToDoList(
-                toDoList = homeUiState.toDoList
-            ) { index ->
-                val currTaskModel = homeUiState.toDoList[index]
-                ToDoListItem(
-                    taskModel = currTaskModel,
-                    onClick = { newState ->
-                        homeViewModel.upsertTask(currTaskModel.copy(isTaskCompleted = newState))
-                    },
-                    onLongClick = { taskModel ->
-                        selectedTaskModel = taskModel
-                        showDeleteTaskDialog = true
-                    }
-                )
-            }
-
-            Box(
-                modifier = if (adState.isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomEnd
-            ) {
-                CustomFab(
-                    alignment = Alignment.BottomEnd,
-                    containerColor = OutLineVariant,
-                    fabIcon = painterResource(R.drawable.ic_add),
-                    contentDescription = stringResource(R.string.add_to_do_button),
-                    onClick = {
-                        homeViewModel.showAddToDoBottomSheet()
-                    }
-                )
-            }
-
-            if (homeViewModel.isNetworkConnected() && homeViewModel.shouldShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.BottomEnd
-                ) {
-                    AndroidView(
-                        modifier = Modifier.fillMaxWidth(),
-                        factory = {
-                            homeViewModel.showBannerAd(adSize)
-                        }
-                    )
-                }
-            }
+            AndroidView(modifier = Modifier.fillMaxWidth(), factory = {
+                viewModel.showBannerAd(adSize)
+            })
         }
     }
 }
@@ -357,13 +414,12 @@ private fun getAdSize(context: Context): AdSize {
     val activity = context as? Activity
     activity?.let {
         val displayMetrics = context.resources.displayMetrics
-        val adWithPixels =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val windowMetrics: WindowMetrics = it.window.windowManager.currentWindowMetrics
-                windowMetrics.bounds.width()
-            } else {
-                displayMetrics.widthPixels
-            }
+        val adWithPixels = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics: WindowMetrics = it.window.windowManager.currentWindowMetrics
+            windowMetrics.bounds.width()
+        } else {
+            displayMetrics.widthPixels
+        }
         val density = displayMetrics.density
         val adWidth = (adWithPixels / density).toInt()
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
