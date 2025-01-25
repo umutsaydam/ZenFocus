@@ -45,8 +45,7 @@ data class HomeUiState(
 )
 
 data class GoogleBannerAdState(
-    val isAdLoaded: Boolean = false,
-    val isFirstAdRequested: Boolean = false
+    val isAdLoaded: Boolean = false, val isFirstAdRequested: Boolean = false
 )
 
 @HiltViewModel
@@ -268,7 +267,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getSliderPosition(){
+    private fun getSliderPosition() {
         viewModelScope.launch {
             val cycle = localUserDataStoreCases.readPomodoroCycle().first()
 
@@ -305,7 +304,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getUserId() {
         viewModelScope.launch {
-            localUserDataStoreCases.readUserId().collectLatest{ id ->
+            localUserDataStoreCases.readUserId().collectLatest { id ->
                 updateHomeUiState { copy(userId = id) }
             }
         }
@@ -316,8 +315,7 @@ class HomeViewModel @Inject constructor(
             val adFreeUser = UserTypeEnum.AD_FREE_USER.type
             if (homeUiState.value.userId.isNotEmpty() && homeUiState.value.userType != adFreeUser) {
                 val result = authCases.updateUserInfo(
-                    userId = homeUiState.value.userId,
-                    userType = adFreeUser
+                    userId = homeUiState.value.userId, userType = adFreeUser
                 )
 
                 when (result) {
@@ -334,31 +332,27 @@ class HomeViewModel @Inject constructor(
     }
 
     fun showBannerAd(adSize: AdSize): AdView {
-        return googleAdUseCases.showBannerAd(
-            adSize = adSize,
-            onAdLoaded = { isLoaded ->
-                _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
-            },
-            onFirstAdRequested = { isFirstAdRequested ->
-                _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
-            }
-        )
+        return googleAdUseCases.showBannerAd(adSize = adSize, onAdLoaded = { isLoaded ->
+            _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
+        }, onFirstAdRequested = { isFirstAdRequested ->
+            _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
+        })
     }
 
     fun startProductsInApp(activity: Activity) {
-       if (_homeUiState.value.userId.isNotEmpty()){
-           googleProductsInAppUseCases.startConnection(activity)
+        if (_homeUiState.value.userId.isNotEmpty()) {
+            googleProductsInAppUseCases.startConnection(activity)
 
-           viewModelScope.launch {
-               googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
-                   if (purchaseState) {
-                       changeUserTypeAsAdFree()
-                   }
-               }
-           }
-       }else{
-           updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
-       }
+            viewModelScope.launch {
+                googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
+                    if (purchaseState) {
+                        changeUserTypeAsAdFree()
+                    }
+                }
+            }
+        } else {
+            updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
+        }
     }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {
