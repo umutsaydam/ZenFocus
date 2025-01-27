@@ -116,7 +116,7 @@ fun HomeScreen(
         StopPomodoroDialog(showDialog = showDialog) { confirmedState ->
             if (confirmedState) {
                 homeViewModel.stopTimer()
-                if (reviewViewModel.isAvailableForReview.value) {
+                if (homeViewModel.isNetworkConnected() && reviewViewModel.isAvailableForReview.value) {
                     reviewViewModel.launchReview(context)
                 }
             }
