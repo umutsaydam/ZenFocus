@@ -6,13 +6,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -55,7 +53,11 @@ import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
+import com.umutsaydam.zenfocus.presentation.auth.components.AuthForm
+import com.umutsaydam.zenfocus.presentation.auth.components.AuthSection
+import com.umutsaydam.zenfocus.presentation.auth.components.CustomTabButton
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.presentation.viewmodels.AuthViewModel
 import com.umutsaydam.zenfocus.ui.theme.Black
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
@@ -64,7 +66,6 @@ import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import com.umutsaydam.zenfocus.util.safeNavigate
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AuthScreen(
     modifier: Modifier = Modifier,
@@ -161,8 +162,7 @@ fun AuthScreen(
                     start = PADDING_MEDIUM2,
                     end = PADDING_MEDIUM2
                 )
-                .imePadding()
-                .imeNestedScroll(),
+                .imePadding(),
             verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM),
         ) {
             item { Spacer(modifier = Modifier.height(SPACE_SMALL)) }

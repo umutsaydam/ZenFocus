@@ -33,7 +33,8 @@ import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
-import com.umutsaydam.zenfocus.presentation.auth.FormTextField
+import com.umutsaydam.zenfocus.presentation.auth.components.FormTextField
+import com.umutsaydam.zenfocus.presentation.viewmodels.AuthConfirmViewModel
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 

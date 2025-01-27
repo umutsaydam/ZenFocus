@@ -16,8 +16,8 @@ android {
         applicationId = "com.umutsaydam.zenfocus"
         minSdk = 24
         targetSdk = 35
-        versionCode = 22
-        versionName = "1.0.1"
+        versionCode = 26
+        versionName = "1.0.2"
 
         val properties: Properties = Properties()
         properties.load(
@@ -66,11 +66,11 @@ android {
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -135,4 +135,12 @@ dependencies {
 //    implementation(libs.billing)
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
+    // Google In App Reviews
+    implementation(libs.review)
+    implementation(libs.review.ktx)
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }

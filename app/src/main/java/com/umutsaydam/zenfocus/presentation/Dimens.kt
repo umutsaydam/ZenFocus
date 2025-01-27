@@ -29,7 +29,8 @@ object Dimens {
 
     val BORDER_SMALL = 1.dp
     val STROKE_SMALL = 2.dp
-    val STROKE_MEDIUM = 10.dp
+    val STROKE_MEDIUM1 = 10.dp
+    val STROKE_MEDIUM2 = 15.dp
 
     val BUTTON_HEIGHT_MEDIUM = 48.dp
 

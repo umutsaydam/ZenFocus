@@ -4,15 +4,12 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.media.MediaPlayer
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
-import com.umutsaydam.zenfocus.domain.model.RingerModeEnum
-import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
 import com.umutsaydam.zenfocus.util.Constants.NONE
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class FocusSoundManagerImpl(
-    private val ringerModeCases: DeviceRingerModeCases,
     @ApplicationContext private val context: Context
 ) : FocusSoundManager {
     private val _currentSoundName = MutableStateFlow<String>(NONE)
@@ -37,38 +34,27 @@ class FocusSoundManagerImpl(
     }
 
     override fun playSoundIfAvailable() {
-        if (deviceRingerModeAvailable()) {
-            try {
-                if (_isPlaying.value || _currentSoundName.value == NONE) {
-                    mediaPlayer!!.stop()
-                    mediaPlayer!!.release()
-                }
-                val descriptor = assetManager.openFd("sounds/${_currentSoundName.value}")
-                mediaPlayer = MediaPlayer()
-
-                mediaPlayer?.let {
-                    it.setDataSource(
-                        descriptor.fileDescriptor,
-                        descriptor.startOffset,
-                        descriptor.length
-                    )
-                    descriptor.close()
-                    it.prepare()
-                    it.isLooping = true
-                    it.start()
-                    _isPlaying.value = true
-                }
-            } catch (e: Exception) {
-                _isPlaying.value = false
+        try {
+            if (_isPlaying.value || _currentSoundName.value == NONE) {
+                mediaPlayer!!.stop()
+                mediaPlayer!!.release()
             }
-        }
-//        else {
-//            Log.i("R/T", "sound name not found.")
-//        }
-    }
+            val descriptor = assetManager.openFd("sounds/${_currentSoundName.value}")
+            mediaPlayer = MediaPlayer()
 
-    override fun deviceRingerModeAvailable(): Boolean {
-        return ringerModeCases.readRingerMode() == RingerModeEnum.NORMAL
+            mediaPlayer?.let {
+                it.setDataSource(
+                    descriptor.fileDescriptor, descriptor.startOffset, descriptor.length
+                )
+                descriptor.close()
+                it.prepare()
+                it.isLooping = true
+                it.start()
+                _isPlaying.value = true
+            }
+        } catch (e: Exception) {
+            _isPlaying.value = false
+        }
     }
 
     override fun stopSound() {

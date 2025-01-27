@@ -59,6 +59,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.ReadUse
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.ReadVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.SaveAppEntry
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appLangCases.SaveAppLang
+//import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.ReadAvailableForReview
+//import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.SaveAvailableForReview
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.ReadFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.SaveFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.ReadPomodoroBreakDuration
@@ -82,6 +84,8 @@ import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 //import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCasesImpl
 //import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
 //import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCasesImpl
+//import com.umutsaydam.zenfocus.domain.usecases.remote.IntegrateInAppReviewsUseCases
+//import com.umutsaydam.zenfocus.domain.usecases.remote.IntegrateInAppReviewsUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsReadUserInfo
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignInWithGoogle
 import com.umutsaydam.zenfocus.domain.usecases.remote.authCases.AwsSignOut
@@ -109,7 +113,6 @@ import javax.inject.Singleton
 object AppModule {
 
     @Provides
-    @Singleton
     fun provideLocalUserCases(
         localUserManager: LocalUserManager
     ): LocalUserDataStoreCases {
@@ -137,42 +140,44 @@ object AppModule {
             savePomodoroBreakDuration = SavePomodoroBreakDuration(localUserManager),
             readPomodoroBreakDuration = ReadPomodoroBreakDuration(localUserManager),
             savePomodoroWorkDuration = SavePomodoroWorkDuration(localUserManager),
-            readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager)
+            readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager),
+//            saveAvailableForReview = SaveAvailableForReview(localUserManager),
+//            readAvailableForReview = ReadAvailableForReview(localUserManager)
         )
     }
 
     @Provides
-    @Singleton
     fun provideTimeOutRingerManagerUseCases(
         timeOutRingerManager: TimeOutRingerManager
     ): TimeOutRingerManagerUseCases = TimeOutRingerManagerUseCasesImpl(timeOutRingerManager)
 
     @Provides
-    @Singleton
     fun provideVibrationUseCases(
         vibrationManager: VibrationManager
     ): VibrationManagerUseCases = VibrationManagerUseCasesImpl(vibrationManager)
 
     @Provides
-    @Singleton
     fun provideFocusSoundUseCases(
         focusSoundManager: FocusSoundManager
     ): FocusSoundUseCases = FocusSoundUseCasesImpl(focusSoundManager)
 
     @Provides
-    @Singleton
     fun providePomodoroManagerUseCases(
         pomodoroManager: PomodoroManager
     ): PomodoroManagerUseCase = PomodoroManagerUseCaseImpl(pomodoroManager)
 
     @Provides
-    @Singleton
     fun providePomodoroServiceUseCases(
         pomodoroServiceManager: PomodoroServiceManager
     ): PomodoroServiceUseCases = PomodoroServiceUseCasesImpl(pomodoroServiceManager)
 
+//    @Provides
+//    fun provideIntegrateInAppReviewsUseCases(
+//        integrateInAppReviewsRepository: IntegrateInAppReviewsRepository
+//    ): IntegrateInAppReviewsUseCases =
+//        IntegrateInAppReviewsUseCasesImpl(integrateInAppReviewsRepository)
+
     @Provides
-    @Singleton
     fun provideDeviceRingerModeCases(
         ringerModeRepository: RingerModeRepository
     ): DeviceRingerModeCases {
@@ -181,14 +186,16 @@ object AppModule {
         )
     }
 
+//    @Provides
+//    fun provideIntegrateInAppReviewsRepository(): IntegrateInAppReviewsRepository =
+//        IntegrateInAppReviewsRepositoryImpl()
+
     @Provides
-    @Singleton
     fun provideNetworkCheckerUseCases(
         networkCheckerRepository: NetworkCheckerRepository
     ): NetworkCheckerUseCases = NetworkCheckerUseCasesImpl(networkCheckerRepository)
 
     @Provides
-    @Singleton
     fun provideAwsAuthUsesCases(
         awsAuthService: AwsAuthService
     ): AwsAuthCases {
@@ -206,7 +213,6 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
     fun provideAwsStorageUsesCases(
         awsStorageRepository: AwsStorageServiceRepository
     ): AwsStorageCases {
@@ -217,10 +223,8 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
     fun provideToDoUsesCases(
-        toDoRepository: ToDoRepository,
-        tasksDao: TasksDao
+        toDoRepository: ToDoRepository
     ): ToDoUsesCases {
         return ToDoUsesCases(
             getTasks = GetTasks(toDoRepository),
@@ -228,21 +232,18 @@ object AppModule {
             deleteTask = DeleteTask(toDoRepository)
         )
     }
-// These lines are commented for the open source contribution.
+
 //    @Provides
-//    @Singleton
 //    fun provideGoogleAdServiceUseCases(
 //        googleAdService: GoogleAdService
 //    ): GoogleAdUseCases = GoogleAdUseCasesImpl(googleAdService)
 //
 //    @Provides
-//    @Singleton
 //    fun provideGoogleProductsInAppUseCases(
 //        googleProductsInAppRepository: GoogleProductsInAppRepository
 //    ): GoogleProductsInAppUseCases = GoogleProductsInAppUseCasesImpl(googleProductsInAppRepository)
 
     @Provides
-    @Singleton
     fun localUserManager(
         application: Application
     ): LocalUserManager = LocalUserManagerImpl(application)
@@ -259,62 +260,56 @@ object AppModule {
         focusSoundManager: FocusSoundManager,
         timeOutRingerManagerUseCases: TimeOutRingerManagerUseCases,
         vibrationManagerUseCases: VibrationManagerUseCases
-    ): PomodoroManager =
-        PomodoroManagerImpl(focusSoundManager, timeOutRingerManagerUseCases, vibrationManagerUseCases)
+    ): PomodoroManager = PomodoroManagerImpl(
+        focusSoundManager, timeOutRingerManagerUseCases, vibrationManagerUseCases
+    )
 
     @Provides
     @Singleton
     fun provideVibrationManager(
-        ringerModeCases: DeviceRingerModeCases,
-        application: Application
+        ringerModeCases: DeviceRingerModeCases, application: Application
     ): VibrationManager = VibrationManagerImpl(ringerModeCases, application)
 
     @Provides
     @Singleton
     fun provideSoundManager(
-        deviceRingerModeCases: DeviceRingerModeCases,
         application: Application
-    ): TimeOutRingerManager = TimeOutRingerManagerImpl(deviceRingerModeCases, application)
+    ): TimeOutRingerManager = TimeOutRingerManagerImpl(application)
+
+    @Provides
+    @Singleton
+    fun provideFocusSoundManager(
+        application: Application
+    ): FocusSoundManager = FocusSoundManagerImpl(application)
 
     @Provides
     @Singleton
     fun provideNetworkChecker(
         application: Application
     ): NetworkCheckerRepository = NetworkCheckerRepositoryImpl(application)
-// These lines are commented for the open source contribution.
+
 //    @Provides
-//    @Singleton
 //    fun provideGoogleProductsInAppRepository(
 //        @ApplicationContext context: Context
 //    ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(context)
 
-    @Provides
-    @Singleton
-    fun provideSoundRepository(
-        deviceRingerModeCases: DeviceRingerModeCases,
-        application: Application
-    ): FocusSoundManager = FocusSoundManagerImpl(deviceRingerModeCases, application)
 
     @Provides
-    @Singleton
     fun provideRepository(
         tasksDao: TasksDao
     ): ToDoRepository = ToDoRepositoryImpl(tasksDao)
 
     @Provides
-    @Singleton
     fun provideStorageRepository(
         application: Application
     ): AwsStorageServiceRepository = AwsStorageServiceRepositoryImpl(application)
 
     @Provides
-    @Singleton
     fun provideThemeRepository(
         application: Application
     ): ThemeRepository = ThemeRepositoryImpl(application)
 
     @Provides
-    @Singleton
     fun provideRingerModeRepository(
         application: Application
     ): RingerModeRepository = RingerModeRepositoryImpl(application)
@@ -334,11 +329,8 @@ object AppModule {
         application: Application
     ): TasksDatabase {
         return Room.databaseBuilder(
-            context = application,
-            klass = TasksDatabase::class.java,
-            name = "TaskDatabase"
-        ).fallbackToDestructiveMigration()
-            .build()
+            context = application, klass = TasksDatabase::class.java, name = "TaskDatabase"
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

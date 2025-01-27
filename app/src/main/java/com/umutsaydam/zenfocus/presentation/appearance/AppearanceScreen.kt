@@ -41,8 +41,10 @@ import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
+import com.umutsaydam.zenfocus.presentation.appearance.components.ThemeImage
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.NotConnectedMessage
+import com.umutsaydam.zenfocus.presentation.viewmodels.AppearanceViewModel
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
@@ -92,10 +94,11 @@ fun AppearanceScreen(
         topBar = {
             IconWithTopAppBar(
                 navigationIcon = {
+                    val onClickAction = remember {
+                        { navController.popBackStackOrIgnore() }
+                    }
                     IconButton(
-                        onClick = {
-                            navController.popBackStackOrIgnore()
-                        }
+                        onClick = onClickAction
                     ) {
                         Icon(
                             painter = painterResource(R.drawable.ic_close),

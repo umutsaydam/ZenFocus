@@ -37,4 +37,7 @@ interface LocalUserManager {
 
     suspend fun savePomodoroBreakDuration(breakDuration: Int)
     fun readPomodoroBreakDuration(): Flow<Int>
+
+    suspend fun saveAvailableForReview(isAvailable: Boolean)
+    fun readAvailableForReview(): Flow<Boolean>
 }

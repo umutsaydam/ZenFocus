@@ -166,6 +166,18 @@ class LocalUserManagerImpl(
             preferences[PreferencesKeys.POMODORO_BREAK_DURATION] ?: DEFAULT_POMODORO_BREAK_DURATION
         }
     }
+
+    override suspend fun saveAvailableForReview(isAvailable: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.AVAILABLE_FOR_REVIEW] = isAvailable
+        }
+    }
+
+    override fun readAvailableForReview(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.AVAILABLE_FOR_REVIEW] ?: true
+        }
+    }
 }
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = APP_ENTRY)
@@ -182,4 +194,5 @@ private object PreferencesKeys {
     val POMODORO_CYCLE = intPreferencesKey(name = Constants.POMODORO_CYCLE)
     val POMODORO_WORK_DURATION = intPreferencesKey(name = Constants.POMODORO_WORK_DURATION)
     val POMODORO_BREAK_DURATION = intPreferencesKey(name = Constants.POMODORO_BREAK_DURATION)
+    val AVAILABLE_FOR_REVIEW = booleanPreferencesKey(name = Constants.AVAILABLE_FOR_REVIEW)
 }

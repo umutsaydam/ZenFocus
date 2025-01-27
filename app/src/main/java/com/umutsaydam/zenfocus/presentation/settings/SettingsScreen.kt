@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,12 @@ import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.navigation.Route
+import com.umutsaydam.zenfocus.presentation.settings.components.MenuItem
+import com.umutsaydam.zenfocus.presentation.settings.components.MenuItemDescription
+import com.umutsaydam.zenfocus.presentation.settings.components.MenuItemSwitch
+import com.umutsaydam.zenfocus.presentation.settings.components.NumberPickerDialog
+import com.umutsaydam.zenfocus.presentation.settings.components.SettingsSection
+import com.umutsaydam.zenfocus.presentation.viewmodels.SettingsViewModel
 import com.umutsaydam.zenfocus.ui.theme.Gray
 import com.umutsaydam.zenfocus.ui.theme.LightGray
 import com.umutsaydam.zenfocus.ui.theme.Outline
@@ -49,6 +56,7 @@ fun SettingsScreen(
     val gridState = rememberLazyListState()
     var isDurationDialogOpened by remember { mutableStateOf(false) }
     var isWorkDurationDialogOpened by remember { mutableStateOf(true) }
+    val isSignedInState by remember { derivedStateOf { uiState.isSignedInState } }
 
     if (isDurationDialogOpened) {
         coroutine.launch {
@@ -209,7 +217,7 @@ fun SettingsScreen(
             )
             SettingsSection(
                 content = {
-                    if (uiState.isSignedInState) {
+                    if (isSignedInState) {
                         MenuItem(
                             headIcon = R.drawable.ic_log_out,
                             menuTitle = stringResource(R.string.log_out),
