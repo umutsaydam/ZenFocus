@@ -18,7 +18,8 @@ import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
-import com.umutsaydam.zenfocus.presentation.policy.RadioButtonWithText
+import com.umutsaydam.zenfocus.presentation.policy.components.RadioButtonWithText
+import com.umutsaydam.zenfocus.presentation.viewmodels.AppLanguageViewModel
 import com.umutsaydam.zenfocus.ui.theme.LightBackground
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow

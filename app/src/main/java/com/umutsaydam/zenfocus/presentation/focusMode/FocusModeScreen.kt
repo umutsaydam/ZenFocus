@@ -36,7 +36,9 @@ import com.umutsaydam.zenfocus.PomodoroViewModel
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
-import com.umutsaydam.zenfocus.presentation.home.CircularProgressWithText
+import com.umutsaydam.zenfocus.presentation.focusMode.components.KeepScreenOn
+import com.umutsaydam.zenfocus.presentation.home.components.CircularProgressWithText
+import com.umutsaydam.zenfocus.presentation.viewmodels.FocusModeViewModel
 import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.delay

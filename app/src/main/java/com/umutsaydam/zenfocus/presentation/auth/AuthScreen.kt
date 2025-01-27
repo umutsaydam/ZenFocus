@@ -53,7 +53,11 @@ import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
+import com.umutsaydam.zenfocus.presentation.auth.components.AuthForm
+import com.umutsaydam.zenfocus.presentation.auth.components.AuthSection
+import com.umutsaydam.zenfocus.presentation.auth.components.CustomTabButton
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
+import com.umutsaydam.zenfocus.presentation.viewmodels.AuthViewModel
 import com.umutsaydam.zenfocus.ui.theme.Black
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
