@@ -140,7 +140,9 @@ fun HomeScreen(
         ) {
 
             HomeCircularProgress(
-                remainingPercent = homeUiState.remainingPercent, homeUiState.remainingTime
+                remainingPercent = homeUiState.remainingPercent,
+                remainingTime = homeUiState.remainingTime,
+                isWorking = homeUiState.isWorkingSession
             )
 
             Spacer(modifier = Modifier.height(SPACE_MEDIUM))
@@ -347,13 +349,13 @@ fun FocusControlButtonGroup(
 
 @Composable
 fun HomeCircularProgress(
-    remainingPercent: Float, remainingTime: String
+    remainingPercent: Float, remainingTime: String, isWorking: Boolean
 ) {
     Box(
         contentAlignment = Alignment.Center
     ) {
         CircularProgressWithText(
-            progress = remainingPercent, text = remainingTime
+            progress = remainingPercent, isWorking = isWorking, text = remainingTime
         )
     }
 }

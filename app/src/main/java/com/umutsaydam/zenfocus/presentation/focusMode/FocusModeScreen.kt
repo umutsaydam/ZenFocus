@@ -33,7 +33,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
-import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM
+import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.home.CircularProgressWithText
 import com.umutsaydam.zenfocus.ui.theme.White
@@ -173,10 +173,11 @@ fun FocusModeContent(
                 size = SIZE_LARGE2,
                 animatedAlpha = animatedAlpha,
                 progress = uiState.remainingPercent,
-                strokeWith = STROKE_MEDIUM,
+                isWorking = uiState.isWorkingSession,
+                strokeWith = STROKE_MEDIUM2,
                 strokeCap = StrokeCap.Round,
                 text = uiState.remainingTime,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.headlineLarge
             )
         }
     }

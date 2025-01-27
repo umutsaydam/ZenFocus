@@ -11,12 +11,14 @@ import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class FocusModeUiState(
     val remainingTime: String = "00:00",
-    val remainingPercent: Float = 0f
+    val remainingPercent: Float = 0f,
+    val isWorkingSession: Boolean = true
 )
 
 @HiltViewModel
@@ -47,6 +49,15 @@ class FocusModeViewModel @Inject constructor(
         }
         getRemainingTime()
         getRemainingPercent()
+        isWorkingSession()
+    }
+
+    private fun isWorkingSession() {
+        viewModelScope.launch {
+            pomodoroManagerUseCase.isWorkingSession().collectLatest { isWorking ->
+                updateUiState { copy(isWorkingSession = isWorking) }
+            }
+        }
     }
 
     private fun isTimerRunning(): Boolean {

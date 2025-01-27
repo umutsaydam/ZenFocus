@@ -36,6 +36,7 @@ data class HomeUiState(
     val remainingTime: String = "00:00",
     val remainingPercent: Float = 0f,
     val isTimerRunning: Boolean = false,
+    val isWorkingSession: Boolean = true,
     val toDoList: List<TaskModel> = emptyList(),
     val sliderPosition: Float = 1f,
     val bottomSheetContent: BottomSheetContent? = null,
@@ -139,6 +140,15 @@ class HomeViewModel @Inject constructor(
         }
         getRemainingTime()
         getRemainingPercent()
+        isWorkingSession()
+    }
+
+    private fun isWorkingSession() {
+        viewModelScope.launch {
+            pomodoroManagerUseCase.isWorkingSession().collectLatest { isWorking ->
+                updateHomeUiState { copy(isWorkingSession = isWorking) }
+            }
+        }
     }
 
     private fun setDefaultPomodoroCycle() {

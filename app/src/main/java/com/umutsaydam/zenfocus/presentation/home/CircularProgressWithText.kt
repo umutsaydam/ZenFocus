@@ -19,10 +19,11 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE1
-import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM
-import com.umutsaydam.zenfocus.ui.theme.Gray
+import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM1
 import com.umutsaydam.zenfocus.ui.theme.OutLineVariant
+import com.umutsaydam.zenfocus.ui.theme.RestProgressColor
 import com.umutsaydam.zenfocus.ui.theme.White
+import com.umutsaydam.zenfocus.ui.theme.WorkProgressColor
 
 @Composable
 fun CircularProgressWithText(
@@ -30,8 +31,8 @@ fun CircularProgressWithText(
     size: Dp = SIZE_LARGE1,
     animatedAlpha: Float = 1f,
     progress: Float,
-    color: Color = Gray,
-    strokeWith: Dp = STROKE_MEDIUM,
+    isWorking: Boolean,
+    strokeWith: Dp = STROKE_MEDIUM1,
     trackColor: Color = OutLineVariant,
     strokeCap: StrokeCap = StrokeCap.Round,
     text: String,
@@ -41,6 +42,7 @@ fun CircularProgressWithText(
     delayMillis: Int = 0
 ) {
     var animationPlayed by remember { mutableStateOf(false) }
+    val isWorkMode by remember { mutableStateOf(isWorking) }
 
     val currPercentage = animateFloatAsState(
         targetValue = if (animationPlayed) progress else 0f,
@@ -62,7 +64,7 @@ fun CircularProgressWithText(
         progress = {
             currPercentage.value
         },
-        color = color,
+        color = if(isWorkMode) WorkProgressColor else RestProgressColor,
         strokeWidth = strokeWith,
         trackColor = trackColor,
         strokeCap = strokeCap,

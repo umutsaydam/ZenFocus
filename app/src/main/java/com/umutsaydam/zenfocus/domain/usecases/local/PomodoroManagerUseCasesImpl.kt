@@ -14,6 +14,7 @@ interface PomodoroManagerUseCase {
     fun getRemainingTimeAsTextFormat(): StateFlow<String>
     fun getRemainingPercent(): StateFlow<Float>
     fun isTimerRunning(): StateFlow<Boolean>
+    fun isWorkingSession(): StateFlow<Boolean>
     fun setVibrateState(isEnabled: Boolean)
 }
 
@@ -58,6 +59,10 @@ class PomodoroManagerUseCaseImpl(
 
     override fun isTimerRunning(): StateFlow<Boolean> {
         return pomodoroManager.isRunning()
+    }
+
+    override fun isWorkingSession(): StateFlow<Boolean> {
+        return pomodoroManager.isWorkingSession
     }
 
     override fun setVibrateState(isEnabled: Boolean) {
