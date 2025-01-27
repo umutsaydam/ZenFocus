@@ -276,6 +276,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideFocusSoundManager(
+        deviceRingerModeCases: DeviceRingerModeCases, application: Application
+    ): FocusSoundManager = FocusSoundManagerImpl(deviceRingerModeCases, application)
+
+    @Provides
+    @Singleton
     fun provideNetworkChecker(
         application: Application
     ): NetworkCheckerRepository = NetworkCheckerRepositoryImpl(application)
@@ -285,10 +291,6 @@ object AppModule {
         @ApplicationContext context: Context
     ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(context)
 
-    @Provides
-    fun provideSoundRepository(
-        deviceRingerModeCases: DeviceRingerModeCases, application: Application
-    ): FocusSoundManager = FocusSoundManagerImpl(deviceRingerModeCases, application)
 
     @Provides
     fun provideRepository(
