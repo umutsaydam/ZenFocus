@@ -271,14 +271,14 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSoundManager(
-        deviceRingerModeCases: DeviceRingerModeCases, application: Application
-    ): TimeOutRingerManager = TimeOutRingerManagerImpl(deviceRingerModeCases, application)
+        application: Application
+    ): TimeOutRingerManager = TimeOutRingerManagerImpl(application)
 
     @Provides
     @Singleton
     fun provideFocusSoundManager(
-        deviceRingerModeCases: DeviceRingerModeCases, application: Application
-    ): FocusSoundManager = FocusSoundManagerImpl(deviceRingerModeCases, application)
+        application: Application
+    ): FocusSoundManager = FocusSoundManagerImpl(application)
 
     @Provides
     @Singleton
