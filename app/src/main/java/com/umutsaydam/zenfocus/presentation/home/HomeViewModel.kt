@@ -6,17 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.umutsaydam.zenfocus.R
-import com.umutsaydam.zenfocus.data.foregroundService.PomodoroForegroundService
 import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.domain.model.UserTypeEnum
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
-import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
-import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
-import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCases
-import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
@@ -33,10 +28,6 @@ import javax.inject.Inject
 data class HomeUiState(
     val userId: String = "",
     val userType: String? = null,
-    val remainingTime: String = "00:00",
-    val remainingPercent: Float = 0f,
-    val isTimerRunning: Boolean = false,
-    val isWorkingSession: Boolean = true,
     val toDoList: List<TaskModel> = emptyList(),
     val sliderPosition: Float = 1f,
     val bottomSheetContent: BottomSheetContent? = null,
@@ -46,18 +37,13 @@ data class HomeUiState(
 )
 
 data class GoogleBannerAdState(
-    val isAdLoaded: Boolean = false,
-    val isFirstAdRequested: Boolean = false
+    val isAdLoaded: Boolean = false, val isFirstAdRequested: Boolean = false
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val toDoUsesCases: ToDoUsesCases,
     private val localUserDataStoreCases: LocalUserDataStoreCases,
-    private val timeOutRingerManagerUseCases: TimeOutRingerManagerUseCases,
-    private val vibrationManagerUseCases: VibrationManagerUseCases,
-    private val pomodoroManagerUseCase: PomodoroManagerUseCase,
-    private val pomodoroServiceUseCases: PomodoroServiceUseCases,
     private val focusSoundUseCases: FocusSoundUseCases,
     private val checkerUseCases: NetworkCheckerUseCases,
     private val authCases: AwsAuthCases,
@@ -77,8 +63,6 @@ class HomeViewModel @Inject constructor(
         getTasks()
         getUserId()
         getUserType()
-        isTimerRunning()
-        setTimer()
         getDefaultFocusSound()
         getSliderPosition()
     }
@@ -127,136 +111,6 @@ class HomeViewModel @Inject constructor(
         focusSoundUseCases.stopSound()
     }
 
-    fun setTimer() {
-        if (PomodoroForegroundService.isServiceRunning) {
-            stopPomodoroService()
-        } else {
-            // That means timer will be working for the first time.
-            setDefaultPomodoroCycle()
-            setDefaultPomodoroBreakDuration()
-            setVibrateState()
-            setTimeOutRingerState()
-            setDefaultPomodoroWorkDuration()
-        }
-        getRemainingTime()
-        getRemainingPercent()
-        isWorkingSession()
-    }
-
-    private fun isWorkingSession() {
-        viewModelScope.launch {
-            pomodoroManagerUseCase.isWorkingSession().collectLatest { isWorking ->
-                updateHomeUiState { copy(isWorkingSession = isWorking) }
-            }
-        }
-    }
-
-    private fun setDefaultPomodoroCycle() {
-        val pomodoroCycle = localUserDataStoreCases.readPomodoroCycle()
-
-        viewModelScope.launch {
-            pomodoroCycle.collectLatest { defaultCycle ->
-                pomodoroManagerUseCase.setWorkCycle(defaultCycle)
-            }
-        }
-    }
-
-    private fun setDefaultPomodoroBreakDuration() {
-        val breakDuration = localUserDataStoreCases.readPomodoroBreakDuration()
-
-        viewModelScope.launch {
-            breakDuration.collectLatest { duration ->
-                pomodoroManagerUseCase.setBreakDurationAsMinute(duration)
-            }
-        }
-    }
-
-    private fun setDefaultPomodoroWorkDuration() {
-        val workDuration = localUserDataStoreCases.readPomodoroWorkDuration()
-
-        viewModelScope.launch {
-            workDuration.collectLatest { duration ->
-                pomodoroManagerUseCase.setWorkDurationAsMinute(duration)
-            }
-        }
-    }
-
-    fun playOrResumeTimer() {
-        if (homeUiState.value.isTimerRunning) {
-            resumeTimer()
-        } else {
-            playTimer()
-        }
-    }
-
-    private fun playTimer() {
-        pomodoroManagerUseCase.startPomodoro()
-    }
-
-    private fun resumeTimer() {
-        pomodoroManagerUseCase.resumePomodoro()
-    }
-
-    private fun isTimerRunning() {
-        viewModelScope.launch {
-            pomodoroManagerUseCase.isTimerRunning().collect { isRunning ->
-                updateHomeUiState { copy(isTimerRunning = isRunning) }
-            }
-        }
-    }
-
-    fun pauseTimer() {
-        pomodoroManagerUseCase.pausePomodoro()
-    }
-
-    fun stopTimer() {
-        pomodoroManagerUseCase.stopPomodoro()
-    }
-
-    private fun setVibrateState() {
-        viewModelScope.launch {
-            localUserDataStoreCases.readVibrateState().collectLatest { isEnabled ->
-                vibrationManagerUseCases.setVibrateState(isEnabled)
-            }
-        }
-    }
-
-    private fun setTimeOutRingerState() {
-        viewModelScope.launch {
-            localUserDataStoreCases.readTimeOutRingerState().collectLatest { isEnabled ->
-                timeOutRingerManagerUseCases.isRingerEnabled(isEnabled)
-            }
-        }
-    }
-
-    private fun getRemainingTime() {
-        viewModelScope.launch {
-            pomodoroManagerUseCase.getRemainingTimeAsTextFormat().collect { currRemainingTime ->
-                updateHomeUiState { copy(remainingTime = currRemainingTime) }
-            }
-        }
-    }
-
-    private fun getRemainingPercent() {
-        viewModelScope.launch {
-            pomodoroManagerUseCase.getRemainingPercent().collect { currRemainingPercent ->
-                updateHomeUiState { copy(remainingPercent = currRemainingPercent) }
-            }
-        }
-    }
-
-    fun startPomodoroService() {
-        if (homeUiState.value.isTimerRunning && !PomodoroForegroundService.isServiceRunning) {
-            pomodoroServiceUseCases.startService()
-        }
-    }
-
-    private fun stopPomodoroService() {
-        if (PomodoroForegroundService.isServiceRunning) {
-            pomodoroServiceUseCases.stopService()
-        }
-    }
-
     private fun getTasks() {
         viewModelScope.launch {
             toDoUsesCases.getTasks().collect { list ->
@@ -278,7 +132,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getSliderPosition(){
+    private fun getSliderPosition() {
         viewModelScope.launch {
             val cycle = localUserDataStoreCases.readPomodoroCycle().first()
 
@@ -315,7 +169,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getUserId() {
         viewModelScope.launch {
-            localUserDataStoreCases.readUserId().collectLatest{ id ->
+            localUserDataStoreCases.readUserId().collectLatest { id ->
                 updateHomeUiState { copy(userId = id) }
             }
         }
@@ -326,8 +180,7 @@ class HomeViewModel @Inject constructor(
             val adFreeUser = UserTypeEnum.AD_FREE_USER.type
             if (homeUiState.value.userId.isNotEmpty() && homeUiState.value.userType != adFreeUser) {
                 val result = authCases.updateUserInfo(
-                    userId = homeUiState.value.userId,
-                    userType = adFreeUser
+                    userId = homeUiState.value.userId, userType = adFreeUser
                 )
 
                 when (result) {
@@ -344,31 +197,27 @@ class HomeViewModel @Inject constructor(
     }
 
     fun showBannerAd(adSize: AdSize): AdView {
-        return googleAdUseCases.showBannerAd(
-            adSize = adSize,
-            onAdLoaded = { isLoaded ->
-                _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
-            },
-            onFirstAdRequested = { isFirstAdRequested ->
-                _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
-            }
-        )
+        return googleAdUseCases.showBannerAd(adSize = adSize, onAdLoaded = { isLoaded ->
+            _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
+        }, onFirstAdRequested = { isFirstAdRequested ->
+            _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
+        })
     }
 
     fun startProductsInApp(activity: Activity) {
-       if (_homeUiState.value.userId.isNotEmpty()){
-           googleProductsInAppUseCases.startConnection(activity)
+        if (_homeUiState.value.userId.isNotEmpty()) {
+            googleProductsInAppUseCases.startConnection(activity)
 
-           viewModelScope.launch {
-               googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
-                   if (purchaseState) {
-                       changeUserTypeAsAdFree()
-                   }
-               }
-           }
-       }else{
-           updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
-       }
+            viewModelScope.launch {
+                googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
+                    if (purchaseState) {
+                        changeUserTypeAsAdFree()
+                    }
+                }
+            }
+        } else {
+            updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
+        }
     }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {

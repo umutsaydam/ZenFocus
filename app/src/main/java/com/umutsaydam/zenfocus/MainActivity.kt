@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.amplifyframework.AmplifyException
 import com.amplifyframework.api.aws.AWSApiPlugin
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
@@ -31,11 +32,12 @@ import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private lateinit var pomodoroViewModel: PomodoroViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val splash = installSplashScreen()
-
+        pomodoroViewModel = ViewModelProvider(this)[PomodoroViewModel::class.java]
         actionBar?.hide()
         enableEdgeToEdge()
         initAmplify()
@@ -84,5 +86,10 @@ class MainActivity : AppCompatActivity() {
         } catch (error: AmplifyException) {
             error.printStackTrace()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        pomodoroViewModel.startPomodoroService()
     }
 }

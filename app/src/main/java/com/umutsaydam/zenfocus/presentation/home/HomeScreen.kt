@@ -48,6 +48,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.android.gms.ads.AdSize
+import com.umutsaydam.zenfocus.PomodoroViewModel
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
@@ -62,9 +63,11 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
+    pomodoroViewModel: PomodoroViewModel = hiltViewModel(),
     reviewViewModel: IntegrateInAppReviewViewModel = hiltViewModel()
 ) {
     val homeUiState by homeViewModel.homeUiState.collectAsState()
+    val pomodoroUiState by pomodoroViewModel.pomodoroUiState.collectAsState()
     val soundList by remember { derivedStateOf { homeViewModel.focusSoundList } }
     var showDialog by remember { mutableStateOf(false) }
     var showDeleteTaskDialog by remember { mutableStateOf(false) }
@@ -81,7 +84,7 @@ fun HomeScreen(
     }
 
     ObserverLifecycleEvents(
-        lifecycleOwner = lifecycleOwner, viewModel = homeViewModel
+        lifecycleOwner = lifecycleOwner, viewModel = pomodoroViewModel
     )
 
     StatusBarSwitcher(false)
@@ -90,7 +93,7 @@ fun HomeScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             CustomBottomSheet(onDismissRequest = {
                 homeViewModel.setBottomSheetState(false)
-                if (!homeUiState.isTimerRunning) {
+                if (!pomodoroUiState.isTimerRunning) {
                     homeViewModel.stopSound()
                 }
             }, content = {
@@ -115,7 +118,7 @@ fun HomeScreen(
 
         StopPomodoroDialog(showDialog = showDialog) { confirmedState ->
             if (confirmedState) {
-                homeViewModel.stopTimer()
+                pomodoroViewModel.stopTimer()
                 if (homeViewModel.isNetworkConnected() && reviewViewModel.isAvailableForReview.value) {
                     reviewViewModel.launchReview(context)
                 }
@@ -140,16 +143,17 @@ fun HomeScreen(
         ) {
 
             HomeCircularProgress(
-                remainingPercent = homeUiState.remainingPercent,
-                remainingTime = homeUiState.remainingTime,
-                isWorking = homeUiState.isWorkingSession
+                remainingPercent = pomodoroUiState.remainingPercent,
+                remainingTime = pomodoroUiState.remainingTime,
+                isWorking = pomodoroUiState.isWorkingSession
             )
 
             Spacer(modifier = Modifier.height(SPACE_MEDIUM))
 
-            FocusControlButtonGroup(isTimerRunning = homeUiState.isTimerRunning,
+            FocusControlButtonGroup(isTimerRunning = pomodoroUiState.isTimerRunning,
                 navController = navController,
-                viewModel = homeViewModel,
+                pomodoroViewModel = pomodoroViewModel,
+                homeViewModel = homeViewModel,
                 onShowDialog = { showDialog = true })
 
             HomeToDoList(toDoList = homeUiState.toDoList, onClick = { newTaskModel ->
@@ -172,17 +176,13 @@ fun HomeScreen(
 
 @Composable
 fun ObserverLifecycleEvents(
-    lifecycleOwner: LifecycleOwner, viewModel: HomeViewModel
+    lifecycleOwner: LifecycleOwner, viewModel: PomodoroViewModel
 ) {
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> {
                     viewModel.setTimer()
-                }
-
-                Lifecycle.Event.ON_STOP -> {
-                    viewModel.startPomodoroService()
                 }
 
                 else -> {}
@@ -297,7 +297,8 @@ fun DeleteTaskDialog(
 fun FocusControlButtonGroup(
     isTimerRunning: Boolean,
     navController: NavHostController,
-    viewModel: HomeViewModel,
+    pomodoroViewModel: PomodoroViewModel,
+    homeViewModel: HomeViewModel,
     onShowDialog: () -> Unit
 ) {
     Row(
@@ -307,7 +308,7 @@ fun FocusControlButtonGroup(
     ) {
         if (isTimerRunning) {
             FocusControlButtons(
-                onClick = { viewModel.pauseTimer() },
+                onClick = { pomodoroViewModel.pauseTimer() },
                 painterResource = painterResource(R.drawable.ic_pause_black),
                 contentDescription = stringResource(R.string.pomodoro_pause)
             )
@@ -318,20 +319,20 @@ fun FocusControlButtonGroup(
             )
         } else {
             FocusControlButtons(
-                onClick = { viewModel.showPomodoroTimesBottomSheet() },
+                onClick = { homeViewModel.showPomodoroTimesBottomSheet() },
                 painterResource = painterResource(R.drawable.ic_time),
                 contentDescription = stringResource(R.string.pomodoro_times)
             )
             FocusControlButtons(
-                onClick = { viewModel.playOrResumeTimer() },
+                onClick = { pomodoroViewModel.playOrResumeTimer() },
                 painterResource = painterResource(R.drawable.ic_play_arrow_black),
                 contentDescription = stringResource(R.string.pomodoro_start)
             )
         }
         FocusControlButtons(
             onClick = {
-                viewModel.getSoundList()
-                viewModel.showPomodoroSoundsBottomSheet()
+                homeViewModel.getSoundList()
+                homeViewModel.showPomodoroSoundsBottomSheet()
             },
             painterResource = painterResource(R.drawable.ic_music),
             contentDescription = stringResource(R.string.pomodoro_sounds)

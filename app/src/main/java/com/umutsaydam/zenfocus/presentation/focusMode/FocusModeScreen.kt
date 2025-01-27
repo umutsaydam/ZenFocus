@@ -17,7 +17,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,6 +31,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
+import com.umutsaydam.zenfocus.PomodoroUiState
+import com.umutsaydam.zenfocus.PomodoroViewModel
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
@@ -43,21 +44,15 @@ import kotlinx.coroutines.delay
 @Composable
 fun FocusModeScreen(
     navController: NavHostController,
-    focusModeViewModel: FocusModeViewModel = hiltViewModel()
+    focusModeViewModel: FocusModeViewModel = hiltViewModel(),
+    pomodoroViewModel: PomodoroViewModel = hiltViewModel(),
 ) {
     val defaultTheme by focusModeViewModel.defaultTheme.collectAsState()
-    val uiState by focusModeViewModel.uiState.collectAsState()
-    var isBackPressed by remember { mutableStateOf(false) }
+    val pomodoroUiState by pomodoroViewModel.pomodoroUiState.collectAsState()
     val rememberedBitmap by remember { derivedStateOf { defaultTheme?.asImageBitmap() } }
 
-
     FocusLifeCycleHandler(
-        navController = navController,
-        viewModel = focusModeViewModel,
-        isBackPressed = isBackPressed,
-        onBackPressed = { state ->
-            isBackPressed = state
-        }
+        navController = navController, viewModel = pomodoroViewModel
     )
 
     KeepScreenOn()
@@ -65,35 +60,24 @@ fun FocusModeScreen(
 
     var alpha by remember { mutableFloatStateOf(1f) }
     val animatedAlpha by animateFloatAsState(
-        targetValue = alpha,
-        animationSpec = tween(durationMillis = 1000),
-        label = "Focus Mode"
+        targetValue = alpha, animationSpec = tween(durationMillis = 1000), label = "Focus Mode"
     )
 
-    FocusModeAlphaHandler(
-        alpha = alpha,
-        onAlphaChange = { alpha = it }
-    )
+    FocusModeAlphaHandler(alpha = alpha, onAlphaChange = { alpha = it })
 
-    FocusModeContent(
-        rememberedBitmap = rememberedBitmap,
+    FocusModeContent(rememberedBitmap = rememberedBitmap,
         animatedAlpha = animatedAlpha,
-        uiState = uiState,
-        onContentClick = { alpha = 1f }
-    )
+        uiState = pomodoroUiState,
+        onContentClick = { alpha = 1f })
 }
 
 @Composable
 fun FocusLifeCycleHandler(
-    navController: NavHostController,
-    viewModel: FocusModeViewModel,
-    isBackPressed: Boolean,
-    onBackPressed: (Boolean) -> Unit
+    navController: NavHostController, viewModel: PomodoroViewModel
 ) {
     BackHandler(
         enabled = true
     ) {
-        onBackPressed(true)
         navController.popBackStackOrIgnore()
     }
 
@@ -103,13 +87,6 @@ fun FocusLifeCycleHandler(
             when (event) {
                 Lifecycle.Event.ON_START -> {
                     viewModel.setTimer()
-                }
-
-                Lifecycle.Event.ON_STOP -> {
-                    if (!isBackPressed) {
-                        viewModel.startPomodoroService()
-                    }
-                    onBackPressed(false)
                 }
 
                 else -> {}
@@ -124,8 +101,7 @@ fun FocusLifeCycleHandler(
 
 @Composable
 fun FocusModeAlphaHandler(
-    alpha: Float,
-    onAlphaChange: (Float) -> Unit
+    alpha: Float, onAlphaChange: (Float) -> Unit
 ) {
     LaunchedEffect(alpha) {
         if (alpha == 1f) {
@@ -139,23 +115,17 @@ fun FocusModeAlphaHandler(
 fun FocusModeContent(
     rememberedBitmap: ImageBitmap?,
     animatedAlpha: Float,
-    uiState: FocusModeUiState,
+    uiState: PomodoroUiState,
     onContentClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = White,
-                shape = RectangleShape
-            )
-            .clickable(
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) {
-                onContentClick()
-            }
-    ) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(
+            color = White, shape = RectangleShape
+        )
+        .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
+            onContentClick()
+        }) {
         rememberedBitmap?.let { bitmap ->
             Image(
                 modifier = Modifier.fillMaxSize(),
@@ -165,9 +135,7 @@ fun FocusModeContent(
             )
         }
         Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
         ) {
             CircularProgressWithText(
                 size = SIZE_LARGE2,
