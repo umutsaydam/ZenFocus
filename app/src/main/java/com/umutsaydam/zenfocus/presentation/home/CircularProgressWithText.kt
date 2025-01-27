@@ -69,6 +69,7 @@ fun CircularProgressWithText(
     )
     Text(
         text = text,
+        modifier = Modifier.alpha(animatedAlpha),
         color = textColor,
         style = style
     )
