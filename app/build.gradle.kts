@@ -16,7 +16,7 @@ android {
         applicationId = "com.umutsaydam.zenfocus"
         minSdk = 24
         targetSdk = 35
-        versionCode = 26
+        versionCode = 28
         versionName = "1.0.2"
 
         val properties: Properties = Properties()
@@ -56,7 +56,7 @@ android {
 
     buildTypes {
         release {
-//            isDebuggable false
+            isDebuggable = false
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
