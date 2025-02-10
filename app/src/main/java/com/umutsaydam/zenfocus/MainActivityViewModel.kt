@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.util.Constants.APP_LANG_CHINESE
 import com.umutsaydam.zenfocus.util.Constants.APP_LANG_ENGLISH
 import com.umutsaydam.zenfocus.util.Constants.APP_LANG_TURKISH
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,6 +44,7 @@ class MainActivityViewModel @Inject constructor(
             when (currentLocale.language) {
                 "tr" -> localUserDataStoreCases.saveAppLang(APP_LANG_TURKISH)
                 "en" -> localUserDataStoreCases.saveAppLang(APP_LANG_ENGLISH)
+                "zh" -> localUserDataStoreCases.saveAppLang(APP_LANG_CHINESE)
                 else -> localUserDataStoreCases.saveAppLang(APP_LANG_ENGLISH)
             }
         }
