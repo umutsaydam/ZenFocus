@@ -23,6 +23,8 @@ object Constants {
     const val THEME_TYPE_VIDEO = "video"
     const val THEME_TYPE_IMAGE = "image"
 
+    const val SELECTING_ANIM_DUR = 500
+
     // POMODORO DEFAULT SETTINGS
     const val DEFAULT_POMODORO_CYCLE = 4
     const val DEFAULT_POMODORO_WORK_DURATION = 25

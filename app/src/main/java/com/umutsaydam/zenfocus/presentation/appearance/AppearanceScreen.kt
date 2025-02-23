@@ -2,6 +2,9 @@ package com.umutsaydam.zenfocus.presentation.appearance
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -58,6 +61,7 @@ import com.umutsaydam.zenfocus.ui.theme.OnPrimary
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.White
+import com.umutsaydam.zenfocus.util.Constants.SELECTING_ANIM_DUR
 import com.umutsaydam.zenfocus.util.Constants.THEME_TYPE_IMAGE
 import com.umutsaydam.zenfocus.util.Constants.THEME_TYPE_VIDEO
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
@@ -101,50 +105,40 @@ fun AppearanceScreen(
         }
     }
 
-    Scaffold(
-        modifier = modifier,
-        containerColor = SurfaceContainerLow,
-        topBar = {
-            IconWithTopAppBar(
-                navigationIcon = {
-                    val onClickAction = remember {
-                        { navController.popBackStackOrIgnore() }
-                    }
-                    IconButton(
-                        onClick = onClickAction
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_close),
-                            contentDescription = stringResource(R.string.back_to_settings),
-                            tint = Outline
-                        )
-                    }
-                },
-                containerColor = Color.Transparent,
-                actions = {
-                    IconButton(
-                        onClick = remember {
-                            {
-                                if (appearanceViewModel.isConnected()) {
-                                    if (appearanceViewModel.willShowAd()) {
-                                        appearanceViewModel.showRewardedAd()
-                                    } else {
-                                        appearanceViewModel.saveTheme()
-                                    }
-                                }
-                            }
+    Scaffold(modifier = modifier, containerColor = SurfaceContainerLow, topBar = {
+        IconWithTopAppBar(navigationIcon = {
+            val onClickAction = remember {
+                { navController.popBackStackOrIgnore() }
+            }
+            IconButton(
+                onClick = onClickAction
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = stringResource(R.string.back_to_settings),
+                    tint = Outline
+                )
+            }
+        }, containerColor = Color.Transparent, actions = {
+            IconButton(onClick = remember {
+                {
+                    if (appearanceViewModel.isConnected()) {
+                        if (appearanceViewModel.willShowAd()) {
+                            appearanceViewModel.showRewardedAd()
+                        } else {
+                            appearanceViewModel.saveTheme()
                         }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_done),
-                            contentDescription = stringResource(R.string.back_to_settings),
-                            tint = Outline
-                        )
                     }
                 }
-            )
-        }
-    ) { paddingValues ->
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_done),
+                    contentDescription = stringResource(R.string.back_to_settings),
+                    tint = Outline
+                )
+            }
+        })
+    }) { paddingValues ->
         val topPadding = paddingValues.calculateTopPadding()
         val bottomPadding = paddingValues.calculateBottomPadding()
         if (appearanceViewModel.isConnected()) {
@@ -166,9 +160,7 @@ fun AppearanceScreen(
                         PreviewTheme(it)
                     } else {
                         PreviewTheme(
-                            it,
-                            context,
-                            videoPlayerViewModel = videoPlayerViewModel
+                            it, context, videoPlayerViewModel = videoPlayerViewModel
                         )
                     }
                 } ?: Icon(
@@ -181,8 +173,7 @@ fun AppearanceScreen(
                 )
 
 
-                CenterFocusedCarousel(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                CenterFocusedCarousel(modifier = Modifier.align(Alignment.CenterHorizontally),
                     listOfTheme = uiState.themeList,
                     gridState = gridState,
                     isTablet = isTablet,
@@ -190,8 +181,7 @@ fun AppearanceScreen(
                     coroutineScope = coroutine,
                     onThemeSelected = { theme ->
                         appearanceViewModel.setDefaultTheme(theme)
-                    }
-                )
+                    })
 
             }
         } else {
@@ -210,8 +200,7 @@ fun CenterFocusedCarousel(
     coroutineScope: CoroutineScope,
     onThemeSelected: (ThemeInfo) -> Unit
 ) {
-    CenterFocusedCarouselList(
-        modifier = modifier,
+    CenterFocusedCarouselList(modifier = modifier,
         listOfTheme = listOfTheme,
         gridState = gridState,
         content = { firstVisibleIndex, currentIndex ->
@@ -219,12 +208,22 @@ fun CenterFocusedCarousel(
             if (theme != null) {
                 val isBigger = firstVisibleIndex + 1 == currentIndex
                 val (imageWidth, imageHeight) = calculateImageSize(isTablet, isBigger)
+                val animatedWith by animateDpAsState(
+                    targetValue = imageWidth, animationSpec = tween(
+                        durationMillis = SELECTING_ANIM_DUR, easing = LinearEasing
+                    ), label = "Animated Width"
+                )
+                val animatedHeight by animateDpAsState(
+                    targetValue = imageHeight, animationSpec = tween(
+                        durationMillis = SELECTING_ANIM_DUR, easing = LinearEasing
+                    ), label = "Animated Height"
+                )
                 val isVideo = theme.themeType == THEME_TYPE_VIDEO
                 Box() {
                     AsyncImage(
                         modifier = Modifier
-                            .width(imageWidth)
-                            .height(imageHeight)
+                            .width(animatedWith)
+                            .height(animatedHeight)
                             .padding(if (isBigger) 0.dp else 5.dp)
                             .clip(RoundedCornerShape(CORNER_MEDIUM))
                             .clickable {
@@ -261,8 +260,7 @@ fun CenterFocusedCarousel(
             } else {
                 Spacer(modifier = Modifier.width(themeSpace))
             }
-        }
-    )
+        })
 }
 
 private fun calculateImageSize(isTablet: Boolean, isBigger: Boolean): Pair<Dp, Dp> {
