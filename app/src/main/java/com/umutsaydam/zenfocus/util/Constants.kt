@@ -20,6 +20,8 @@ object Constants {
     const val AVAILABLE_FOR_REVIEW = "Available_For_Review"
     const val POMODORO_NOTIFICATION_ID = 1
     const val NONE = "None"
+    const val THEME_TYPE_VIDEO = "video"
+    const val THEME_TYPE_IMAGE = "image"
 
     // POMODORO DEFAULT SETTINGS
     const val DEFAULT_POMODORO_CYCLE = 4

@@ -58,6 +58,8 @@ import com.umutsaydam.zenfocus.ui.theme.OnPrimary
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.White
+import com.umutsaydam.zenfocus.util.Constants.THEME_TYPE_IMAGE
+import com.umutsaydam.zenfocus.util.Constants.THEME_TYPE_VIDEO
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -160,7 +162,7 @@ fun AppearanceScreen(
             ) {
 
                 uiState.selectedTheme?.let {
-                    if (it.themeType == "image") {
+                    if (it.themeType == THEME_TYPE_IMAGE) {
                         PreviewTheme(it)
                     } else {
                         PreviewTheme(
@@ -217,7 +219,7 @@ fun CenterFocusedCarousel(
             if (theme != null) {
                 val isBigger = firstVisibleIndex + 1 == currentIndex
                 val (imageWidth, imageHeight) = calculateImageSize(isTablet, isBigger)
-                val isVideo = theme.themeType == "video"
+                val isVideo = theme.themeType == THEME_TYPE_VIDEO
                 Box() {
                     AsyncImage(
                         modifier = Modifier
