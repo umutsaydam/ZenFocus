@@ -2,8 +2,8 @@ package com.umutsaydam.zenfocus
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.domain.usecases.local.ThemeRepositoryUseCases
 import com.umutsaydam.zenfocus.util.Constants.APP_LANG_CHINESE
 import com.umutsaydam.zenfocus.util.Constants.APP_LANG_ENGLISH
 import com.umutsaydam.zenfocus.util.Constants.APP_LANG_TURKISH
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val localUserDataStoreCases: LocalUserDataStoreCases,
-    private val themeRepository: ThemeRepository
+    private val themeRepositoryUseCases: ThemeRepositoryUseCases,
 ) : ViewModel() {
     private val readAppEntry: Flow<Boolean> = localUserDataStoreCases.readAppEntry()
     val defaultAppLang: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -30,7 +30,7 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             readAppEntry.collect { isEnteredBefore ->
                 if (!isEnteredBefore) {
-                    themeRepository.copyDefaultThemeToInternalStorage()
+                    themeRepositoryUseCases.copyDefaultThemeToInternalStorage()
                     saveAppEntry()
 
                     saveAppLang(currentLocale)
