@@ -28,4 +28,7 @@ object Constants {
 
     // VIBRATION
     const val DEFAULT_VIBRATION_DURATION = 500L
+
+    // SUPPORTED IMAGE FORMATS
+    val IMAGES_FORMATS = listOf(".jpg")
 }

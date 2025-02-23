@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.focusMode
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.OptIn
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -26,10 +27,16 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.PomodoroUiState
 import com.umutsaydam.zenfocus.PomodoroViewModel
@@ -39,6 +46,7 @@ import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.focusMode.components.KeepScreenOn
 import com.umutsaydam.zenfocus.presentation.home.components.CircularProgressWithText
 import com.umutsaydam.zenfocus.presentation.viewmodels.FocusModeViewModel
+import com.umutsaydam.zenfocus.presentation.viewmodels.VideoPlayerViewModel
 import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import kotlinx.coroutines.delay
@@ -51,7 +59,7 @@ fun FocusModeScreen(
 ) {
     val defaultTheme by focusModeViewModel.defaultTheme.collectAsState()
     val pomodoroUiState by pomodoroViewModel.pomodoroUiState.collectAsState()
-    val rememberedBitmap by remember { derivedStateOf { defaultTheme?.asImageBitmap() } }
+    val isThemeAnImage by remember { derivedStateOf { focusModeViewModel.isThemeAnImage() } }
 
     FocusLifeCycleHandler(
         navController = navController, viewModel = pomodoroViewModel
@@ -67,10 +75,33 @@ fun FocusModeScreen(
 
     FocusModeAlphaHandler(alpha = alpha, onAlphaChange = { alpha = it })
 
-    FocusModeContent(rememberedBitmap = rememberedBitmap,
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(
+            color = White, shape = RectangleShape
+        )
+        .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
+            alpha = 1f
+        }) {
+        if (isThemeAnImage) {
+            val rememberedBitmap by remember { derivedStateOf { defaultTheme?.asImageBitmap() } }
+            FocusModeContentWithImage(rememberedBitmap = rememberedBitmap)
+        } else {
+            focusModeViewModel.themeName.value?.let {
+                val videoPlayerViewModel: VideoPlayerViewModel = hiltViewModel()
+                val videoPlayer by remember { derivedStateOf { videoPlayerViewModel.exoPlayer.value } }
+                LaunchedEffect(Unit) {
+                    videoPlayerViewModel.startPlayer(it, null)
+                }
+                FocusModeContentWithVideo(videoPlayer = videoPlayer)
+            }
+        }
+    }
+
+    PomodoroProgress(
         animatedAlpha = animatedAlpha,
         uiState = pomodoroUiState,
-        onContentClick = { alpha = 1f })
+    )
 }
 
 @Composable
@@ -114,41 +145,56 @@ fun FocusModeAlphaHandler(
 }
 
 @Composable
-fun FocusModeContent(
-    rememberedBitmap: ImageBitmap?,
+fun FocusModeContentWithImage(
+    rememberedBitmap: ImageBitmap?
+) {
+    rememberedBitmap?.let { bitmap ->
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            bitmap = bitmap,
+            contentDescription = "Selected theme",
+            contentScale = ContentScale.FillBounds
+        )
+    }
+}
+
+@OptIn(UnstableApi::class)
+@Composable
+fun FocusModeContentWithVideo(
+    videoPlayer: ExoPlayer?
+) {
+    val context = LocalContext.current
+    if (videoPlayer != null) {
+        AndroidView(
+            factory = {
+                PlayerView(context).apply {
+                    player = videoPlayer
+                    useController = false
+                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+                }
+            }, modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
+fun PomodoroProgress(
+    modifier: Modifier = Modifier,
     animatedAlpha: Float,
     uiState: PomodoroUiState,
-    onContentClick: () -> Unit
 ) {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(
-            color = White, shape = RectangleShape
+    Box(
+        modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
+    ) {
+        CircularProgressWithText(
+            size = SIZE_LARGE2,
+            animatedAlpha = animatedAlpha,
+            progress = uiState.remainingPercent,
+            isWorking = uiState.isWorkingSession,
+            strokeWith = STROKE_MEDIUM2,
+            strokeCap = StrokeCap.Round,
+            text = uiState.remainingTime,
+            style = MaterialTheme.typography.headlineLarge
         )
-        .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
-            onContentClick()
-        }) {
-        rememberedBitmap?.let { bitmap ->
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                bitmap = bitmap,
-                contentDescription = "Selected theme",
-                contentScale = ContentScale.FillBounds
-            )
-        }
-        Box(
-            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-        ) {
-            CircularProgressWithText(
-                size = SIZE_LARGE2,
-                animatedAlpha = animatedAlpha,
-                progress = uiState.remainingPercent,
-                isWorking = uiState.isWorkingSession,
-                strokeWith = STROKE_MEDIUM2,
-                strokeCap = StrokeCap.Round,
-                text = uiState.remainingTime,
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
     }
 }

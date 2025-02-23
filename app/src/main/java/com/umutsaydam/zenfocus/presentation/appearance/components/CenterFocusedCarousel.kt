@@ -24,7 +24,7 @@ import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.Transparent
 
 @Composable
-fun CenterFocusedCarousel(
+fun CenterFocusedCarouselList(
     modifier: Modifier = Modifier,
     listOfTheme: List<ThemeInfo?>,
     gridState: LazyGridState,

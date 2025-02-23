@@ -16,8 +16,8 @@ android {
         applicationId = "com.umutsaydam.zenfocus"
         minSdk = 24
         targetSdk = 35
-        versionCode = 30
-        versionName = "1.0.2"
+        versionCode = 31
+        versionName = "1.0.3"
 
         val properties: Properties = Properties()
         properties.load(
@@ -137,6 +137,9 @@ dependencies {
     // Google In App Reviews
     implementation(libs.review)
     implementation(libs.review.ktx)
+    // Exo Player
+    implementation(libs.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
 }
 java {
     toolchain {

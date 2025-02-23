@@ -14,5 +14,7 @@ data class ThemeInfo(
     val themeName: String,
     val themeUrl: String,
     val themePrice: Int,
-    val currency: String
+    val currency: String,
+    val themeType: String,
+    val videoThumbnailUrl: String?
 )

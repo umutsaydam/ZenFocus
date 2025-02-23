@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.room.Room
 import com.umutsaydam.zenfocus.data.local.db.TasksDao
 import com.umutsaydam.zenfocus.data.local.db.TasksDatabase
+import com.umutsaydam.zenfocus.data.local.manager.ExoPlayerManagerImpl
 import com.umutsaydam.zenfocus.data.local.repository.ThemeRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.repository.ToDoRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.manager.LocalUserManagerImpl
@@ -20,6 +21,7 @@ import com.umutsaydam.zenfocus.data.local.repository.NetworkCheckerRepositoryImp
 import com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.repository.IntegrateInAppReviewsRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.service.GoogleAdServiceImpl
+import com.umutsaydam.zenfocus.domain.manager.ExoPlayerManager
 import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroServiceManager
@@ -36,6 +38,8 @@ import com.umutsaydam.zenfocus.domain.repository.remote.IntegrateInAppReviewsRep
 import com.umutsaydam.zenfocus.domain.service.AwsAuthService
 import com.umutsaydam.zenfocus.domain.service.GoogleAdService
 import com.umutsaydam.zenfocus.domain.usecases.local.DeviceRingerModeCases
+import com.umutsaydam.zenfocus.domain.usecases.local.ExoPlayerManagerUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.ExoPlayerManagerUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
@@ -45,6 +49,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCase
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroManagerUseCaseImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.PomodoroServiceUseCasesImpl
+import com.umutsaydam.zenfocus.domain.usecases.local.ThemeRepositoryUseCases
+import com.umutsaydam.zenfocus.domain.usecases.local.ThemeRepositoryUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
@@ -153,6 +159,16 @@ object AppModule {
     fun provideVibrationUseCases(
         vibrationManager: VibrationManager
     ): VibrationManagerUseCases = VibrationManagerUseCasesImpl(vibrationManager)
+
+    @Provides
+    fun provideThemeRepositoryUseCases(
+        themeRepository: ThemeRepository
+    ): ThemeRepositoryUseCases = ThemeRepositoryUseCasesImpl(themeRepository)
+
+    @Provides
+    fun provideExoPlayerManagerUseCases(
+        exoPlayerManager: ExoPlayerManager
+    ): ExoPlayerManagerUseCases = ExoPlayerManagerUseCasesImpl(exoPlayerManager)
 
     @Provides
     fun provideFocusSoundUseCases(
@@ -273,6 +289,12 @@ object AppModule {
     fun provideSoundManager(
         application: Application
     ): TimeOutRingerManager = TimeOutRingerManagerImpl(application)
+
+    @Provides
+    @Singleton
+    fun provideExoPlayerManager(
+        application: Application
+    ): ExoPlayerManager = ExoPlayerManagerImpl(application)
 
     @Provides
     @Singleton
