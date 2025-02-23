@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus
+package com.umutsaydam.zenfocus.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -38,8 +38,8 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavHostController
-import com.umutsaydam.zenfocus.PomodoroUiState
-import com.umutsaydam.zenfocus.PomodoroViewModel
+import com.umutsaydam.zenfocus.presentation.viewmodels.PomodoroUiState
+import com.umutsaydam.zenfocus.presentation.viewmodels.PomodoroViewModel
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_LARGE2
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher

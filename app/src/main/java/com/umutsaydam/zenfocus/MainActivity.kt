@@ -26,6 +26,8 @@ import com.amplifyframework.core.Amplify
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin
 import com.google.android.gms.ads.MobileAds
 import com.umutsaydam.zenfocus.presentation.navigation.MainNavHost
+import com.umutsaydam.zenfocus.presentation.viewmodels.MainActivityViewModel
+import com.umutsaydam.zenfocus.presentation.viewmodels.PomodoroViewModel
 import com.umutsaydam.zenfocus.ui.theme.ZenFocusTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
