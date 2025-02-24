@@ -149,17 +149,17 @@ fun AppearanceScreen(
             ) {
 // These line is commented for the open source contribution.
 //                ThemeImage(uiState.selectedTheme)
-                CenterFocusedCarousel(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    listOfTheme = uiState.themeList,
-                    gridState = gridState,
-                    isTablet = isTablet,
-                    themeSpace = themeSpace,
-                    coroutineScope = coroutine,
-                    onThemeSelected = { theme ->
-                        appearanceViewModel.setDefaultTheme(theme)
-                    }
-                )
+//                CenterFocusedCarousel(
+//                    modifier = Modifier.align(Alignment.CenterHorizontally),
+//                    listOfTheme = uiState.themeList,
+//                    gridState = gridState,
+//                    isTablet = isTablet,
+//                    themeSpace = themeSpace,
+//                    coroutineScope = coroutine,
+//                    onThemeSelected = { theme ->
+//                        appearanceViewModel.setDefaultTheme(theme)
+//                    }
+//                )
 
             }
         } else {
@@ -168,52 +168,52 @@ fun AppearanceScreen(
     }
 }
 
-@Composable
-fun CenterFocusedCarousel(
-    modifier: Modifier = Modifier,
-    listOfTheme: List<ThemeInfo?>,
-    gridState: LazyGridState,
-    isTablet: Boolean,
-    themeSpace: Dp,
-    coroutineScope: CoroutineScope,
-    onThemeSelected: (ThemeInfo) -> Unit
-) {
-    CenterFocusedCarousel(
-        modifier = modifier,
-        listOfTheme = listOfTheme,
-        gridState = gridState,
-        content = { firstVisibleIndex, currentIndex ->
-            val theme = listOfTheme[currentIndex]
-
-            if (theme != null) {
-                val isBigger = firstVisibleIndex + 1 == currentIndex
-                val (imageWidth, imageHeight) = calculateImageSize(isTablet, isBigger)
-                AsyncImage(
-                    modifier = Modifier
-                        .width(imageWidth)
-                        .height(imageHeight)
-                        .padding(if (isBigger) 0.dp else 5.dp)
-                        .clip(RoundedCornerShape(CORNER_MEDIUM))
-                        .clickable {
-                            coroutineScope.launch {
-                                gridState.animateScrollToItem(
-                                    index = maxOf(0, currentIndex - 1)
-                                )
-                            }
-                        },
-                    model = theme.themeUrl,
-                    contentDescription = theme.themeName,
-                    contentScale = ContentScale.Crop
-                )
-                if (isBigger) {
-                    onThemeSelected(theme)
-                }
-            } else {
-                Spacer(modifier = Modifier.width(themeSpace))
-            }
-        }
-    )
-}
+//@Composable
+//fun CenterFocusedCarousel(
+//    modifier: Modifier = Modifier,
+//    listOfTheme: List<ThemeInfo?>,
+//    gridState: LazyGridState,
+//    isTablet: Boolean,
+//    themeSpace: Dp,
+//    coroutineScope: CoroutineScope,
+//    onThemeSelected: (ThemeInfo) -> Unit
+//) {
+//    CenterFocusedCarousel(
+//        modifier = modifier,
+//        listOfTheme = listOfTheme,
+//        gridState = gridState,
+//        content = { firstVisibleIndex, currentIndex ->
+//            val theme = listOfTheme[currentIndex]
+//
+//            if (theme != null) {
+//                val isBigger = firstVisibleIndex + 1 == currentIndex
+//                val (imageWidth, imageHeight) = calculateImageSize(isTablet, isBigger)
+//                AsyncImage(
+//                    modifier = Modifier
+//                        .width(imageWidth)
+//                        .height(imageHeight)
+//                        .padding(if (isBigger) 0.dp else 5.dp)
+//                        .clip(RoundedCornerShape(CORNER_MEDIUM))
+//                        .clickable {
+//                            coroutineScope.launch {
+//                                gridState.animateScrollToItem(
+//                                    index = maxOf(0, currentIndex - 1)
+//                                )
+//                            }
+//                        },
+//                    model = theme.themeUrl,
+//                    contentDescription = theme.themeName,
+//                    contentScale = ContentScale.Crop
+//                )
+//                if (isBigger) {
+//                    onThemeSelected(theme)
+//                }
+//            } else {
+//                Spacer(modifier = Modifier.width(themeSpace))
+//            }
+//        }
+//    )
+//}
 
 private fun calculateImageSize(isTablet: Boolean, isBigger: Boolean): Pair<Dp, Dp> {
     return if (isTablet) {

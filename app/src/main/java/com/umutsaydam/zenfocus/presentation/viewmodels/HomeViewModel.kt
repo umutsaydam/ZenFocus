@@ -3,8 +3,8 @@ package com.umutsaydam.zenfocus.presentation.viewmodels
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
+//import com.google.android.gms.ads.AdSize
+//import com.google.android.gms.ads.AdView
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.TaskModel
@@ -13,8 +13,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
-import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
-import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
 import com.umutsaydam.zenfocus.presentation.home.components.BottomSheetContent
 import com.umutsaydam.zenfocus.util.Constants.NONE
@@ -48,8 +48,8 @@ class HomeViewModel @Inject constructor(
     private val focusSoundUseCases: FocusSoundUseCases,
     private val checkerUseCases: NetworkCheckerUseCases,
     private val authCases: AwsAuthCases,
-    private val googleProductsInAppUseCases: GoogleProductsInAppUseCases,
-    private val googleAdUseCases: GoogleAdUseCases
+//    private val googleProductsInAppUseCases: GoogleProductsInAppUseCases,
+//    private val googleAdUseCases: GoogleAdUseCases
 ) : ViewModel() {
     private val _homeUiState = MutableStateFlow(HomeUiState())
     val homeUiState: StateFlow<HomeUiState> = _homeUiState
@@ -197,29 +197,29 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun showBannerAd(adSize: AdSize): AdView {
-        return googleAdUseCases.showBannerAd(adSize = adSize, onAdLoaded = { isLoaded ->
-            _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
-        }, onFirstAdRequested = { isFirstAdRequested ->
-            _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
-        })
-    }
-
-    fun startProductsInApp(activity: Activity) {
-        if (_homeUiState.value.userId.isNotEmpty()) {
-            googleProductsInAppUseCases.startConnection(activity)
-
-            viewModelScope.launch {
-                googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
-                    if (purchaseState) {
-                        changeUserTypeAsAdFree()
-                    }
-                }
-            }
-        } else {
-            updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
-        }
-    }
+//    fun showBannerAd(adSize: AdSize): AdView {
+//        return googleAdUseCases.showBannerAd(adSize = adSize, onAdLoaded = { isLoaded ->
+//            _adState.value = _adState.value.copy(isAdLoaded = isLoaded)
+//        }, onFirstAdRequested = { isFirstAdRequested ->
+//            _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
+//        })
+//    }
+//
+//    fun startProductsInApp(activity: Activity) {
+//        if (_homeUiState.value.userId.isNotEmpty()) {
+//            googleProductsInAppUseCases.startConnection(activity)
+//
+//            viewModelScope.launch {
+//                googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
+//                    if (purchaseState) {
+//                        changeUserTypeAsAdFree()
+//                    }
+//                }
+//            }
+//        } else {
+//            updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
+//        }
+//    }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {
         updateHomeUiState { copy(bottomSheetContent = content) }

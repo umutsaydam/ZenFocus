@@ -9,8 +9,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.ReadUse
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.ReadVibrateState
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.SaveAppEntry
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appLangCases.SaveAppLang
-import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.ReadAvailableForReview
-import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.SaveAvailableForReview
+//import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.ReadAvailableForReview
+//import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.SaveAvailableForReview
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.ReadFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.SaveFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.ReadPomodoroBreakDuration
@@ -52,6 +52,6 @@ data class LocalUserDataStoreCases(
     val readPomodoroCycle: ReadPomodoroCycle,
     val savePomodoroWorkDuration: SavePomodoroWorkDuration,
     val readPomodoroWorkDuration: ReadPomodoroWorkDuration,
-    val saveAvailableForReview: SaveAvailableForReview,
-    val readAvailableForReview: ReadAvailableForReview
+//    val saveAvailableForReview: SaveAvailableForReview,
+//    val readAvailableForReview: ReadAvailableForReview
 )

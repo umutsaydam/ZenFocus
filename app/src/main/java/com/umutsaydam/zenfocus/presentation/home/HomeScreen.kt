@@ -47,7 +47,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.google.android.gms.ads.AdSize
+//import com.google.android.gms.ads.AdSize
 import com.umutsaydam.zenfocus.PomodoroViewModel
 import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
@@ -65,7 +65,7 @@ import com.umutsaydam.zenfocus.presentation.home.components.ToDoListItem
 import com.umutsaydam.zenfocus.presentation.viewmodels.GoogleBannerAdState
 import com.umutsaydam.zenfocus.presentation.viewmodels.HomeUiState
 import com.umutsaydam.zenfocus.presentation.viewmodels.HomeViewModel
-import com.umutsaydam.zenfocus.presentation.viewmodels.IntegrateInAppReviewViewModel
+//import com.umutsaydam.zenfocus.presentation.viewmodels.IntegrateInAppReviewViewModel
 import com.umutsaydam.zenfocus.ui.theme.DarkBackground
 import com.umutsaydam.zenfocus.ui.theme.OutLineVariant
 import com.umutsaydam.zenfocus.ui.theme.Transparent
@@ -78,7 +78,7 @@ fun HomeScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
     pomodoroViewModel: PomodoroViewModel = hiltViewModel(),
-    reviewViewModel: IntegrateInAppReviewViewModel = hiltViewModel()
+//    reviewViewModel: IntegrateInAppReviewViewModel = hiltViewModel()
 ) {
     val homeUiState by homeViewModel.homeUiState.collectAsState()
     val pomodoroUiState by pomodoroViewModel.pomodoroUiState.collectAsState()
@@ -133,9 +133,9 @@ fun HomeScreen(
         StopPomodoroDialog(showDialog = showDialog) { confirmedState ->
             if (confirmedState) {
                 pomodoroViewModel.stopTimer()
-                if (homeViewModel.isNetworkConnected() && reviewViewModel.isAvailableForReview.value) {
-                    reviewViewModel.launchReview(context)
-                }
+//                if (homeViewModel.isNetworkConnected() && reviewViewModel.isAvailableForReview.value) {
+//                    reviewViewModel.launchReview(context)
+//                }
             }
             showDialog = false
         }
@@ -181,9 +181,9 @@ fun HomeScreen(
                 viewModel = homeViewModel, adState = adState
             )
 
-            BannerAdView(
-                viewModel = homeViewModel, adState = adState
-            )
+//            BannerAdView(
+//                viewModel = homeViewModel, adState = adState
+//            )
         }
     }
 }
@@ -268,7 +268,7 @@ fun HomeAppBar(
             TextButton(onClick = {
                 val activity = context as? Activity
                 activity?.let {
-                    viewModel.startProductsInApp(it)
+//                    viewModel.startProductsInApp(it)
                 }
             }) {
                 Text(
@@ -409,37 +409,37 @@ fun HomeFab(
     }
 }
 
-@Composable
-fun BannerAdView(
-    viewModel: HomeViewModel, adState: GoogleBannerAdState
-) {
-    if (viewModel.isNetworkConnected() && viewModel.shouldShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
-        val context = LocalContext.current
-        val adSize: AdSize by remember { derivedStateOf { getAdSize(context) } }
-
-        Box(
-            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd
-        ) {
-            AndroidView(modifier = Modifier.fillMaxWidth(), factory = {
-                viewModel.showBannerAd(adSize)
-            })
-        }
-    }
-}
-
-private fun getAdSize(context: Context): AdSize {
-    val activity = context as? Activity
-    activity?.let {
-        val displayMetrics = context.resources.displayMetrics
-        val adWithPixels = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val windowMetrics: WindowMetrics = it.window.windowManager.currentWindowMetrics
-            windowMetrics.bounds.width()
-        } else {
-            displayMetrics.widthPixels
-        }
-        val density = displayMetrics.density
-        val adWidth = (adWithPixels / density).toInt()
-        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
-    }
-    return AdSize.BANNER
-}
+//@Composable
+//fun BannerAdView(
+//    viewModel: HomeViewModel, adState: GoogleBannerAdState
+//) {
+//    if (viewModel.isNetworkConnected() && viewModel.shouldShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
+//        val context = LocalContext.current
+//        val adSize: AdSize by remember { derivedStateOf { getAdSize(context) } }
+//
+//        Box(
+//            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd
+//        ) {
+//            AndroidView(modifier = Modifier.fillMaxWidth(), factory = {
+//                viewModel.showBannerAd(adSize)
+//            })
+//        }
+//    }
+//}
+//
+//private fun getAdSize(context: Context): AdSize {
+//    val activity = context as? Activity
+//    activity?.let {
+//        val displayMetrics = context.resources.displayMetrics
+//        val adWithPixels = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//            val windowMetrics: WindowMetrics = it.window.windowManager.currentWindowMetrics
+//            windowMetrics.bounds.width()
+//        } else {
+//            displayMetrics.widthPixels
+//        }
+//        val density = displayMetrics.density
+//        val adWidth = (adWithPixels / density).toInt()
+//        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth)
+//    }
+//    return AdSize.BANNER
+//}
