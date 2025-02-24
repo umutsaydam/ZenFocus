@@ -12,7 +12,7 @@
     <string name="time_out_ringer">Pomodoro end ringtone</string>
     <string name="policy">Policy</string>
     <string name="version">Version</string>
-    <string name="version_number" translatable="false">1.0.2</string>
+    <string name="version_number" translatable="false">1.0.3</string>
     <string name="sign_in_sign_up">Sign in | Sign up</string>
     <string name="log_out">Log out</string>
     <string name="back_to_settings">Back to the Settings</string>
@@ -21,7 +21,7 @@
     <string name="signed_up">You signed up successfully.</string>
     <string name="confirm_account">Please confirm your account.</string>
     <string name="sent_code_confirm_account">The verification code has been sent to your email address. Please verify your account.</string>
-    <string name="email" translatable="false">Email</string>
+    <string name="email">Email</string>
     <string name="enter_email">Enter your email</string>
     <string name="password">Password</string>
     <string name="enter_password">Enter your password</string>
@@ -76,9 +76,7 @@
     <string name="username_exists_exception">This email is already registered. Please choose a different username.</string>
     <string name="service_exception">A service-related error occurred. Please try again later.</string>
     <string name="unknown_error">An unexpected error occurred. Please try again later.</string>
-
-    <string-array name="app_langs">
-        <item>Turkish-tr</item>
-        <item>English-en</item>
-    </string-array>
+    <string name="turkish_lang">Turkish-tr</string>
+    <string name="english_lang">English-en</string>
+    <string name="chinese_lang">Chinese-zh</string>
 </resources>

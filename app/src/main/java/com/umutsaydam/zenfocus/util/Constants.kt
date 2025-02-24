@@ -7,6 +7,7 @@ object Constants {
     const val APP_LANG = "App_Lang"
     const val APP_LANG_TURKISH = "Turkish-tr"
     const val APP_LANG_ENGLISH = "English-en"
+    const val APP_LANG_CHINESE = "中文-zh"
     const val USER_ID = "User_Id"
     const val USER_TYPE = "User_Type"
     const val FOCUS_THEME = "Focus_Theme"
@@ -19,6 +20,10 @@ object Constants {
     const val AVAILABLE_FOR_REVIEW = "Available_For_Review"
     const val POMODORO_NOTIFICATION_ID = 1
     const val NONE = "None"
+    const val THEME_TYPE_VIDEO = "video"
+    const val THEME_TYPE_IMAGE = "image"
+
+    const val SELECTING_ANIM_DUR = 500
 
     // POMODORO DEFAULT SETTINGS
     const val DEFAULT_POMODORO_CYCLE = 4
@@ -27,4 +32,7 @@ object Constants {
 
     // VIBRATION
     const val DEFAULT_VIBRATION_DURATION = 500L
+
+    // SUPPORTED IMAGE FORMATS
+    val IMAGES_FORMATS = listOf(".jpg")
 }

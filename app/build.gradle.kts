@@ -16,8 +16,8 @@ android {
         applicationId = "com.umutsaydam.zenfocus"
         minSdk = 24
         targetSdk = 35
-        versionCode = 26
-        versionName = "1.0.2"
+        versionCode = 31
+        versionName = "1.0.3"
 
         val properties: Properties = Properties()
         properties.load(
@@ -56,7 +56,7 @@ android {
 
     buildTypes {
         release {
-//            isDebuggable false
+            isDebuggable = false
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -138,6 +138,9 @@ dependencies {
     // Google In App Reviews
     implementation(libs.review)
     implementation(libs.review.ktx)
+    // Exo Player
+    implementation(libs.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
 }
 java {
     toolchain {

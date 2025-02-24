@@ -3,8 +3,9 @@ package com.umutsaydam.zenfocus.presentation.viewmodels
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.domain.usecases.local.ThemeRepositoryUseCases
+import com.umutsaydam.zenfocus.util.Constants.IMAGES_FORMATS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,10 +15,12 @@ import javax.inject.Inject
 @HiltViewModel
 class FocusModeViewModel @Inject constructor(
     private val localUserDataStoreCases: LocalUserDataStoreCases,
-    private val themeRepository: ThemeRepository,
+    private val themeRepositoryUseCases: ThemeRepositoryUseCases
 ) : ViewModel() {
-    private val _defaultTheme = MutableStateFlow<Bitmap?>(null)
+    private val _themeName = MutableStateFlow<String?>(null)
+    val themeName: StateFlow<String?> = _themeName
 
+    private val _defaultTheme = MutableStateFlow<Bitmap?>(null)
     val defaultTheme: StateFlow<Bitmap?> = _defaultTheme
 
     init {
@@ -28,6 +31,7 @@ class FocusModeViewModel @Inject constructor(
         viewModelScope.launch {
             val defaultThemeName = localUserDataStoreCases.readTheme()
             defaultThemeName.collect { themeName ->
+                _themeName.value = themeName
                 getTheme(themeName)
             }
         }
@@ -35,8 +39,12 @@ class FocusModeViewModel @Inject constructor(
 
     private fun getTheme(themeName: String) {
         viewModelScope.launch {
-            val theme = themeRepository.getTheme(themeName)
+            val theme = themeRepositoryUseCases.getTheme(themeName)
             _defaultTheme.value = theme
         }
+    }
+
+    fun isThemeAnImage(): Boolean {
+        return IMAGES_FORMATS.any { _themeName.value?.lowercase()?.contains(it) ?: false }
     }
 }

@@ -7,15 +7,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
+import com.umutsaydam.zenfocus.domain.model.LanguageModel
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.policy.components.RadioButtonWithText
@@ -31,28 +34,26 @@ fun AppLanguageScreen(
     navController: NavHostController,
     appLanguageViewModel: AppLanguageViewModel = hiltViewModel()
 ) {
-    val langList = appLanguageViewModel.langList
+    val langs by appLanguageViewModel.langList.collectAsState()
     val selectedLang by remember { appLanguageViewModel.defaultLang }.collectAsState()
 
     StatusBarSwitcher()
 
-    Scaffold(
-        modifier = modifier,
-        containerColor = SurfaceContainerLow,
-        topBar = {
-            LanguageScreenTopBar(navController)
-        }
-    ) { paddingValues ->
-        LanguageList(
-            modifier = Modifier.padding(
-                top = paddingValues.calculateTopPadding()
-            ),
-            langList = langList,
-            selectedLang = selectedLang,
-            onLanguageSelected = { lang ->
-                appLanguageViewModel.setDefaultLang(lang)
+    Scaffold(modifier = modifier, containerColor = SurfaceContainerLow, topBar = {
+        LanguageScreenTopBar(navController)
+    }) { paddingValues ->
+        if (selectedLang != null) {
+            val context = LocalContext.current
+            LaunchedEffect(Unit) {
+                appLanguageViewModel.updateLangList(context)
             }
-        )
+
+            LanguageList(modifier = Modifier.padding(
+                top = paddingValues.calculateTopPadding()
+            ), langList = langs, selectedLang = selectedLang!!, onLanguageSelected = { lang ->
+                appLanguageViewModel.setDefaultLang(lang)
+            })
+        }
     }
 }
 
@@ -60,37 +61,34 @@ fun AppLanguageScreen(
 fun LanguageScreenTopBar(navController: NavHostController) {
     IconWithTopAppBar(
         navigationIcon = {
-            IconButton(
-                onClick = {
-                    navController.popBackStackOrIgnore()
-                }
-            ) {
+            IconButton(onClick = {
+                navController.popBackStackOrIgnore()
+            }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_close),
                     contentDescription = stringResource(R.string.back_to_settings),
                     tint = Outline
                 )
             }
-        },
-        containerColor = SurfaceContainerLow
+        }, containerColor = SurfaceContainerLow
     )
 }
 
 @Composable
 fun LanguageList(
     modifier: Modifier,
-    langList: List<String>,
-    selectedLang: String,
+    langList: List<LanguageModel>,
+    selectedLang: LanguageModel,
     onLanguageSelected: (String) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
     ) {
-        items(count = langList.size, key = { it }) { index ->
+        items(count = langList.size, key = { langList[it].code }) { index ->
             val lang = langList[index]
             LanguageItem(
-                lang = lang,
-                isSelected = lang == selectedLang,
+                lang = lang.fullName,
+                isSelected = lang.code == selectedLang.code,
                 onLanguageSelected = onLanguageSelected
             )
         }
@@ -99,14 +97,10 @@ fun LanguageList(
 
 @Composable
 fun LanguageItem(
-    lang: String,
-    isSelected: Boolean,
-    onLanguageSelected: (String) -> Unit
+    lang: String, isSelected: Boolean, onLanguageSelected: (String) -> Unit
 ) {
-    RadioButtonWithText(
-        modifier = Modifier.background(LightBackground),
+    RadioButtonWithText(modifier = Modifier.background(LightBackground),
         radioSelected = isSelected,
         radioText = lang,
-        onClick = { onLanguageSelected(lang) }
-    )
+        onClick = { onLanguageSelected(lang) })
 }

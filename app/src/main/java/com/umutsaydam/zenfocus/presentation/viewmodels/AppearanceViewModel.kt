@@ -7,13 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.data.remote.dto.APIResponse
 import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
-import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 import com.umutsaydam.zenfocus.util.FileNameFromUrl
 import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.UserTypeEnum
+import com.umutsaydam.zenfocus.domain.usecases.local.ThemeRepositoryUseCases
+//import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 // These lines are commented for the open source contribution.
 //import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +36,7 @@ data class AppearanceUiState(
 class AppearanceViewModel @Inject constructor(
     private val awsStorageCases: AwsStorageCases,
     private val localUserDataStoreCases: LocalUserDataStoreCases,
-    private val themeRepository: ThemeRepository,
+    private val themeRepositoryUseCases: ThemeRepositoryUseCases,
     private val networkCheckerUseCases: NetworkCheckerUseCases,
 // These line is commented for the open source contribution.
 //    private val googleAddUseCases: GoogleAdUseCases
@@ -70,7 +71,7 @@ class AppearanceViewModel @Inject constructor(
 //            val themeUrl = it.themeUrl
 //            val newThemeName = FileNameFromUrl.getFileNameFromUrl(themeUrl)
 //
-//            if (themeRepository.isThemeAvailableInLocalStorage(newThemeName)) {
+//            if (themeRepositoryUseCases.isThemeAvailableInLocalStorage(newThemeName)) {
 //                saveThemeToLocal(newThemeName)
 //            } else {
 //                downloadSelectedTheme(selectedThemeUrl = themeUrl)
@@ -110,12 +111,12 @@ class AppearanceViewModel @Inject constructor(
 //            }
 //        }
 //    }
-// These lines are commented for the open source contribution.
+//
 //    private fun downloadSelectedTheme(selectedThemeUrl: String) {
 //        viewModelScope.launch {
+//            updateUiState { copy(uiMessage = R.string.loading) }
 //            val themeResource: Resource<String> =
 //                awsStorageCases.downloadSelectedThemeList(selectedThemeUrl)
-//            updateUiState { copy(uiMessage = R.string.loading) }
 //
 //            when (themeResource) {
 //                is Resource.Success -> {

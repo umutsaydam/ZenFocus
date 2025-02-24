@@ -27,6 +27,8 @@ import com.amplifyframework.storage.s3.AWSS3StoragePlugin
 // These line is commented for the open source contribution.
 //import com.google.android.gms.ads.MobileAds
 import com.umutsaydam.zenfocus.presentation.navigation.MainNavHost
+import com.umutsaydam.zenfocus.presentation.viewmodels.MainActivityViewModel
+import com.umutsaydam.zenfocus.presentation.viewmodels.PomodoroViewModel
 import com.umutsaydam.zenfocus.ui.theme.ZenFocusTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
