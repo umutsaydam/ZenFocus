@@ -148,6 +148,9 @@ class AppearanceViewModel @Inject constructor(
         viewModelScope.launch {
             val rewardResult = googleAddUseCases.showRewardedAd()
             updateUiState { copy(rewardedAd = rewardResult) }
+            if(rewardResult == null){
+                saveTheme()
+            }
         }
     }
 
