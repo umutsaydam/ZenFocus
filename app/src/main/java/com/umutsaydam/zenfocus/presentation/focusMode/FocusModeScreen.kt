@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -59,7 +60,11 @@ fun FocusModeScreen(
 ) {
     val defaultTheme by focusModeViewModel.defaultTheme.collectAsState()
     val pomodoroUiState by pomodoroViewModel.pomodoroUiState.collectAsState()
-    val isThemeAnImage by remember { derivedStateOf { focusModeViewModel.isThemeAnImage() } }
+    var isThemeAnImage: Boolean? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(defaultTheme) {
+        isThemeAnImage = focusModeViewModel.isThemeAnImage()
+    }
 
     FocusLifeCycleHandler(
         navController = navController, viewModel = pomodoroViewModel
@@ -80,20 +85,24 @@ fun FocusModeScreen(
         .background(
             color = White, shape = RectangleShape
         )
-        .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
+        .clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }) {
             alpha = 1f
         }) {
-        if (isThemeAnImage) {
-            val rememberedBitmap by remember { derivedStateOf { defaultTheme?.asImageBitmap() } }
-            FocusModeContentWithImage(rememberedBitmap = rememberedBitmap)
-        } else {
-            focusModeViewModel.themeName.value?.let {
-                val videoPlayerViewModel: VideoPlayerViewModel = hiltViewModel()
-                val videoPlayer by remember { derivedStateOf { videoPlayerViewModel.exoPlayer.value } }
-                LaunchedEffect(Unit) {
-                    videoPlayerViewModel.startPlayer(it, null)
+        isThemeAnImage?.let {
+            if (it) {
+                val rememberedBitmap by remember { derivedStateOf { defaultTheme?.asImageBitmap() } }
+                FocusModeContentWithImage(rememberedBitmap = rememberedBitmap)
+            } else {
+                focusModeViewModel.themeName.value?.let {
+                    val videoPlayerViewModel: VideoPlayerViewModel = hiltViewModel()
+                    val videoPlayer by remember { derivedStateOf { videoPlayerViewModel.exoPlayer.value } }
+                    LaunchedEffect(Unit) {
+                        videoPlayerViewModel.startPlayer(it, null)
+                    }
+                    FocusModeContentWithVideo(videoPlayer = videoPlayer)
                 }
-                FocusModeContentWithVideo(videoPlayer = videoPlayer)
             }
         }
     }
