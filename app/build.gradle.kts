@@ -16,7 +16,7 @@ android {
         applicationId = "com.umutsaydam.zenfocus"
         minSdk = 24
         targetSdk = 35
-        versionCode = 32
+        versionCode = 33
         versionName = "1.0.3"
 
         val properties: Properties = Properties()
@@ -140,6 +140,8 @@ dependencies {
     // Exo Player
     implementation(libs.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
+    // MPAndroidChart
+    implementation(libs.mpandroidchart)
 }
 java {
     toolchain {
