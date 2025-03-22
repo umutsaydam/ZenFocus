@@ -196,6 +196,12 @@ fun SettingsScreen(
                             isDurationDialogOpened = true
                         }
                     )
+                    MenuItem(
+                        menuTitle = "Statistics",
+                        onClick = {
+                            navController.safeNavigate(Route.Statistics.route)
+                        }
+                    )
                 }
             )
             SettingsSection(

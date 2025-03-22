@@ -15,6 +15,7 @@ sealed class Route(
     data object Home : Route("Home")
     data object Policy : Route("Policy")
     data object Settings : Route("Settings")
+    data object Statistics: Route("Statistics")
     data object AccountConfirm : Route(
         route = "AccountConfirm/{email}/{shouldResend}",
         arguments = listOf(
