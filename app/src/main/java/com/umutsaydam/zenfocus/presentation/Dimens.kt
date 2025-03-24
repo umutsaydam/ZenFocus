@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.sp
 
 object Dimens {
     val PADDING_SMALL = 5.dp
+    val PADDING_SMALL2 = 10.dp
     val PADDING_MEDIUM1 = 15.dp
     val PADDING_MEDIUM2 = 18.dp
 

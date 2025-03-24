@@ -1,9 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.statistics
 
-import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
-import android.view.ViewGroup
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -18,18 +15,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
+import androidx.compose.material3.DateRangePickerState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,40 +41,71 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.model.GradientColor
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
+import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
+import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
+import com.umutsaydam.zenfocus.presentation.viewmodels.StatisticsViewModel
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.Transparent
 import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    statisticsViewModel: StatisticsViewModel = hiltViewModel()
 ) {
     val options = listOf("Select dates", "This month", "Last week", "This week")
     var selectedIndex by remember { mutableIntStateOf(options.size - 1) }
+    val pomodoroDataset by statisticsViewModel.numberOfPomodoroDataset.collectAsState()
+    val pomodoroDates by statisticsViewModel.completedPomodoroDates.collectAsState()
     val rememberScrollState = rememberScrollState()
-    val context = LocalContext.current
+    var dateRangeState by remember { mutableStateOf(false) }
+
+    LaunchedEffect(selectedIndex) {
+        Log.i("R/T", "clicked: $selectedIndex")
+        when (selectedIndex) {
+            0 -> {
+                Log.i("R/T", "$dateRangeState")
+                dateRangeState = true
+            }
+
+            1 -> statisticsViewModel.getThisMonthCompletedPomodoroDataset()
+            2 -> statisticsViewModel.getLastWeekCompletedPomodoroDataset()
+            3 -> statisticsViewModel.getThisWeekCompletedPomodoroDataset()
+            else -> statisticsViewModel.resetPomodoroData()
+        }
+    }
+
+    if (dateRangeState) {
+        val dateRangePickerState = rememberDateRangePickerState()
+        CustomDateRangePicker(
+            dateRangePickerState = dateRangePickerState,
+            onDateRangeStateChange = { state ->
+                dateRangeState = state
+            },
+            onSelectedDates = { startDate, endDate ->
+                statisticsViewModel.getPomodoroDatasetBySpecificDate(startDate, endDate)
+            }
+        )
+    }
 
     StatusBarSwitcher(true)
 
@@ -95,6 +130,34 @@ fun StatisticsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(PADDING_MEDIUM2),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Column(
+                    modifier = Modifier
+                        .shadow(8.dp, RoundedCornerShape(CORNER_MEDIUM))
+                        .clip(RoundedCornerShape(CORNER_MEDIUM))
+                        .background(White)
+                        .fillMaxWidth()
+                        .padding(vertical = PADDING_SMALL),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    TotalStatisticsSection(
+                        totalCountOfPomodoro = "1,260",
+                        contentTotalCountOfPomodoro = "Total Pomodoro",
+                        countOfCurrentStreak = "10",
+                        contentOfCurrentStreak = "Current Streak",
+                        countOfLongestStreak = "15",
+                        contentOfLongestStreak = "Longest Streak"
+                    )
+                }
+            }
+
             SingleChoiceSegmentedButtons(
                 rememberScrollState = rememberScrollState,
                 options = options,
@@ -104,70 +167,42 @@ fun StatisticsScreen(
                 }
             )
 
-            Card(
+            Column(
                 modifier = Modifier
-                    .padding(PADDING_SMALL)
                     .fillMaxWidth()
-                    .background(White),
-                shape = RoundedCornerShape(CORNER_MEDIUM),
-                elevation = CardDefaults.elevatedCardElevation()
+                    .padding(PADDING_MEDIUM2),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-//              4CD9F2  5399E8
-                val completedPomodoroThisWeek = listOf(3f, 5f, 1f, 8f, 3f, 2f, 4f)
-
-                AndroidView(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp),
-                    factory = {
-                        BarChart(context).apply {
+                        .shadow(8.dp, RoundedCornerShape(CORNER_MEDIUM))
+                        .clip(RoundedCornerShape(CORNER_MEDIUM))
+                        .background(White)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
 
-                            layoutParams = ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT
+                    if (pomodoroDataset.isNotEmpty() && pomodoroDates.isNotEmpty()) {
+                        Log.i("R/T", "$pomodoroDates")
+                        CustomRoundedBarChartWithDataset(
+                            numberOfCompletedPomodoroDataset = pomodoroDataset,
+                            datesOfCompletedPomodoroDataset = pomodoroDates
+                        )
+
+                        Text(
+                            modifier = Modifier.padding(PADDING_SMALL2),
+                            text = "Bu hafta en çok çalıştığın saat 09:00 - 10:00 \uD83D\uDD25",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.Normal,
+                                color = Outline
                             )
-                            description.isEnabled = true
-                            description.text = "Description"
-                            setDrawGridBackground(true)
-                            setDrawBarShadow(false)
-                            legend.isEnabled = true
-
-                            val entries = completedPomodoroThisWeek.mapIndexed { index, value ->
-                                BarEntry(index.toFloat(), value)
-                            }
-
-                            val dataSet =
-                                BarDataSet(entries, "Bu hafta tamamlanan pomodoro sayısı").apply {
-                                    setGradientColor(
-                                        Color.parseColor("#5399E8"),
-                                        Color.parseColor("#4CD9F2")
-                                    )
-                                    valueTextSize = 12f
-                                    valueTypeface = Typeface.DEFAULT
-                                }
-
-                            val barData = BarData(dataSet)
-                            barData.barWidth = 0.7f
-                            data = barData
-                            renderer = CustomRoundedBarChart(this, animator, viewPortHandler, 30f)
-                            invalidate()
-
-                            xAxis.apply {
-                                position = XAxis.XAxisPosition.BOTTOM
-                                setDrawGridLines(true)
-                                granularity = 1f
-                            }
-
-                            axisLeft.apply {
-                                setDrawGridLines(true)
-                                axisMinimum = 0f
-                            }
-
-                            axisRight.isEnabled = false
-                        }
+                        )
                     }
-                )
+                }
             }
+
         }
     }
 }
@@ -220,6 +255,42 @@ fun StatisticsScreenTopBar(navController: NavHostController) {
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomDateRangePicker(
+    dateRangePickerState: DateRangePickerState,
+    onDateRangeStateChange: (Boolean) -> Unit,
+    onSelectedDates: (String, String) -> Unit
+) {
+    DatePickerDialog(
+        onDismissRequest = { onDateRangeStateChange(false) },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val startDate = dateRangePickerState.selectedStartDateMillis.toString()
+                    val endDate = dateRangePickerState.selectedEndDateMillis.toString()
+                    onSelectedDates(startDate, endDate)
+                    onDateRangeStateChange(false)
+                }
+            ) { Text("Confirm") }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { onDateRangeStateChange(false) }
+            ) { Text("Cancel") }
+        }
+    ) {
+        DateRangePicker(
+            state = dateRangePickerState,
+            title = { Text("Select date range") },
+            showModeToggle = false,
+            modifier = Modifier
+                .height(500.dp)
+                .padding(16.dp)
+        )
+    }
 }
 
 @Composable
