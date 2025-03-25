@@ -74,6 +74,8 @@ fun StatisticsScreen(
 ) {
     val options = listOf("Select dates", "This month", "Last week", "This week")
     var selectedIndex by remember { mutableIntStateOf(options.size - 1) }
+
+    val totalStatisticsUiState by statisticsViewModel.totalStatisticsUiState.collectAsState()
     val pomodoroDataset by statisticsViewModel.numberOfPomodoroDataset.collectAsState()
     val pomodoroDates by statisticsViewModel.completedPomodoroDates.collectAsState()
     val rememberScrollState = rememberScrollState()
@@ -148,11 +150,11 @@ fun StatisticsScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     TotalStatisticsSection(
-                        totalCountOfPomodoro = "1,260",
+                        totalCountOfPomodoro = totalStatisticsUiState.countOfTotalPomodoro.toString(),
                         contentTotalCountOfPomodoro = "Total Pomodoro",
-                        countOfCurrentStreak = "10",
+                        countOfCurrentStreak = totalStatisticsUiState.currentStreak.toString(),
                         contentOfCurrentStreak = "Current Streak",
-                        countOfLongestStreak = "15",
+                        countOfLongestStreak = totalStatisticsUiState.longestStreak.toString(),
                         contentOfLongestStreak = "Longest Streak"
                     )
                 }
