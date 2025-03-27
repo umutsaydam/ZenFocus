@@ -374,7 +374,8 @@ object AppModule {
                 """
                 CREATE TABLE IF NOT EXISTS `pomodoro_sessions` (
                     `session_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                    `session_duration` LONG NOT NULL,
+                    `work_duration` LONG NOT NULL,
+                    `break_duration` LONG NOT NULL,
                     `session_date` TEXT NOT NULL
                 )
                 """.trimIndent()
