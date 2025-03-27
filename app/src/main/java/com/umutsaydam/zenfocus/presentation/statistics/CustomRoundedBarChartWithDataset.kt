@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -19,6 +20,8 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
+import com.umutsaydam.zenfocus.ui.theme.LightBlue
+import com.umutsaydam.zenfocus.ui.theme.SemiLightBlue
 import com.umutsaydam.zenfocus.ui.theme.Transparent
 
 @Composable
@@ -57,8 +60,8 @@ fun CustomRoundedBarChartWithDataset(
                 val dataSet =
                     BarDataSet(entries, "").apply {
                         setGradientColor(
-                            Color.parseColor("#5399E8"),
-                            Color.parseColor("#4CD9F2")
+                            SemiLightBlue.toArgb(),
+                            LightBlue.toArgb()
                         )
                         valueTextSize = 12f
                         valueTypeface = Typeface.DEFAULT
@@ -100,8 +103,8 @@ fun CustomRoundedBarChartWithDataset(
 
             val dataSet = BarDataSet(entries, "").apply {
                 setGradientColor(
-                    Color.parseColor("#5399E8"),
-                    Color.parseColor("#4CD9F2")
+                    SemiLightBlue.toArgb(),
+                    LightBlue.toArgb()
                 )
                 valueTextSize = 12f
                 valueTypeface = Typeface.DEFAULT

@@ -15,14 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
+import com.umutsaydam.zenfocus.ui.theme.LightBlue
 import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.SemiLightBlue
 import com.umutsaydam.zenfocus.ui.theme.White
 
 @Composable
@@ -66,8 +67,8 @@ fun TotalStatisticsSection(
                     drawCircle(
                         brush = Brush.linearGradient(
                             listOf(
-                                Color(android.graphics.Color.parseColor("#4CD9F2")),
-                                Color(android.graphics.Color.parseColor("#5399E8"))
+                                LightBlue,
+                                SemiLightBlue
                             )
                         ),
                         style = Stroke(15f),
@@ -105,8 +106,8 @@ fun TotalStatisticsSection(
 
                     val gradient = Brush.verticalGradient(
                         colors = listOf(
-                            Color(android.graphics.Color.parseColor("#4CD9F2")),
-                            Color(android.graphics.Color.parseColor("#5399E8"))
+                            LightBlue,
+                            SemiLightBlue
                         ),
                         startY = height / 4f,
                         endY = height / 4f + dropHeight

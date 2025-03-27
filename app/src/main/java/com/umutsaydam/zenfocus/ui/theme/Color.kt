@@ -26,3 +26,7 @@ val Primary = Color(101, 85, 143)
 val OnPrimary = Color(56, 30, 114)
 val WorkProgressColor = Color(21,101,192)
 val RestProgressColor = Color(76,175,80)
+
+// Gradient
+val LightBlue = Color(76, 217, 242);
+val SemiLightBlue = Color(83, 153, 232);
