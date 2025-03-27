@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.umutsaydam.zenfocus.domain.model.PomodoroSessionModel
+import com.umutsaydam.zenfocus.domain.model.TotalMinutesByDateModel
 
 @Dao
 interface PomodoroSessionsDao {
@@ -13,10 +14,13 @@ interface PomodoroSessionsDao {
     suspend fun upsert(pomodoroSessionModel: PomodoroSessionModel)
 
     @Query("SELECT COUNT(*) FROM pomodoro_sessions WHERE session_date = :customDate")
-    fun getCountOfSessionsByDate(customDate: String): Int
+    suspend fun getCountOfSessionsByDate(customDate: String): Int
 
-    @Query("SELECT COUNT(*) FROM pomodoro_sessions WHERE session_date BETWEEN :startDate AND :endDate")
-    fun getCountOfSessionsBetween2Dates(startDate: String, endDate: String): Int
+    @Query("SELECT DATE(session_date) AS pomodoroDate, (SUM(work_duration)/ 1000 / 60) as minute FROM pomodoro_sessions GROUP BY DATE(session_date) HAVING DATE(session_date) BETWEEN :startDate AND :endDate;")
+    suspend fun getCountOfSessionsBetween2Dates(
+        startDate: String,
+        endDate: String
+    ): List<TotalMinutesByDateModel>
 
     @Query("SELECT COUNT(*) FROM pomodoro_sessions")
     suspend fun getCountOfTotalPomodoroSessions(): Int
@@ -117,4 +121,62 @@ interface PomodoroSessionsDao {
                 """
     )
     suspend fun getLongestStreak(): Int
+
+    @Query(
+        """
+            WITH WeekBounds AS (
+                SELECT 
+                    DATE(:selectedDate, 'weekday 0', '-6 days') AS week_start,
+                    DATE(:selectedDate, 'weekday 0') AS week_end
+            )
+            SELECT DATE(session_date) AS pomodoroDate, 
+                   (SUM(work_duration) / 1000 / 60) AS minute
+            FROM pomodoro_sessions
+            WHERE DATE(session_date) BETWEEN (SELECT week_start FROM WeekBounds) 
+                                  AND (SELECT week_end FROM WeekBounds)
+            GROUP BY DATE(session_date)
+            """
+    )
+    suspend fun getThisWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel>
+
+    @Query(
+        """
+            WITH CurrentWeek AS (
+                SELECT 
+                    DATE(:selectedDate, 'weekday 0', '-6 days') AS this_week_start,
+                    DATE(:selectedDate, 'weekday 0') AS this_week_end
+            ),
+            LastWeek AS (
+                SELECT 
+                    DATE(this_week_start, '-7 days') AS last_week_start, 
+                    DATE(this_week_end, '-7 days') AS last_week_end
+                FROM CurrentWeek
+            )
+            SELECT DATE(session_date) AS pomodoroDate, 
+                   (SUM(work_duration) / 1000 / 60) AS minute
+            FROM pomodoro_sessions
+            WHERE session_date BETWEEN (SELECT last_week_start FROM LastWeek) 
+                                  AND (SELECT last_week_end FROM LastWeek)
+            GROUP BY DATE(session_date)
+        """
+    )
+    suspend fun getLastWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel>
+
+    @Query(
+        """
+            WITH CurrentMonth AS (
+                SELECT 
+                    DATE(:selectedDate, 'start of month') AS this_month_start,
+                    DATE(:selectedDate, 'start of month', '+1 month', '-1 day') AS this_month_end
+            )
+            SELECT DATE(session_date) AS pomodoroDate, 
+                   (SUM(work_duration) / 1000 / 60) AS minute
+            FROM pomodoro_sessions
+            WHERE session_date BETWEEN (SELECT this_month_start FROM CurrentMonth) 
+                                  AND (SELECT this_month_end FROM CurrentMonth)
+            GROUP BY DATE(session_date)
+        """
+    )
+    suspend fun getThisMonthStatistics(selectedDate: String): List<TotalMinutesByDateModel>
+
 }

@@ -2,7 +2,9 @@ package com.umutsaydam.zenfocus.data.local.repository
 
 import com.umutsaydam.zenfocus.data.local.db.PomodoroSessionsDao
 import com.umutsaydam.zenfocus.domain.model.PomodoroSessionModel
+import com.umutsaydam.zenfocus.domain.model.TotalMinutesByDateModel
 import com.umutsaydam.zenfocus.domain.repository.local.PomodoroSessionRepository
+import com.umutsaydam.zenfocus.presentation.viewmodels.StatisticsByDate
 
 class PomodoroSessionRepositoryImpl(
     private val pomodoroSessionsDao: PomodoroSessionsDao
@@ -16,7 +18,10 @@ class PomodoroSessionRepositoryImpl(
         return pomodoroSessionsDao.getCountOfSessionsByDate(customDate)
     }
 
-    override suspend fun getCountOfSessionsBetween2Dates(startDate: String, endDate: String): Int {
+    override suspend fun getCountOfSessionsBetween2Dates(
+        startDate: String,
+        endDate: String
+    ): List<TotalMinutesByDateModel> {
         return pomodoroSessionsDao.getCountOfSessionsBetween2Dates(startDate, endDate)
     }
 
@@ -30,5 +35,17 @@ class PomodoroSessionRepositoryImpl(
 
     override suspend fun getLongestStreak(): Int {
         return pomodoroSessionsDao.getLongestStreak()
+    }
+
+    override suspend fun getThisWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel> {
+        return pomodoroSessionsDao.getThisWeekStatistics(selectedDate)
+    }
+
+    override suspend fun getLastWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel> {
+        return pomodoroSessionsDao.getLastWeekStatistics(selectedDate)
+    }
+
+    override suspend fun getThisMonthStatistics(selectedDate: String): List<TotalMinutesByDateModel> {
+        return pomodoroSessionsDao.getThisMonthStatistics(selectedDate)
     }
 }

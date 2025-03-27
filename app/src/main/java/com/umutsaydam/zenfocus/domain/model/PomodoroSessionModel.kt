@@ -9,8 +9,10 @@ data class PomodoroSessionModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "session_id")
     val sessionId: Int = 0,
-    @ColumnInfo(name = "session_duration")
-    val sessionDuration: Long,
+    @ColumnInfo(name = "work_duration")
+    val workDuration: Long,
+    @ColumnInfo(name = "break_duration")
+    val breakDuration: Long,
     @ColumnInfo(name = "session_date")
     val sessionDate: String
 )

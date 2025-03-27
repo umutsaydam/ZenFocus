@@ -115,7 +115,11 @@ class PomodoroManagerImpl(
 
                     if (_isWorkingSession.value) {
                         decreaseWorkCycle()
-                        savePomodoroSessionToDB(_workDuration.value, _sessionStartedDate)
+                        savePomodoroSessionToDB(
+                            _workDuration.value,
+                            _breakDuration.value,
+                            _sessionStartedDate
+                        )
                         if (pomodoroAvailableWorkCycle()) {
                             vibrateIfAvailable()
                             switchBreakSession()
@@ -134,11 +138,11 @@ class PomodoroManagerImpl(
         }
     }
 
-    private fun savePomodoroSessionToDB(duration: Long, startedDate: String) {
+    private fun savePomodoroSessionToDB(workDur: Long, breakDur: Long, startedDate: String) {
         CoroutineScope(Dispatchers.IO).launch {
             pomodoroSessionsUseCases.upsertPomodoroSession(
                 PomodoroSessionModel(
-                    0, sessionDuration = duration, sessionDate = startedDate
+                    0, workDuration = workDur, breakDuration = breakDur, sessionDate = startedDate
                 )
             )
         }

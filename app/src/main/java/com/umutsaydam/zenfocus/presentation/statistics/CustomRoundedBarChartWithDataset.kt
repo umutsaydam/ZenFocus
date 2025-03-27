@@ -46,6 +46,9 @@ fun CustomRoundedBarChartWithDataset(
                 legend.isEnabled = false
                 description.text = ""
                 setScaleEnabled(false)
+                isScaleXEnabled = true
+                isDragEnabled = true
+                setPinchZoom(false)
 
                 val entries = numberOfCompletedPomodoroDataset.mapIndexed { index, value ->
                     BarEntry(index.toFloat(), value)
@@ -63,21 +66,22 @@ fun CustomRoundedBarChartWithDataset(
                 dataSet.highLightAlpha = 0
 
                 val barData = BarData(dataSet)
-                barData.barWidth = 0.5f
+                barData.barWidth = 0.3f
                 data = barData
                 renderer =
                     CustomRoundedBarChart(this, animator, viewPortHandler, 30f)
-                invalidate()
 
                 xAxis.apply {
                     position = XAxis.XAxisPosition.BOTTOM
                     setDrawGridLines(true)
+                    isGranularityEnabled = true
                     granularity = 1f
                     valueFormatter = object : ValueFormatter() {
                         override fun getFormattedValue(value: Float): String {
                             return if (value.toInt() in datesOfCompletedPomodoroDataset.indices) datesOfCompletedPomodoroDataset[value.toInt()] else value.toString()
                         }
                     }
+                    labelRotationAngle = -45f
                 }
 
                 axisLeft.apply {
@@ -86,6 +90,7 @@ fun CustomRoundedBarChartWithDataset(
                 }
 
                 axisRight.isEnabled = false
+                invalidate()
             }
         },
         update = { barChart ->
@@ -101,11 +106,26 @@ fun CustomRoundedBarChartWithDataset(
                 valueTextSize = 12f
                 valueTypeface = Typeface.DEFAULT
             }
+
+            dataSet.valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return value.toInt().toString()
+                }
+            }
             dataSet.highLightAlpha = 0
 
             val barData = BarData(dataSet)
-            barData.barWidth = 0.5f
+            barData.barWidth = 0.3f
             barChart.data = barData
+
+            barChart.xAxis.apply {
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return if (value.toInt() in datesOfCompletedPomodoroDataset.indices) datesOfCompletedPomodoroDataset[value.toInt()] else value.toString()
+                    }
+                }
+            }
+            barChart.fitScreen()
             barChart.invalidate()
         }
     )

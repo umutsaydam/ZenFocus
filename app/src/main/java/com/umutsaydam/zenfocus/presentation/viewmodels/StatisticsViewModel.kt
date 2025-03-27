@@ -7,12 +7,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 data class TotalStatisticsUiState(
     val countOfTotalPomodoro: Int = 0,
     val currentStreak: Int = 0,
     val longestStreak: Int = 0
+)
+
+data class StatisticsByDate(
+    val dates: List<String> = emptyList(),
+    val totalMinutes: List<Float> = emptyList()
 )
 
 @HiltViewModel
@@ -22,13 +30,11 @@ class StatisticsViewModel @Inject constructor(
     private val _totalStatisticsUiState = MutableStateFlow(TotalStatisticsUiState())
     val totalStatisticsUiState: StateFlow<TotalStatisticsUiState> = _totalStatisticsUiState
 
-    private val _numberOfPomodoroDataset: MutableStateFlow<List<Float>> =
-        MutableStateFlow(emptyList())
-    val numberOfPomodoroDataset: StateFlow<List<Float>> = _numberOfPomodoroDataset
+    private val _statisticsByDateUiState = MutableStateFlow(StatisticsByDate())
+    val statisticsByDateUiState: StateFlow<StatisticsByDate> = _statisticsByDateUiState
 
-    private val _completedPomodoroDates: MutableStateFlow<List<String>> =
-        MutableStateFlow(emptyList())
-    val completedPomodoroDates: StateFlow<List<String>> = _completedPomodoroDates
+    private val dateFormatDB = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormatUI = SimpleDateFormat("dd MMM E", Locale.getDefault())
 
     init {
         getCountOfTotalPomodoro()
@@ -38,6 +44,10 @@ class StatisticsViewModel @Inject constructor(
 
     private fun updateTotalStatisticsUiState(update: TotalStatisticsUiState.() -> TotalStatisticsUiState) {
         _totalStatisticsUiState.value = _totalStatisticsUiState.value.update()
+    }
+
+    private fun updateStatisticsByDate(update: StatisticsByDate.() -> StatisticsByDate) {
+        _statisticsByDateUiState.value = _statisticsByDateUiState.value.update()
     }
 
     private fun getCountOfTotalPomodoro() {
@@ -62,37 +72,51 @@ class StatisticsViewModel @Inject constructor(
     }
 
     fun getThisWeekCompletedPomodoroDataset() {
-        _numberOfPomodoroDataset.value = listOf(4f, 2f, 3f, 2f, 4f, 3f, 4f)
-        _completedPomodoroDates.value = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+        viewModelScope.launch {
+            val thisWeek =
+                pomodoroSessionsUseCases.getThisWeekStatistics(dateFormatDB.format(Date()))
+            val dates = thisWeek.mapNotNull { formatPomodoroDateUI(it.pomodoroDate) }
+            val totalMinutes = thisWeek.map { it.minute.toFloat() }
+            updateStatisticsByDate { copy(dates = dates, totalMinutes = totalMinutes) }
+        }
     }
 
     fun getLastWeekCompletedPomodoroDataset() {
-        _numberOfPomodoroDataset.value = listOf(1f, 2f, 3f, 2f, 1f, 0f, 4f)
-        _completedPomodoroDates.value = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+        viewModelScope.launch {
+            val lastWeek =
+                pomodoroSessionsUseCases.getLastWeekStatistics(dateFormatDB.format(Date()))
+            val dates = lastWeek.mapNotNull { formatPomodoroDateUI(it.pomodoroDate) }
+            val totalMinutes = lastWeek.map { it.minute.toFloat() }
+            updateStatisticsByDate { copy(dates = dates, totalMinutes = totalMinutes) }
+        }
     }
 
     fun getThisMonthCompletedPomodoroDataset() {
-        _numberOfPomodoroDataset.value = listOf(
-            20f, 10f, 5f, 8f, 12f, 16f,
-            11f, 7f, 12f, 15f, 14f, 9f
-        )
-        _completedPomodoroDates.value = listOf(
-            "Jan", "Feb", "Mar", "Apr", "May",
-            "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
-        )
+        viewModelScope.launch {
+            val pomodoroData =
+                pomodoroSessionsUseCases.getThisMonthStatistics(dateFormatDB.format(Date()))
+            val dates =
+                pomodoroData.mapNotNull { formatPomodoroDateUI(it.pomodoroDate) }
+            val totalMinutes = pomodoroData.map { it.minute.toFloat() }
+            updateStatisticsByDate { copy(dates = dates, totalMinutes = totalMinutes) }
+        }
     }
 
     fun getPomodoroDatasetBySpecificDate(startDate: String, endDate: String) {
-        _numberOfPomodoroDataset.value = listOf(
-            1f
-        )
-        _completedPomodoroDates.value = listOf(
-            "Mon"
-        )
+        viewModelScope.launch {
+            val list = pomodoroSessionsUseCases.getCountOfSessionsBetween2Dates(startDate, endDate)
+            val dates = list.mapNotNull { formatPomodoroDateUI(it.pomodoroDate) }
+            val totalMinutes = list.map { it.minute.toFloat() }
+            updateStatisticsByDate { copy(dates = dates, totalMinutes = totalMinutes) }
+        }
     }
 
     fun resetPomodoroData() {
-        _numberOfPomodoroDataset.value = emptyList()
-        _completedPomodoroDates.value = emptyList()
+        updateStatisticsByDate { copy(dates = emptyList(), totalMinutes = emptyList()) }
+    }
+
+    private fun formatPomodoroDateUI(pomodoroDate: String): String? {
+        val date = dateFormatDB.parse(pomodoroDate)
+        return if (date != null) dateFormatUI.format(date) else null
     }
 }

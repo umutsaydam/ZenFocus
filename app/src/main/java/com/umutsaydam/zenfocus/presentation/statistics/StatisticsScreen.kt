@@ -1,23 +1,15 @@
 package com.umutsaydam.zenfocus.presentation.statistics
 
-import android.util.Log
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DateRangePicker
-import androidx.compose.material3.DateRangePickerState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,11 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,7 +35,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -76,17 +64,16 @@ fun StatisticsScreen(
     var selectedIndex by remember { mutableIntStateOf(options.size - 1) }
 
     val totalStatisticsUiState by statisticsViewModel.totalStatisticsUiState.collectAsState()
-    val pomodoroDataset by statisticsViewModel.numberOfPomodoroDataset.collectAsState()
-    val pomodoroDates by statisticsViewModel.completedPomodoroDates.collectAsState()
+    val statisticsByDate by statisticsViewModel.statisticsByDateUiState.collectAsState()
     val rememberScrollState = rememberScrollState()
     var dateRangeState by remember { mutableStateOf(false) }
 
     LaunchedEffect(selectedIndex) {
-        Log.i("R/T", "clicked: $selectedIndex")
         when (selectedIndex) {
             0 -> {
-                Log.i("R/T", "$dateRangeState")
-                dateRangeState = true
+                if (!dateRangeState) {
+                    dateRangeState = true
+                }
             }
 
             1 -> statisticsViewModel.getThisMonthCompletedPomodoroDataset()
@@ -97,7 +84,13 @@ fun StatisticsScreen(
     }
 
     if (dateRangeState) {
-        val dateRangePickerState = rememberDateRangePickerState()
+        val dateRangePickerState = rememberDateRangePickerState(
+            selectableDates = object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    return utcTimeMillis <= System.currentTimeMillis()
+                }
+            }
+        )
         CustomDateRangePicker(
             dateRangePickerState = dateRangePickerState,
             onDateRangeStateChange = { state ->
@@ -166,6 +159,10 @@ fun StatisticsScreen(
                 selectedIndex = selectedIndex,
                 onSelectedIndexChanged = { newIndex ->
                     selectedIndex = newIndex
+
+                    if (newIndex == 0 && !dateRangeState) {
+                        dateRangeState = true
+                    }
                 }
             )
 
@@ -185,23 +182,19 @@ fun StatisticsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    CustomRoundedBarChartWithDataset(
+                        numberOfCompletedPomodoroDataset = statisticsByDate.totalMinutes,
+                        datesOfCompletedPomodoroDataset = statisticsByDate.dates
+                    )
 
-                    if (pomodoroDataset.isNotEmpty() && pomodoroDates.isNotEmpty()) {
-                        Log.i("R/T", "$pomodoroDates")
-                        CustomRoundedBarChartWithDataset(
-                            numberOfCompletedPomodoroDataset = pomodoroDataset,
-                            datesOfCompletedPomodoroDataset = pomodoroDates
+                    Text(
+                        modifier = Modifier.padding(PADDING_SMALL2),
+                        text = "Bu hafta en çok çalıştığın saat 09:00 - 10:00 \uD83D\uDD25",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Normal,
+                            color = Outline
                         )
-
-                        Text(
-                            modifier = Modifier.padding(PADDING_SMALL2),
-                            text = "Bu hafta en çok çalıştığın saat 09:00 - 10:00 \uD83D\uDD25",
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                fontWeight = FontWeight.Normal,
-                                color = Outline
-                            )
-                        )
-                    }
+                    )
                 }
             }
 
@@ -257,76 +250,4 @@ fun StatisticsScreenTopBar(navController: NavHostController) {
             }
         }
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CustomDateRangePicker(
-    dateRangePickerState: DateRangePickerState,
-    onDateRangeStateChange: (Boolean) -> Unit,
-    onSelectedDates: (String, String) -> Unit
-) {
-    DatePickerDialog(
-        onDismissRequest = { onDateRangeStateChange(false) },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    val startDate = dateRangePickerState.selectedStartDateMillis.toString()
-                    val endDate = dateRangePickerState.selectedEndDateMillis.toString()
-                    onSelectedDates(startDate, endDate)
-                    onDateRangeStateChange(false)
-                }
-            ) { Text("Confirm") }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = { onDateRangeStateChange(false) }
-            ) { Text("Cancel") }
-        }
-    ) {
-        DateRangePicker(
-            state = dateRangePickerState,
-            title = { Text("Select date range") },
-            showModeToggle = false,
-            modifier = Modifier
-                .height(500.dp)
-                .padding(16.dp)
-        )
-    }
-}
-
-@Composable
-fun SingleChoiceSegmentedButtons(
-    rememberScrollState: ScrollState,
-    options: List<String>,
-    selectedIndex: Int,
-    onSelectedIndexChanged: (Int) -> Unit
-) {
-    SingleChoiceSegmentedButtonRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState)
-    ) {
-        options.forEachIndexed { index, label ->
-            SegmentedButton(
-                modifier = Modifier
-                    .wrapContentWidth(),
-                selected = selectedIndex == index,
-                onClick = {
-                    onSelectedIndexChanged(index)
-                },
-                label = {
-                    Text(
-                        text = label,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                shape = SegmentedButtonDefaults.itemShape(
-                    index = index,
-                    count = options.size
-                )
-            )
-        }
-    }
 }

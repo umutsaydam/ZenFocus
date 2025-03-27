@@ -1,15 +1,23 @@
 package com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions
 
 import com.umutsaydam.zenfocus.domain.model.PomodoroSessionModel
+import com.umutsaydam.zenfocus.domain.model.TotalMinutesByDateModel
 import com.umutsaydam.zenfocus.domain.repository.local.PomodoroSessionRepository
 
 interface PomodoroSessionsUseCases {
     suspend fun upsertPomodoroSession(pomodoroSessionModel: PomodoroSessionModel)
     suspend fun getCountOfSessionsByDate(customDate: String): Int
-    suspend fun getCountOfSessionsBetween2Dates(startDate: String, endDate: String): Int
+    suspend fun getCountOfSessionsBetween2Dates(
+        startDate: String,
+        endDate: String
+    ): List<TotalMinutesByDateModel>
+
     suspend fun getCountOfTotalPomodoroSessions(): Int
     suspend fun getCurrentStreak(): Int
     suspend fun getLongestStreak(): Int
+    suspend fun getThisWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel>
+    suspend fun getLastWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel>
+    suspend fun getThisMonthStatistics(selectedDate: String): List<TotalMinutesByDateModel>
 }
 
 class PomodoroSessionsUseCasesImpl(
@@ -23,7 +31,10 @@ class PomodoroSessionsUseCasesImpl(
         return sessionRepository.getCountOfSessionsByDate(customDate)
     }
 
-    override suspend fun getCountOfSessionsBetween2Dates(startDate: String, endDate: String): Int {
+    override suspend fun getCountOfSessionsBetween2Dates(
+        startDate: String,
+        endDate: String
+    ): List<TotalMinutesByDateModel> {
         return sessionRepository.getCountOfSessionsBetween2Dates(startDate, endDate)
     }
 
@@ -37,6 +48,18 @@ class PomodoroSessionsUseCasesImpl(
 
     override suspend fun getLongestStreak(): Int {
         return sessionRepository.getLongestStreak()
+    }
+
+    override suspend fun getThisWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel> {
+        return sessionRepository.getThisWeekStatistics(selectedDate)
+    }
+
+    override suspend fun getLastWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel> {
+        return sessionRepository.getLastWeekStatistics(selectedDate)
+    }
+
+    override suspend fun getThisMonthStatistics(selectedDate: String): List<TotalMinutesByDateModel> {
+        return sessionRepository.getThisMonthStatistics(selectedDate)
     }
 
 }
