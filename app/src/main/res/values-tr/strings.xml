@@ -95,4 +95,5 @@
     <string name="could_not_synchronization">Senkronizasyon tamamlanamadı, lütfen daha sonra tekrar deneyin.</string>
     <string name="first_login_to_synchronize">Senkronize etmek için önce oturum açmalısınız.</string>
     <string name="no_statistics_data">Bu cihazda depolanan veri yok gibi görünüyor. Bir pomodoro başlatın ve istatistiklerinizi alın veya verileri yedeklediyseniz, senkronize etmeyi deneyebilirsiniz!</string>
+    <string name="not_found_data">Veri bulunamadı.</string>
 </resources>

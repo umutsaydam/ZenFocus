@@ -95,4 +95,5 @@
     <string name="could_not_synchronization">同步无法完成, 请稍后再试.</string>
     <string name="first_login_to_synchronize">要同步, 必须先登录</string>
     <string name="no_statistics_data">设备上似乎没有存储任何数据。启动一个 Pomodoro 会话并获取统计数据，或者尝试同步（如果有备份数据）！</string>
+    <string name="not_found_data">未找到数据。</string>
 </resources>

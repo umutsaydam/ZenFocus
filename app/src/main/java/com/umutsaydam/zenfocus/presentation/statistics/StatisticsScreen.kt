@@ -16,6 +16,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
@@ -35,6 +36,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -52,6 +55,7 @@ import com.umutsaydam.zenfocus.presentation.statistics.components.NoStatistics
 import com.umutsaydam.zenfocus.presentation.statistics.components.SingleChoiceSegmentedButtons
 import com.umutsaydam.zenfocus.presentation.statistics.components.TotalStatisticsSection
 import com.umutsaydam.zenfocus.presentation.viewmodels.StatisticsViewModel
+import com.umutsaydam.zenfocus.ui.theme.LightGray
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.Transparent
@@ -200,18 +204,29 @@ fun StatisticsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .shadow(8.dp, RoundedCornerShape(CORNER_MEDIUM))
-                            .clip(RoundedCornerShape(CORNER_MEDIUM))
-                            .background(White)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        CustomRoundedBarChartWithDataset(
-                            numberOfCompletedPomodoroDataset = statisticsByDate.totalMinutes,
-                            datesOfCompletedPomodoroDataset = statisticsByDate.dates
+                    if(statisticsByDate.totalMinutes.isNotEmpty()){
+                        Column(
+                            modifier = Modifier
+                                .shadow(8.dp, RoundedCornerShape(CORNER_MEDIUM))
+                                .clip(RoundedCornerShape(CORNER_MEDIUM))
+                                .background(White)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            CustomRoundedBarChartWithDataset(
+                                numberOfCompletedPomodoroDataset = statisticsByDate.totalMinutes,
+                                datesOfCompletedPomodoroDataset = statisticsByDate.dates
+                            )
+                        }
+                    }else{
+                        Text(
+                            text = stringResource(R.string.not_found_data),
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                color = LightGray,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
