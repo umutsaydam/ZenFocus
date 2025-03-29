@@ -12,22 +12,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.STROKE_SMALL
+import com.umutsaydam.zenfocus.ui.theme.OutLineVariant
 import com.umutsaydam.zenfocus.ui.theme.Transparent
-import com.umutsaydam.zenfocus.ui.theme.White
 
 @Composable
 fun FocusControlButtons(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     containerColor: Color = Transparent,
-    contentColor: Color = White,
+    contentColor: Color = OutLineVariant,
+    iconTint: Color = OutLineVariant,
     painterResource: Painter,
     contentDescription: String
 ) {
     IconButton(
         modifier = modifier
             .border(
-                border = BorderStroke(width = STROKE_SMALL, color = Color.White),
+                border = BorderStroke(width = STROKE_SMALL, color = OutLineVariant),
                 shape = RoundedCornerShape(CORNER_SMALL)
             ),
         onClick = {
@@ -40,7 +41,8 @@ fun FocusControlButtons(
     ) {
         Icon(
             painter = painterResource,
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
+            tint = iconTint
         )
     }
 }

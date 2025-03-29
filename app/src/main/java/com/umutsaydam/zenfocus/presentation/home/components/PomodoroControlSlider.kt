@@ -25,8 +25,8 @@ import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.BUTTON_HEIGHT_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
-import com.umutsaydam.zenfocus.ui.theme.Secondary
 import com.umutsaydam.zenfocus.ui.theme.SecondaryContainer
+import com.umutsaydam.zenfocus.ui.theme.TomatoRed
 import com.umutsaydam.zenfocus.ui.theme.Transparent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +53,7 @@ fun PomodoroControlSlider(
             onValueChange = { defaultSliderPosition = it },
             colors = SliderDefaults.colors(
                 thumbColor = Transparent,
-                activeTrackColor = Secondary,
+                activeTrackColor = TomatoRed,
                 inactiveTrackColor = SecondaryContainer
             ),
             steps = steps,

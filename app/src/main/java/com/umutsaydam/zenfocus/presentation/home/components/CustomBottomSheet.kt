@@ -11,14 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
-import com.umutsaydam.zenfocus.ui.theme.White
+import com.umutsaydam.zenfocus.ui.theme.LightBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomBottomSheet(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
-    containerColor: Color = White,
+    containerColor: Color = LightBackground,
     content: @Composable () -> Unit
 ) {
     ModalBottomSheet(

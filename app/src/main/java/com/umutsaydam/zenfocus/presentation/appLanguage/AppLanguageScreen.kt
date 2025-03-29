@@ -23,9 +23,10 @@ import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.policy.components.RadioButtonWithText
 import com.umutsaydam.zenfocus.presentation.viewmodels.AppLanguageViewModel
-import com.umutsaydam.zenfocus.ui.theme.LightBackground
 import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.SoftWhite
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
+import com.umutsaydam.zenfocus.ui.theme.Transparent
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
@@ -99,7 +100,8 @@ fun LanguageList(
 fun LanguageItem(
     lang: String, isSelected: Boolean, onLanguageSelected: (String) -> Unit
 ) {
-    RadioButtonWithText(modifier = Modifier.background(LightBackground),
+    val backgroundColor = if (isSelected) SoftWhite else Transparent
+    RadioButtonWithText(modifier = Modifier.background(backgroundColor),
         radioSelected = isSelected,
         radioText = lang,
         onClick = { onLanguageSelected(lang) })

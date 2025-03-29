@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.THICKNESS_SMALL
+import com.umutsaydam.zenfocus.ui.theme.Gray
 import com.umutsaydam.zenfocus.ui.theme.LightGray
 import com.umutsaydam.zenfocus.ui.theme.Primary
 import com.umutsaydam.zenfocus.ui.theme.Secondary
@@ -53,7 +54,8 @@ fun RadioButtonWithText(
             Text(
                 text = radioText,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
+                    color = if (radioSelected) Primary else Gray
                 )
             )
         }
