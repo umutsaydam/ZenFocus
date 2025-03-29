@@ -118,6 +118,7 @@ class PomodoroViewModel @Inject constructor(
         if (pomodoroUiState.value.isTimerRunning) {
             resumeTimer()
         } else {
+            setTimer()
             playTimer()
         }
     }

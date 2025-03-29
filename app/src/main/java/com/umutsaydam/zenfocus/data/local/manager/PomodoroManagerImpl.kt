@@ -215,10 +215,14 @@ class PomodoroManagerImpl(
             _isTimerRunning.value = false
             focusSoundManager.stopSound()
             timer.cancel()
-            _remainingTime.value = 0
-            _remainingPercent.value = 0f
-            _remainingTimeText.value = "00:00"
         }
+
+        _remainingTime.value = 0
+        _remainingPercent.value = 0f
+        _remainingTimeText.value = "00:00"
+
+        _isWorkingSession.value = true
+        _pomodoroWorkCycle.value = 0
     }
 
     override fun isRunning(): StateFlow<Boolean> {
