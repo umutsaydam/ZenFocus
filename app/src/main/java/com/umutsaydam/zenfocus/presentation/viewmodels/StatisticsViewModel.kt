@@ -2,10 +2,16 @@ package com.umutsaydam.zenfocus.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.umutsaydam.zenfocus.R
+import com.umutsaydam.zenfocus.domain.model.Resource
+import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
+import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions.PomodoroSessionsUseCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.AwsPomodoroSessionsUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,7 +31,10 @@ data class StatisticsByDate(
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
-    private val pomodoroSessionsUseCases: PomodoroSessionsUseCases
+    private val pomodoroSessionsUseCases: PomodoroSessionsUseCases,
+    private val awsPomodoroSessionsUseCases: AwsPomodoroSessionsUseCases,
+    private val localUserDataStoreCases: LocalUserDataStoreCases,
+    private val checkerUseCases: NetworkCheckerUseCases,
 ) : ViewModel() {
     private val _totalStatisticsUiState = MutableStateFlow(TotalStatisticsUiState())
     val totalStatisticsUiState: StateFlow<TotalStatisticsUiState> = _totalStatisticsUiState
@@ -35,6 +44,9 @@ class StatisticsViewModel @Inject constructor(
 
     private val dateFormatDB = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val dateFormatUI = SimpleDateFormat("dd MMM E", Locale.getDefault())
+
+    private val _uiMessage = MutableStateFlow<Int?>(null)
+    val uiMessage: StateFlow<Int?> = _uiMessage
 
     init {
         getCountOfTotalPomodoro()
@@ -118,5 +130,63 @@ class StatisticsViewModel @Inject constructor(
     private fun formatPomodoroDateUI(pomodoroDate: String): String? {
         val date = dateFormatDB.parse(pomodoroDate)
         return if (date != null) dateFormatUI.format(date) else null
+    }
+
+    fun backupPomodoroSessions() {
+        viewModelScope.launch {
+            if (checkerUseCases.isConnected()) {
+                localUserDataStoreCases.readUserId().collectLatest { userId ->
+                    if (userId.isNotEmpty()) {
+                        val allData = pomodoroSessionsUseCases.getAllSessions()
+                        val result =
+                            awsPomodoroSessionsUseCases.backupPomodoroSessions(userId, allData)
+
+                        when (result) {
+                            is Resource.Success -> {
+                                _uiMessage.value = R.string.backed_up_successfully
+                            }
+
+                            is Resource.Error -> {
+                                _uiMessage.value = R.string.could_not_backed_up
+                            }
+                        }
+                    } else {
+                        _uiMessage.value = R.string.first_login_to_back_up
+                    }
+                }
+            } else {
+                _uiMessage.value = R.string.no_connection
+            }
+        }
+    }
+
+    fun synchronizePomodoroSessions() {
+        viewModelScope.launch {
+            localUserDataStoreCases.readUserId().collectLatest { userId ->
+                if (checkerUseCases.isConnected()) {
+                    if (userId.isNotEmpty()) {
+                        val result = awsPomodoroSessionsUseCases.synchronizePomodoroSessions(userId)
+
+                        when (result) {
+                            is Resource.Success -> {
+                                _uiMessage.value = R.string.synchronization_successfully
+                            }
+
+                            is Resource.Error -> {
+                                _uiMessage.value = R.string.could_not_synchronization
+                            }
+                        }
+                    } else {
+                        _uiMessage.value = R.string.first_login_to_synchronize
+                    }
+                } else {
+                    _uiMessage.value = R.string.no_connection
+                }
+            }
+        }
+    }
+
+    fun clearUiMessage() {
+        _uiMessage.value = null
     }
 }

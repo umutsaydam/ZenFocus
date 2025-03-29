@@ -4,10 +4,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.TypeConverters
+import com.umutsaydam.zenfocus.data.local.mapper.UUIDConverter
 import com.umutsaydam.zenfocus.domain.model.PomodoroSessionModel
 import com.umutsaydam.zenfocus.domain.model.TotalMinutesByDateModel
 
 @Dao
+@TypeConverters(UUIDConverter::class)
 interface PomodoroSessionsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -179,4 +182,9 @@ interface PomodoroSessionsDao {
     )
     suspend fun getThisMonthStatistics(selectedDate: String): List<TotalMinutesByDateModel>
 
+    @Query("SELECT * FROM pomodoro_sessions")
+    suspend fun getAllSessions(): List<PomodoroSessionModel>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(sessions: List<PomodoroSessionModel>)
 }

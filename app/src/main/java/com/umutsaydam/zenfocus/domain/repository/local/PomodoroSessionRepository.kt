@@ -17,4 +17,6 @@ interface PomodoroSessionRepository {
     suspend fun getThisWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel>
     suspend fun getLastWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel>
     suspend fun getThisMonthStatistics(selectedDate: String): List<TotalMinutesByDateModel>
+    suspend fun getAllSessions(): List<PomodoroSessionModel>
+    suspend fun insertAllSessions(sessions: List<PomodoroSessionModel>)
 }

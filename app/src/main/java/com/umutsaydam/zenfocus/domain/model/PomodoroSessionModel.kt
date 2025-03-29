@@ -3,12 +3,13 @@ package com.umutsaydam.zenfocus.domain.model
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
 import androidx.room.Entity
+import java.util.UUID
 
 @Entity(tableName = "pomodoro_sessions")
 data class PomodoroSessionModel(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "session_id")
-    val sessionId: Int = 0,
+    val sessionId: UUID = UUID.randomUUID(),
     @ColumnInfo(name = "work_duration")
     val workDuration: Long,
     @ColumnInfo(name = "break_duration")

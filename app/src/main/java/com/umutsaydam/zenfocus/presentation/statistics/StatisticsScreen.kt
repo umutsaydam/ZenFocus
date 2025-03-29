@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.statistics
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,12 +48,14 @@ import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
+import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.presentation.viewmodels.StatisticsViewModel
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.Transparent
 import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
+import com.umutsaydam.zenfocus.util.safeNavigate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,10 +69,12 @@ fun StatisticsScreen(
 
     val totalStatisticsUiState by statisticsViewModel.totalStatisticsUiState.collectAsState()
     val statisticsByDate by statisticsViewModel.statisticsByDateUiState.collectAsState()
+    val uiMessage by statisticsViewModel.uiMessage.collectAsState()
     val rememberScrollState = rememberScrollState()
     var dateRangeState by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    LaunchedEffect(selectedIndex) {
+    LaunchedEffect(selectedIndex, uiMessage) {
         when (selectedIndex) {
             0 -> {
                 if (!dateRangeState) {
@@ -80,6 +86,14 @@ fun StatisticsScreen(
             2 -> statisticsViewModel.getLastWeekCompletedPomodoroDataset()
             3 -> statisticsViewModel.getThisWeekCompletedPomodoroDataset()
             else -> statisticsViewModel.resetPomodoroData()
+        }
+
+        uiMessage?.let { message ->
+            Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
+            if (message == R.string.first_login_to_back_up || message == R.string.first_login_to_synchronize) {
+                navController.safeNavigate(Route.Auth.route)
+            }
+            statisticsViewModel.clearUiMessage()
         }
     }
 
@@ -110,7 +124,12 @@ fun StatisticsScreen(
             color = SurfaceContainerLow
         ),
         containerColor = Transparent,
-        topBar = { StatisticsScreenTopBar(navController) }
+        topBar = {
+            StatisticsScreenTopBar(
+                navController = navController,
+                statisticsViewModel = statisticsViewModel
+            )
+        }
     ) { paddingValues ->
         val topPadding = paddingValues.calculateTopPadding()
         val bottomPadding = paddingValues.calculateBottomPadding()
@@ -203,7 +222,10 @@ fun StatisticsScreen(
 }
 
 @Composable
-fun StatisticsScreenTopBar(navController: NavHostController) {
+fun StatisticsScreenTopBar(
+    navController: NavHostController,
+    statisticsViewModel: StatisticsViewModel
+) {
     var isExpanded by remember { mutableStateOf(false) }
 
     IconWithTopAppBar(
@@ -237,12 +259,27 @@ fun StatisticsScreenTopBar(navController: NavHostController) {
                 DropdownMenuItem(
                     text = { Text("Back up to cloud") },
                     onClick = {
-                        // perform backing up to cloud...
+                        isExpanded = false
+                        statisticsViewModel.backupPomodoroSessions()
                     },
                     leadingIcon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_cloud),
                             contentDescription = "Back up to cloud",
+                            tint = Outline
+                        )
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Synchronize data") },
+                    onClick = {
+                        isExpanded = false
+                        statisticsViewModel.synchronizePomodoroSessions()
+                    },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_cloud_sync),
+                            contentDescription = "Synchronize data to cloud",
                             tint = Outline
                         )
                     }

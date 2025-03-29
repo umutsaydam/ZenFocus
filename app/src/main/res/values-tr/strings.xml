@@ -77,4 +77,10 @@
     <string name="turkish_lang">Türkçe-tr</string>
     <string name="english_lang">İngilizce-en</string>
     <string name="chinese_lang">Çince-zh</string>
+    <string name="backed_up_successfully">Verileriniz başarıyla yedeklendi.</string>
+    <string name="could_not_backed_up">Verileriniz yedeklenemedi, lütfen daha sonra tekrar deneyin.</string>
+    <string name="first_login_to_back_up">Verilerinizin yedeklenmesi için oturum açmanız gerekir.</string>
+    <string name="synchronization_successfully">Senkronizasyon işlemi tamamlanmıştır.</string>
+    <string name="could_not_synchronization">Senkronizasyon tamamlanamadı, lütfen daha sonra tekrar deneyin.</string>
+    <string name="first_login_to_synchronize">Senkronize etmek için önce oturum açmalısınız.</string>
 </resources>

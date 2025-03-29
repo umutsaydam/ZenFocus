@@ -4,7 +4,6 @@ import com.umutsaydam.zenfocus.data.local.db.PomodoroSessionsDao
 import com.umutsaydam.zenfocus.domain.model.PomodoroSessionModel
 import com.umutsaydam.zenfocus.domain.model.TotalMinutesByDateModel
 import com.umutsaydam.zenfocus.domain.repository.local.PomodoroSessionRepository
-import com.umutsaydam.zenfocus.presentation.viewmodels.StatisticsByDate
 
 class PomodoroSessionRepositoryImpl(
     private val pomodoroSessionsDao: PomodoroSessionsDao
@@ -47,5 +46,13 @@ class PomodoroSessionRepositoryImpl(
 
     override suspend fun getThisMonthStatistics(selectedDate: String): List<TotalMinutesByDateModel> {
         return pomodoroSessionsDao.getThisMonthStatistics(selectedDate)
+    }
+
+    override suspend fun getAllSessions(): List<PomodoroSessionModel> {
+        return pomodoroSessionsDao.getAllSessions()
+    }
+
+    override suspend fun insertAllSessions(sessions: List<PomodoroSessionModel>)  {
+        pomodoroSessionsDao.insertAll(sessions)
     }
 }

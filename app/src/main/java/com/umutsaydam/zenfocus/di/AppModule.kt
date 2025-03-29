@@ -22,6 +22,7 @@ import com.umutsaydam.zenfocus.data.local.repository.RingerModeRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.manager.FocusSoundManagerImpl
 import com.umutsaydam.zenfocus.data.local.repository.NetworkCheckerRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.repository.PomodoroSessionRepositoryImpl
+import com.umutsaydam.zenfocus.data.remote.repository.AwsPomodoroSessionsRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.repository.IntegrateInAppReviewsRepositoryImpl
 import com.umutsaydam.zenfocus.data.remote.service.GoogleAdServiceImpl
@@ -37,6 +38,7 @@ import com.umutsaydam.zenfocus.domain.repository.local.NetworkCheckerRepository
 import com.umutsaydam.zenfocus.domain.repository.local.PomodoroSessionRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
+import com.umutsaydam.zenfocus.domain.repository.remote.AwsPomodoroSessionsRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.IntegrateInAppReviewsRepository
@@ -90,6 +92,8 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibr
 import com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions.PomodoroSessionsUseCases
 import com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions.PomodoroSessionsUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.AwsPomodoroSessionsUseCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.AwsPomodoroSessionsUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCasesImpl
@@ -186,6 +190,11 @@ object AppModule {
     fun providePomodoroManagerUseCases(
         pomodoroManager: PomodoroManager
     ): PomodoroManagerUseCase = PomodoroManagerUseCaseImpl(pomodoroManager)
+
+    @Provides
+    fun provideAwsPomodoroSessionsUseCases(
+        repository: AwsPomodoroSessionsRepository
+    ): AwsPomodoroSessionsUseCases = AwsPomodoroSessionsUseCasesImpl(repository)
 
     @Provides
     fun providePomodoroServiceUseCases(
@@ -356,6 +365,12 @@ object AppModule {
     ): RingerModeRepository = RingerModeRepositoryImpl(application)
 
     @Provides
+    fun provideAwsPomodoroSessionsRepository(
+        pomodoroSessionsUseCases: PomodoroSessionsUseCases
+    ): AwsPomodoroSessionsRepository =
+        AwsPomodoroSessionsRepositoryImpl(pomodoroSessionsUseCases)
+
+    @Provides
     @Singleton
     fun provideGoogleAdService(application: Application): GoogleAdService =
         GoogleAdServiceImpl(application)
@@ -373,7 +388,7 @@ object AppModule {
             override fun migrate(db: SupportSQLiteDatabase) {
                 """
                 CREATE TABLE IF NOT EXISTS `pomodoro_sessions` (
-                    `session_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    `session_id` TEXT PRIMARY KEY NOT NULL,
                     `work_duration` LONG NOT NULL,
                     `break_duration` LONG NOT NULL,
                     `session_date` TEXT NOT NULL

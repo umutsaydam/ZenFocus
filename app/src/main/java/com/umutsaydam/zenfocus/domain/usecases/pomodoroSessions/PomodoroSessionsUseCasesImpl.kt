@@ -18,6 +18,8 @@ interface PomodoroSessionsUseCases {
     suspend fun getThisWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel>
     suspend fun getLastWeekStatistics(selectedDate: String): List<TotalMinutesByDateModel>
     suspend fun getThisMonthStatistics(selectedDate: String): List<TotalMinutesByDateModel>
+    suspend fun getAllSessions(): List<PomodoroSessionModel>
+    suspend fun insertAllSessions(sessions: List<PomodoroSessionModel>)
 }
 
 class PomodoroSessionsUseCasesImpl(
@@ -62,4 +64,11 @@ class PomodoroSessionsUseCasesImpl(
         return sessionRepository.getThisMonthStatistics(selectedDate)
     }
 
+    override suspend fun getAllSessions(): List<PomodoroSessionModel> {
+        return sessionRepository.getAllSessions()
+    }
+
+    override suspend fun insertAllSessions(sessions: List<PomodoroSessionModel>) {
+        sessionRepository.insertAllSessions(sessions)
+    }
 }

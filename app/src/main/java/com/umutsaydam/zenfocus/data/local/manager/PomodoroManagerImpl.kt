@@ -142,7 +142,7 @@ class PomodoroManagerImpl(
         CoroutineScope(Dispatchers.IO).launch {
             pomodoroSessionsUseCases.upsertPomodoroSession(
                 PomodoroSessionModel(
-                    0, workDuration = workDur, breakDuration = breakDur, sessionDate = startedDate
+                    workDuration = workDur, breakDuration = breakDur, sessionDate = startedDate
                 )
             )
         }
