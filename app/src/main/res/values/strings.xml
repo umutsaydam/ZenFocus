@@ -79,10 +79,22 @@
     <string name="turkish_lang">Turkish-tr</string>
     <string name="english_lang">English-en</string>
     <string name="chinese_lang">Chinese-zh</string>
+    <string name="statistics">Statistics</string>
+    <string name="select_dates">Select dates</string>
+    <string name="this_month">This month</string>
+    <string name="last_week">Last week</string>
+    <string name="this_week">This week</string>
+    <string name="total_pomodoro">Total Pomodoro</string>
+    <string name="current_streak">Current Streak</string>
+    <string name="longest_streak">Longest Streak</string>
+    <string name="more_options">More options</string>
+    <string name="back_up_to_cloud">Back up to cloud</string>
+    <string name="synchronize_data">Synchronize data</string>
     <string name="backed_up_successfully">Your data has been successfully backed up.</string>
     <string name="could_not_backed_up">Your data could not be backed up, please try again later.</string>
     <string name="first_login_to_back_up">You must log in for your data to be backed up.</string>
     <string name="synchronization_successfully">The synchronization process is complete.</string>
     <string name="could_not_synchronization">Synchronization could not be completed, please try again later.</string>
     <string name="first_login_to_synchronize">To synchronize, you must first log in.</string>
+    <string name="no_statistics_data">It seems there is no data stored on this device. Start a pomodoro run and get your stats, or if you have backed up data, you can try synchronizing it!</string>
 </resources>

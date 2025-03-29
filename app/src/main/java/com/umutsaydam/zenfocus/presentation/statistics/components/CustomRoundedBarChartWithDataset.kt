@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.presentation.statistics
+package com.umutsaydam.zenfocus.presentation.statistics.components
 
 import android.graphics.Color
 import android.graphics.Typeface

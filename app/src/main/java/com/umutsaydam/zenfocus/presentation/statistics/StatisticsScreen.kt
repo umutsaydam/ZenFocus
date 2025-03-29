@@ -16,7 +16,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
@@ -36,7 +35,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -44,11 +42,15 @@ import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
-import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.navigation.Route
+import com.umutsaydam.zenfocus.presentation.statistics.components.CustomDateRangePicker
+import com.umutsaydam.zenfocus.presentation.statistics.components.CustomRoundedBarChartWithDataset
+import com.umutsaydam.zenfocus.presentation.statistics.components.NoStatistics
+import com.umutsaydam.zenfocus.presentation.statistics.components.SingleChoiceSegmentedButtons
+import com.umutsaydam.zenfocus.presentation.statistics.components.TotalStatisticsSection
 import com.umutsaydam.zenfocus.presentation.viewmodels.StatisticsViewModel
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
@@ -64,7 +66,12 @@ fun StatisticsScreen(
     navController: NavHostController,
     statisticsViewModel: StatisticsViewModel = hiltViewModel()
 ) {
-    val options = listOf("Select dates", "This month", "Last week", "This week")
+    val options: List<String> = listOf(
+        stringResource(R.string.select_dates),
+        stringResource(R.string.this_month),
+        stringResource(R.string.last_week),
+        stringResource(R.string.this_week)
+    )
     var selectedIndex by remember { mutableIntStateOf(options.size - 1) }
 
     val totalStatisticsUiState by statisticsViewModel.totalStatisticsUiState.collectAsState()
@@ -134,89 +141,84 @@ fun StatisticsScreen(
         val topPadding = paddingValues.calculateTopPadding()
         val bottomPadding = paddingValues.calculateBottomPadding()
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    top = topPadding,
-                    bottom = bottomPadding
-                ),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM)
-        ) {
+        if (totalStatisticsUiState.countOfTotalPomodoro != 0) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(PADDING_MEDIUM2),
+                    .fillMaxSize()
+                    .padding(
+                        top = topPadding,
+                        bottom = bottomPadding
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM)
             ) {
                 Column(
                     modifier = Modifier
-                        .shadow(8.dp, RoundedCornerShape(CORNER_MEDIUM))
-                        .clip(RoundedCornerShape(CORNER_MEDIUM))
-                        .background(White)
                         .fillMaxWidth()
-                        .padding(vertical = PADDING_SMALL),
+                        .padding(PADDING_MEDIUM2),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    TotalStatisticsSection(
-                        totalCountOfPomodoro = totalStatisticsUiState.countOfTotalPomodoro.toString(),
-                        contentTotalCountOfPomodoro = "Total Pomodoro",
-                        countOfCurrentStreak = totalStatisticsUiState.currentStreak.toString(),
-                        contentOfCurrentStreak = "Current Streak",
-                        countOfLongestStreak = totalStatisticsUiState.longestStreak.toString(),
-                        contentOfLongestStreak = "Longest Streak"
-                    )
-                }
-            }
-
-            SingleChoiceSegmentedButtons(
-                rememberScrollState = rememberScrollState,
-                options = options,
-                selectedIndex = selectedIndex,
-                onSelectedIndexChanged = { newIndex ->
-                    selectedIndex = newIndex
-
-                    if (newIndex == 0 && !dateRangeState) {
-                        dateRangeState = true
+                    Column(
+                        modifier = Modifier
+                            .shadow(8.dp, RoundedCornerShape(CORNER_MEDIUM))
+                            .clip(RoundedCornerShape(CORNER_MEDIUM))
+                            .background(White)
+                            .fillMaxWidth()
+                            .padding(vertical = PADDING_SMALL),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        TotalStatisticsSection(
+                            totalCountOfPomodoro = totalStatisticsUiState.countOfTotalPomodoro.toString(),
+                            contentTotalCountOfPomodoro = stringResource(R.string.total_pomodoro),
+                            countOfCurrentStreak = totalStatisticsUiState.currentStreak.toString(),
+                            contentOfCurrentStreak = stringResource(R.string.current_streak),
+                            countOfLongestStreak = totalStatisticsUiState.longestStreak.toString(),
+                            contentOfLongestStreak = stringResource(R.string.longest_streak)
+                        )
                     }
                 }
-            )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(PADDING_MEDIUM2),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
+                SingleChoiceSegmentedButtons(
+                    rememberScrollState = rememberScrollState,
+                    options = options,
+                    selectedIndex = selectedIndex,
+                    onSelectedIndexChanged = { newIndex ->
+                        selectedIndex = newIndex
+
+                        if (newIndex == 0 && !dateRangeState) {
+                            dateRangeState = true
+                        }
+                    }
+                )
+
                 Column(
                     modifier = Modifier
-                        .shadow(8.dp, RoundedCornerShape(CORNER_MEDIUM))
-                        .clip(RoundedCornerShape(CORNER_MEDIUM))
-                        .background(White)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(PADDING_MEDIUM2),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    CustomRoundedBarChartWithDataset(
-                        numberOfCompletedPomodoroDataset = statisticsByDate.totalMinutes,
-                        datesOfCompletedPomodoroDataset = statisticsByDate.dates
-                    )
-
-                    Text(
-                        modifier = Modifier.padding(PADDING_SMALL2),
-                        text = "Bu hafta en çok çalıştığın saat 09:00 - 10:00 \uD83D\uDD25",
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontWeight = FontWeight.Normal,
-                            color = Outline
+                    Column(
+                        modifier = Modifier
+                            .shadow(8.dp, RoundedCornerShape(CORNER_MEDIUM))
+                            .clip(RoundedCornerShape(CORNER_MEDIUM))
+                            .background(White)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CustomRoundedBarChartWithDataset(
+                            numberOfCompletedPomodoroDataset = statisticsByDate.totalMinutes,
+                            datesOfCompletedPomodoroDataset = statisticsByDate.dates
                         )
-                    )
+                    }
                 }
-            }
 
+            }
+        } else {
+            NoStatistics()
         }
     }
 }
@@ -247,7 +249,7 @@ fun StatisticsScreenTopBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
-                    contentDescription = "More options",
+                    contentDescription = stringResource(R.string.more_options),
                     tint = Outline
                 )
             }
@@ -257,7 +259,7 @@ fun StatisticsScreenTopBar(
                 onDismissRequest = { isExpanded = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text("Back up to cloud") },
+                    text = { Text(stringResource(R.string.back_up_to_cloud)) },
                     onClick = {
                         isExpanded = false
                         statisticsViewModel.backupPomodoroSessions()
@@ -265,13 +267,13 @@ fun StatisticsScreenTopBar(
                     leadingIcon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_cloud),
-                            contentDescription = "Back up to cloud",
+                            contentDescription = stringResource(R.string.back_up_to_cloud),
                             tint = Outline
                         )
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text("Synchronize data") },
+                    text = { Text(stringResource(R.string.synchronize_data)) },
                     onClick = {
                         isExpanded = false
                         statisticsViewModel.synchronizePomodoroSessions()
@@ -279,7 +281,7 @@ fun StatisticsScreenTopBar(
                     leadingIcon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_cloud_sync),
-                            contentDescription = "Synchronize data to cloud",
+                            contentDescription = stringResource(R.string.synchronize_data),
                             tint = Outline
                         )
                     }

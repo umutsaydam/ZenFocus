@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.presentation.statistics
+package com.umutsaydam.zenfocus.presentation.statistics.components
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding

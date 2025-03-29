@@ -1,9 +1,8 @@
-package com.umutsaydam.zenfocus.presentation.statistics
+package com.umutsaydam.zenfocus.presentation.statistics.components
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -30,8 +29,6 @@ fun SingleChoiceSegmentedButtons(
     ) {
         options.forEachIndexed { index, label ->
             SegmentedButton(
-                modifier = Modifier
-                    .wrapContentWidth(),
                 selected = selectedIndex == index,
                 onClick = {
                     onSelectedIndexChanged(index)
