@@ -12,7 +12,7 @@
     <string name="time_out_ringer">Pomodoro end ringtone</string>
     <string name="policy">Policy</string>
     <string name="version">Version</string>
-    <string name="version_number" translatable="false">1.0.3</string>
+    <string name="version_number" translatable="false">1.0.4</string>
     <string name="sign_in_sign_up">Sign in | Sign up</string>
     <string name="log_out">Log out</string>
     <string name="back_to_settings">Back to the Settings</string>
