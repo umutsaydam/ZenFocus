@@ -174,6 +174,9 @@ class StatisticsViewModel @Inject constructor(
                         when (result) {
                             is Resource.Success -> {
                                 _uiMessage.value = R.string.synchronization_successfully
+                                getCountOfTotalPomodoro()
+                                getCurrentStreak()
+                                getLongestStreak()
                             }
 
                             is Resource.Error -> {
