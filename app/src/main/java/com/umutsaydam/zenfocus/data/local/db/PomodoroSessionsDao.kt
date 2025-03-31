@@ -81,47 +81,23 @@ interface PomodoroSessionsDao {
 
     @Query(
         """
-               WITH OrderedSessions AS (
-                    SELECT
-                        DATE(session_date) AS session_date
-                    FROM pomodoro_sessions
-                    GROUP BY DATE(session_date)
-                    ORDER BY session_date
-                ),
-                StreakGroups AS (
-                    SELECT
-                        session_date,
-                        (SELECT DATE(MAX(session_date)) 
-                         FROM OrderedSessions s2 
-                         WHERE JULIANDAY(s2.session_date) < JULIANDAY(s1.session_date)) AS previousDate
-                    FROM OrderedSessions s1
-                ),
-                StreakChange AS (
-                    SELECT
-                        session_date,
-                        CASE
-                            WHEN previousDate IS NULL OR JULIANDAY(session_date) - JULIANDAY(previousDate) > 1
-                            THEN 1
-                            ELSE 0
-                        END AS group_change
-                    FROM StreakGroups
-                ),
-                Streaks AS (
-                    SELECT
-                        session_date,
-                        SUM(group_change) AS streak_group
-                    FROM StreakChange
-                    GROUP BY group_change, session_date
-                )
-                SELECT
-                    MAX(streak_count) AS max_streak
-                FROM (
-                    SELECT
-                        COUNT(*) AS streak_count
-                    FROM Streaks
-                    GROUP BY streak_group
-                ) AS streak_counts;
-                """
+            WITH OrderedSessions AS (
+                SELECT DISTINCT DATE(session_date) AS session_date
+                FROM pomodoro_sessions
+            ),
+            StreakGroups AS (
+                SELECT 
+                    session_date,
+                    JULIANDAY(session_date) - (SELECT COUNT(*) FROM OrderedSessions o2 WHERE o2.session_date <= o1.session_date) AS streak_id
+                FROM OrderedSessions o1
+            )
+            SELECT MAX(streak_count) AS max_streak
+            FROM (
+                SELECT COUNT(*) AS streak_count
+                FROM StreakGroups
+                GROUP BY streak_id
+            )
+        """
     )
     suspend fun getLongestStreak(): Int
 
