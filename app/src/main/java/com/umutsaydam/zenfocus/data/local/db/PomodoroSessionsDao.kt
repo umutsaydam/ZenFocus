@@ -144,15 +144,15 @@ interface PomodoroSessionsDao {
     @Query(
         """
             WITH CurrentMonth AS (
-                SELECT 
-                    DATE(:selectedDate, 'start of month') AS this_month_start,
-                    DATE(:selectedDate, 'start of month', '+1 month', '-1 day') AS this_month_end
+            SELECT 
+                DATE('2025-03-31', 'start of month') AS this_month_start,
+                DATE('2025-03-31', 'start of month', '+1 month', '-1 day') AS this_month_end
             )
             SELECT DATE(session_date) AS pomodoroDate, 
                    (SUM(work_duration) / 1000 / 60) AS minute
             FROM pomodoro_sessions
-            WHERE session_date BETWEEN (SELECT this_month_start FROM CurrentMonth) 
-                                  AND (SELECT this_month_end FROM CurrentMonth)
+            WHERE DATE(session_date) BETWEEN (SELECT this_month_start FROM CurrentMonth) 
+                                         AND (SELECT this_month_end FROM CurrentMonth)
             GROUP BY DATE(session_date)
         """
     )
