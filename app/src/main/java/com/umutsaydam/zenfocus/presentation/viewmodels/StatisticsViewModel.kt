@@ -138,17 +138,21 @@ class StatisticsViewModel @Inject constructor(
                 localUserDataStoreCases.readUserId().collectLatest { userId ->
                     if (userId.isNotEmpty()) {
                         val allData = pomodoroSessionsUseCases.getAllSessions()
-                        val result =
-                            awsPomodoroSessionsUseCases.backupPomodoroSessions(userId, allData)
+                        if(allData.isNotEmpty()){
+                            val result =
+                                awsPomodoroSessionsUseCases.backupPomodoroSessions(userId, allData)
 
-                        when (result) {
-                            is Resource.Success -> {
-                                _uiMessage.value = R.string.backed_up_successfully
-                            }
+                            when (result) {
+                                is Resource.Success -> {
+                                    _uiMessage.value = R.string.backed_up_successfully
+                                }
 
-                            is Resource.Error -> {
-                                _uiMessage.value = R.string.could_not_backed_up
+                                is Resource.Error -> {
+                                    _uiMessage.value = R.string.could_not_backed_up
+                                }
                             }
+                        }else{
+                            _uiMessage.value = R.string.no_data_to_back_up
                         }
                     } else {
                         _uiMessage.value = R.string.first_login_to_back_up

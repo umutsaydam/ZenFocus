@@ -90,6 +90,7 @@
     <string name="synchronize_data">Verileri senkronize et</string>
     <string name="backed_up_successfully">Verileriniz başarıyla yedeklendi.</string>
     <string name="could_not_backed_up">Verileriniz yedeklenemedi, lütfen daha sonra tekrar deneyin.</string>
+    <string name="no_data_to_back_up">Yedeklenecek veriniz bulunmamaktadır.</string>
     <string name="first_login_to_back_up">Verilerinizin yedeklenmesi için oturum açmanız gerekir.</string>
     <string name="synchronization_successfully">Senkronizasyon işlemi tamamlanmıştır.</string>
     <string name="could_not_synchronization">Senkronizasyon tamamlanamadı, lütfen daha sonra tekrar deneyin.</string>

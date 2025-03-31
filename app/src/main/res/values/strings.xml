@@ -92,6 +92,7 @@
     <string name="synchronize_data">Synchronize data</string>
     <string name="backed_up_successfully">Your data has been successfully backed up.</string>
     <string name="could_not_backed_up">Your data could not be backed up, please try again later.</string>
+    <string name="no_data_to_back_up">You have no data to back up.</string>
     <string name="first_login_to_back_up">You must log in for your data to be backed up.</string>
     <string name="synchronization_successfully">The synchronization process is complete.</string>
     <string name="could_not_synchronization">Synchronization could not be completed, please try again later.</string>
