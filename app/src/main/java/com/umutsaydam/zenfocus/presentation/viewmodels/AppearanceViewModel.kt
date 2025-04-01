@@ -76,6 +76,7 @@ class AppearanceViewModel @Inject constructor(
     private fun saveThemeToLocal(themeName: String) {
         viewModelScope.launch {
             localUserDataStoreCases.saveTheme(themeName)
+            updateUiState { copy(uiMessage = R.string.new_theme_set) }
         }
     }
 

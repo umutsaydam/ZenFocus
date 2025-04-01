@@ -145,8 +145,8 @@ interface PomodoroSessionsDao {
         """
             WITH CurrentMonth AS (
             SELECT 
-                DATE('2025-03-31', 'start of month') AS this_month_start,
-                DATE('2025-03-31', 'start of month', '+1 month', '-1 day') AS this_month_end
+                DATE(:selectedDate, 'start of month') AS this_month_start,
+                DATE(:selectedDate, 'start of month', '+1 month', '-1 day') AS this_month_end
             )
             SELECT DATE(session_date) AS pomodoroDate, 
                    (SUM(work_duration) / 1000 / 60) AS minute
