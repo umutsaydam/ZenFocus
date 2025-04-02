@@ -149,7 +149,7 @@ Maximize your productivity with ZenFocus! Manage your time effectively with the 
 
 ## <p id="usage">🧑‍💻 Usage</p>
 
-- ![zenfocus_screens_en](https://github.com/user-attachments/assets/1fb4e207-f1a3-4fb9-9954-0c570771531a)
+- ![Image](https://github.com/user-attachments/assets/0065401c-ce55-443a-a08f-248d08fe8eeb)
 
 ---
 
