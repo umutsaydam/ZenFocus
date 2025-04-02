@@ -13,6 +13,7 @@ import com.umutsaydam.zenfocus.presentation.home.HomeScreen
 import com.umutsaydam.zenfocus.presentation.navTransitionManager.NavigationTransitionManager
 import com.umutsaydam.zenfocus.presentation.policy.PolicyScreen
 import com.umutsaydam.zenfocus.presentation.settings.SettingsScreen
+import com.umutsaydam.zenfocus.presentation.statistics.StatisticsScreen
 
 @Composable
 fun MainNavHost() {
@@ -49,6 +50,20 @@ fun MainNavHost() {
             }
         ) {
             SettingsScreen(navController = navController)
+        }
+
+        composable(
+            Route.Statistics.route,
+            enterTransition = {
+                val fromRoute = navController.previousBackStackEntry?.destination?.route
+                navTransitionManager.getEnterTransition(Route.Statistics.route, fromRoute)
+            },
+            exitTransition = {
+                val fromRoute = navController.previousBackStackEntry?.destination?.route
+                navTransitionManager.getExitTransition(Route.Statistics.route, fromRoute)
+            }
+        ) {
+            StatisticsScreen(navController = navController)
         }
 
         composable(

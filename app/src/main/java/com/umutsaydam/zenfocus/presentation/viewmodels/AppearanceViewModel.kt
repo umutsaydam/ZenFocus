@@ -145,15 +145,19 @@ class AppearanceViewModel @Inject constructor(
             }
         }
     }
+
 // These lines are commented for the open source contribution.
 //    fun willShowAd(): Boolean {
 //        return _userType.value != UserTypeEnum.AD_FREE_USER.type
 //    }
-// These lines are commented for the open source contribution.
+//
 //    fun showRewardedAd() {
 //        viewModelScope.launch {
 //            val rewardResult = googleAddUseCases.showRewardedAd()
 //            updateUiState { copy(rewardedAd = rewardResult) }
+//            if(rewardResult == null){
+//                saveTheme()
+//            }
 //        }
 //    }
 

@@ -16,8 +16,8 @@ android {
         applicationId = "com.umutsaydam.zenfocus"
         minSdk = 24
         targetSdk = 35
-        versionCode = 31
-        versionName = "1.0.3"
+        versionCode = 36
+        versionName = "1.0.4"
 
         val properties: Properties = Properties()
         properties.load(
@@ -66,11 +66,11 @@ android {
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -141,6 +141,8 @@ dependencies {
     // Exo Player
     implementation(libs.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
+    // MPAndroidChart
+    implementation(libs.mpandroidchart)
 }
 java {
     toolchain {

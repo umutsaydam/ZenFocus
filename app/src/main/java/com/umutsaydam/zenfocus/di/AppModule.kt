@@ -1,10 +1,12 @@
 package com.umutsaydam.zenfocus.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.umutsaydam.zenfocus.data.local.db.PomodoroSessionsDao
 import com.umutsaydam.zenfocus.data.local.db.TasksDao
-import com.umutsaydam.zenfocus.data.local.db.TasksDatabase
+import com.umutsaydam.zenfocus.data.local.db.ZenFocusDB
 import com.umutsaydam.zenfocus.data.local.manager.ExoPlayerManagerImpl
 import com.umutsaydam.zenfocus.data.local.repository.ThemeRepositoryImpl
 import com.umutsaydam.zenfocus.data.local.repository.ToDoRepositoryImpl
@@ -21,6 +23,8 @@ import com.umutsaydam.zenfocus.data.local.repository.NetworkCheckerRepositoryImp
 //import com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl
 //import com.umutsaydam.zenfocus.data.remote.repository.IntegrateInAppReviewsRepositoryImpl
 //import com.umutsaydam.zenfocus.data.remote.service.GoogleAdServiceImpl
+import com.umutsaydam.zenfocus.data.local.repository.PomodoroSessionRepositoryImpl
+import com.umutsaydam.zenfocus.data.remote.repository.AwsPomodoroSessionsRepositoryImpl
 import com.umutsaydam.zenfocus.domain.manager.ExoPlayerManager
 // These lines are commented for the open source contribution.
 //import com.umutsaydam.zenfocus.data.remote.repository.GoogleProductsInAppRepositoryImpl
@@ -33,8 +37,10 @@ import com.umutsaydam.zenfocus.domain.manager.TimeOutRingerManager
 import com.umutsaydam.zenfocus.domain.manager.VibrationManager
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.repository.local.NetworkCheckerRepository
+import com.umutsaydam.zenfocus.domain.repository.local.PomodoroSessionRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ThemeRepository
 import com.umutsaydam.zenfocus.domain.repository.local.ToDoRepository
+import com.umutsaydam.zenfocus.domain.repository.remote.AwsPomodoroSessionsRepository
 import com.umutsaydam.zenfocus.domain.repository.remote.AwsStorageServiceRepository
 // These line is commented for the open source contribution.
 //import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
@@ -86,7 +92,11 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.timeOutRingerStateCas
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.SaveUserId
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.SaveUserType
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibrateState
+import com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions.PomodoroSessionsUseCases
+import com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions.PomodoroSessionsUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.AwsPomodoroSessionsUseCases
+import com.umutsaydam.zenfocus.domain.usecases.remote.AwsPomodoroSessionsUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsStorageCases
 // These lines are commented for the open source contribution.
 //import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
@@ -186,6 +196,11 @@ object AppModule {
     ): PomodoroManagerUseCase = PomodoroManagerUseCaseImpl(pomodoroManager)
 
     @Provides
+    fun provideAwsPomodoroSessionsUseCases(
+        repository: AwsPomodoroSessionsRepository
+    ): AwsPomodoroSessionsUseCases = AwsPomodoroSessionsUseCasesImpl(repository)
+
+    @Provides
     fun providePomodoroServiceUseCases(
         pomodoroServiceManager: PomodoroServiceManager
     ): PomodoroServiceUseCases = PomodoroServiceUseCasesImpl(pomodoroServiceManager)
@@ -252,6 +267,11 @@ object AppModule {
         )
     }
 
+    @Provides
+    fun providePomodoroSessionsUseCases(
+        sessionRepository: PomodoroSessionRepository
+    ): PomodoroSessionsUseCases = PomodoroSessionsUseCasesImpl(sessionRepository)
+
 //    @Provides
 //    fun provideGoogleAdServiceUseCases(
 //        googleAdService: GoogleAdService
@@ -278,9 +298,13 @@ object AppModule {
     fun providePomodoroManager(
         focusSoundManager: FocusSoundManager,
         timeOutRingerManagerUseCases: TimeOutRingerManagerUseCases,
-        vibrationManagerUseCases: VibrationManagerUseCases
+        vibrationManagerUseCases: VibrationManagerUseCases,
+        pomodoroSessionsUseCases: PomodoroSessionsUseCases
     ): PomodoroManager = PomodoroManagerImpl(
-        focusSoundManager, timeOutRingerManagerUseCases, vibrationManagerUseCases
+        focusSoundManager,
+        timeOutRingerManagerUseCases,
+        vibrationManagerUseCases,
+        pomodoroSessionsUseCases
     )
 
     @Provides
@@ -325,6 +349,11 @@ object AppModule {
     ): ToDoRepository = ToDoRepositoryImpl(tasksDao)
 
     @Provides
+    fun providePomodoroSessionRepository(
+        pomodoroSessionsDao: PomodoroSessionsDao
+    ): PomodoroSessionRepository = PomodoroSessionRepositoryImpl(pomodoroSessionsDao)
+
+    @Provides
     fun provideStorageRepository(
         application: Application
     ): AwsStorageServiceRepository = AwsStorageServiceRepositoryImpl(application)
@@ -345,22 +374,50 @@ object AppModule {
 //        GoogleAdServiceImpl(application)
 
     @Provides
+    fun provideAwsPomodoroSessionsRepository(
+        pomodoroSessionsUseCases: PomodoroSessionsUseCases
+    ): AwsPomodoroSessionsRepository =
+        AwsPomodoroSessionsRepositoryImpl(pomodoroSessionsUseCases)
+
+    @Provides
     @Singleton
     fun provideAwsAuthService(): AwsAuthService = AwsAuthServiceImpl()
 
     @Provides
     @Singleton
-    fun provideTaskDatabase(
+    fun provideZenFocusDatabase(
         application: Application
-    ): TasksDatabase {
+    ): ZenFocusDB {
+        val migration1to2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                """
+                CREATE TABLE IF NOT EXISTS `pomodoro_sessions` (
+                    `session_id` TEXT PRIMARY KEY NOT NULL,
+                    `work_duration` LONG NOT NULL,
+                    `break_duration` LONG NOT NULL,
+                    `session_date` TEXT NOT NULL
+                )
+                """.trimIndent()
+            }
+        }
         return Room.databaseBuilder(
-            context = application, klass = TasksDatabase::class.java, name = "TaskDatabase"
-        ).fallbackToDestructiveMigration().build()
+            context = application.applicationContext,
+            klass = ZenFocusDB::class.java,
+            name = "ZenFocusDB"
+        )
+            .addMigrations(migration1to2)
+            .fallbackToDestructiveMigration().build()
     }
 
     @Provides
     @Singleton
     fun provideNewsDao(
-        tasksDatabase: TasksDatabase
-    ): TasksDao = tasksDatabase.tasksDao
+        zenFocusDB: ZenFocusDB
+    ): TasksDao = zenFocusDB.tasksDao
+
+    @Provides
+    @Singleton
+    fun providePomodoroSessionsDao(
+        zenFocusDB: ZenFocusDB
+    ): PomodoroSessionsDao = zenFocusDB.pomodoroSessionsDao
 }

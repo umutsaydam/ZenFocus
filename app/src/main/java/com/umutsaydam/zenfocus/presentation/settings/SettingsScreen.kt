@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -151,7 +153,8 @@ fun SettingsScreen(
     ) { paddingValue ->
         Column(
             modifier = Modifier
-                .padding(paddingValue),
+                .padding(paddingValue)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(SPACE_MEDIUM)
         ) {
             SettingsSection(
@@ -194,6 +197,12 @@ fun SettingsScreen(
                         onClick = {
                             isWorkDurationDialogOpened = false
                             isDurationDialogOpened = true
+                        }
+                    )
+                    MenuItem(
+                        menuTitle = stringResource(R.string.statistics),
+                        onClick = {
+                            navController.safeNavigate(Route.Statistics.route)
                         }
                     )
                 }

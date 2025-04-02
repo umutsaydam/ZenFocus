@@ -4,16 +4,24 @@ import android.os.CountDownTimer
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.domain.manager.FocusSoundManager
 import com.umutsaydam.zenfocus.domain.manager.PomodoroManager
+import com.umutsaydam.zenfocus.domain.model.PomodoroSessionModel
 import com.umutsaydam.zenfocus.domain.usecases.local.TimeOutRingerManagerUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.VibrationManagerUseCases
+import com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions.PomodoroSessionsUseCases
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_VIBRATION_DURATION
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class PomodoroManagerImpl(
     private val focusSoundManager: FocusSoundManager,
     private val timeOutRingerManagerUseCases: TimeOutRingerManagerUseCases,
-    private val vibrationManagerUseCases: VibrationManagerUseCases
+    private val vibrationManagerUseCases: VibrationManagerUseCases,
+    private val pomodoroSessionsUseCases: PomodoroSessionsUseCases
 ) : PomodoroManager {
     private var _initTime = 0L
     private val _remainingTime = MutableStateFlow<Long>(0)
@@ -40,6 +48,8 @@ class PomodoroManagerImpl(
 
     private val _isWorkingSession = MutableStateFlow(true)
     override val isWorkingSession: StateFlow<Boolean> = _isWorkingSession
+
+    private var _sessionStartedDate = ""
 
     override fun setPomodoroTimeAsMinute(minute: Int) {
         val convertedTime = TimeConverter.minuteToMilli(minute)
@@ -70,6 +80,7 @@ class PomodoroManagerImpl(
         if (!_isTimerRunning.value && _remainingTime.value == 0L) {
             if (_isWorkingSession.value) {
                 setPomodoroTimeAsMilli(_workDuration.value)
+                setStartedDate()
             } else {
                 setPomodoroTimeAsMilli(_breakDuration.value)
             }
@@ -104,7 +115,11 @@ class PomodoroManagerImpl(
 
                     if (_isWorkingSession.value) {
                         decreaseWorkCycle()
-
+                        savePomodoroSessionToDB(
+                            _workDuration.value,
+                            _breakDuration.value,
+                            _sessionStartedDate
+                        )
                         if (pomodoroAvailableWorkCycle()) {
                             vibrateIfAvailable()
                             switchBreakSession()
@@ -121,6 +136,20 @@ class PomodoroManagerImpl(
                 }
             }.start()
         }
+    }
+
+    private fun savePomodoroSessionToDB(workDur: Long, breakDur: Long, startedDate: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            pomodoroSessionsUseCases.upsertPomodoroSession(
+                PomodoroSessionModel(
+                    workDuration = workDur, breakDuration = breakDur, sessionDate = startedDate
+                )
+            )
+        }
+    }
+
+    private fun setStartedDate() {
+        _sessionStartedDate = GetCurrentDate.getCurrentDateTimeString()
     }
 
     override fun decreaseWorkCycle() {
@@ -186,10 +215,14 @@ class PomodoroManagerImpl(
             _isTimerRunning.value = false
             focusSoundManager.stopSound()
             timer.cancel()
-            _remainingTime.value = 0
-            _remainingPercent.value = 0f
-            _remainingTimeText.value = "00:00"
         }
+
+        _remainingTime.value = 0
+        _remainingPercent.value = 0f
+        _remainingTimeText.value = "00:00"
+
+        _isWorkingSession.value = true
+        _pomodoroWorkCycle.value = 0
     }
 
     override fun isRunning(): StateFlow<Boolean> {
@@ -204,5 +237,13 @@ private object TimeConverter {
 
     fun convertMinutesAndSecondsToTextFormat(minutes: Long, seconds: Long): String {
         return "%02d:%02d".format(minutes, seconds)
+    }
+}
+
+private object GetCurrentDate {
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+    fun getCurrentDateTimeString(): String {
+        return LocalDateTime.now().format(dateFormatter)
     }
 }

@@ -17,8 +17,8 @@ import com.umutsaydam.zenfocus.domain.model.TaskModel
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM1
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_SMALL
-import com.umutsaydam.zenfocus.ui.theme.Gray
-import com.umutsaydam.zenfocus.ui.theme.LightGray
+import com.umutsaydam.zenfocus.ui.theme.OutLineVariantLight
+import com.umutsaydam.zenfocus.ui.theme.Outline
 
 @Composable
 fun LazyToDoList(
@@ -32,7 +32,7 @@ fun LazyToDoList(
             .clip(RoundedCornerShape(CORNER_SMALL))
             .fillMaxWidth()
             .fillMaxHeight(0.6f)
-            .background(LightGray),
+            .background(OutLineVariantLight),
     ) {
         if (toDoList.isNotEmpty()) {
             items(count = toDoList.size, key = { it }) { index ->
@@ -45,7 +45,7 @@ fun LazyToDoList(
                         .fillMaxWidth()
                         .padding(PADDING_SMALL),
                     text = stringResource(R.string.not_created_todo),
-                    color = Gray,
+                    color = Outline,
                     textAlign = TextAlign.Center
                 )
             }

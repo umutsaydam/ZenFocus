@@ -77,4 +77,24 @@
     <string name="turkish_lang">土耳其语-tr</string>
     <string name="english_lang">英语-en</string>
     <string name="chinese_lang">中文-zh</string>
+    <string name="statistics">统计资料</string>
+    <string name="select_dates">选择日期</string>
+    <string name="this_month">本月</string>
+    <string name="last_week">上周</string>
+    <string name="this_week">本周</string>
+    <string name="total_pomodoro">全 Pomodoro</string>
+    <string name="current_streak">当前连胜</string>
+    <string name="longest_streak">最长连胜纪录</string>
+    <string name="more_options">更多选择</string>
+    <string name="back_up_to_cloud">备份到云</string>
+    <string name="synchronize_data">同步数据</string>
+    <string name="backed_up_successfully">您的数据已成功备份.</string>
+    <string name="could_not_backed_up">无法备份您的数据, 请稍后再试.</string>
+    <string name="no_data_to_back_up">你没有数据支持。</string>
+    <string name="first_login_to_back_up">您必须登录才能备份数据.</string>
+    <string name="synchronization_successfully">同步过程完成</string>
+    <string name="could_not_synchronization">同步无法完成, 请稍后再试.</string>
+    <string name="first_login_to_synchronize">要同步, 必须先登录</string>
+    <string name="no_statistics_data">设备上似乎没有存储任何数据。启动一个 Pomodoro 会话并获取统计数据，或者尝试同步（如果有备份数据）！</string>
+    <string name="not_found_data">未找到数据。</string>
 </resources>

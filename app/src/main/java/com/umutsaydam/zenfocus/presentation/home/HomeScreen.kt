@@ -66,10 +66,11 @@ import com.umutsaydam.zenfocus.presentation.viewmodels.GoogleBannerAdState
 import com.umutsaydam.zenfocus.presentation.viewmodels.HomeUiState
 import com.umutsaydam.zenfocus.presentation.viewmodels.HomeViewModel
 //import com.umutsaydam.zenfocus.presentation.viewmodels.IntegrateInAppReviewViewModel
-import com.umutsaydam.zenfocus.ui.theme.DarkBackground
 import com.umutsaydam.zenfocus.ui.theme.OutLineVariant
+import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.Primary
+import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.Transparent
-import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.safeNavigate
 
 @Composable
@@ -101,7 +102,7 @@ fun HomeScreen(
         lifecycleOwner = lifecycleOwner, viewModel = pomodoroViewModel
     )
 
-    StatusBarSwitcher(false)
+    StatusBarSwitcher(true)
 
     if (homeUiState.bottomSheetState) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -123,7 +124,7 @@ fun HomeScreen(
     Scaffold(modifier = modifier
         .fillMaxSize()
         .background(
-            color = DarkBackground
+            color = SurfaceContainerLow
         ), containerColor = Transparent, topBar = {
         HomeAppBar(
             navController = navController, viewModel = homeViewModel
@@ -223,7 +224,7 @@ fun BottomSheetContentHandler(
         BottomSheetContent.PomodoroSounds -> {
             LazySoundList(soundList = soundList, content = { index ->
                 val sound = soundList[index]
-                RadioButtonWithText(modifier = Modifier.background(White),
+                RadioButtonWithText(
                     radioSelected = sound == homeUiState.defaultSound,
                     radioText = sound,
                     onClick = {
@@ -260,7 +261,7 @@ fun HomeAppBar(
             Icon(
                 painter = painterResource(R.drawable.ic_menu),
                 contentDescription = stringResource(R.string.open_side_menu),
-                tint = White
+                tint = Outline
             )
         }
     }, actions = {
@@ -272,7 +273,8 @@ fun HomeAppBar(
                 }
             }) {
                 Text(
-                    text = stringResource(R.string.remove_ad)
+                    text = stringResource(R.string.remove_ad),
+                    color = Primary
                 )
             }
         }

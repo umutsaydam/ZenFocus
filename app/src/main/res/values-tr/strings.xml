@@ -77,4 +77,24 @@
     <string name="turkish_lang">Türkçe-tr</string>
     <string name="english_lang">İngilizce-en</string>
     <string name="chinese_lang">Çince-zh</string>
+    <string name="statistics">İstatistikler</string>
+    <string name="select_dates">Tarih seç</string>
+    <string name="this_month">Bu ay</string>
+    <string name="last_week">Geçen hafta</string>
+    <string name="this_week">Bu hafta</string>
+    <string name="total_pomodoro">Toplam Pomodoro</string>
+    <string name="current_streak">Güncel Seri</string>
+    <string name="longest_streak">En Uzun Seri</string>
+    <string name="more_options">Daha fazla seçenekler</string>
+    <string name="back_up_to_cloud">Buluta yedekle</string>
+    <string name="synchronize_data">Verileri senkronize et</string>
+    <string name="backed_up_successfully">Verileriniz başarıyla yedeklendi.</string>
+    <string name="could_not_backed_up">Verileriniz yedeklenemedi, lütfen daha sonra tekrar deneyin.</string>
+    <string name="no_data_to_back_up">Yedeklenecek veriniz bulunmamaktadır.</string>
+    <string name="first_login_to_back_up">Verilerinizin yedeklenmesi için oturum açmanız gerekir.</string>
+    <string name="synchronization_successfully">Senkronizasyon işlemi tamamlanmıştır.</string>
+    <string name="could_not_synchronization">Senkronizasyon tamamlanamadı, lütfen daha sonra tekrar deneyin.</string>
+    <string name="first_login_to_synchronize">Senkronize etmek için önce oturum açmalısınız.</string>
+    <string name="no_statistics_data">Bu cihazda depolanan veri yok gibi görünüyor. Bir pomodoro başlatın ve istatistiklerinizi alın veya verileri yedeklediyseniz, senkronize etmeyi deneyebilirsiniz!</string>
+    <string name="not_found_data">Veri bulunamadı.</string>
 </resources>

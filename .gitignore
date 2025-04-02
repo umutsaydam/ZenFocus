@@ -18,3 +18,4 @@
 local.properties
 /app/src/main/res/raw/amplifyconfiguration.json
 /app/release/*.aab
+app-ads.txt
