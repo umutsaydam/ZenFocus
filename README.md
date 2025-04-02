@@ -70,7 +70,7 @@ ZenFocus ile üretkenliğinizi en üst seviyeye taşıyın! Pomodoro tekniği ve
 
 ## <p id="kullanim">🧑‍💻 Kullanım</p>
 
-- ![zenfocus_screens_tr](https://github.com/user-attachments/assets/2786a5aa-43d8-4e91-9fad-0ecd5292a4cb)
+- ![Image](https://github.com/user-attachments/assets/f5565195-4640-4ba5-b4ad-a81d652788fb)
 
 ---
 
