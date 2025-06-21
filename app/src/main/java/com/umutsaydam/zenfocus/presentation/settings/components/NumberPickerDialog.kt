@@ -75,7 +75,10 @@ fun NumberPickerDialog(
                     .padding(PADDING_SMALL)
                     .weight(0.3f),
                 shape = RoundedCornerShape(CORNER_SMALL),
-                onClick = onClick
+                onClick = {
+                    onClick()
+                    onDismissRequest()
+                }
             ) {
                 Text(text = stringResource(R.string.save))
             }

@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.settings
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -45,6 +47,7 @@ import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import com.umutsaydam.zenfocus.util.safeNavigate
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -55,20 +58,27 @@ fun SettingsScreen(
 ) {
     val coroutine = rememberCoroutineScope()
     val uiState by settingsViewModel.uiState.collectAsState()
-    val gridState = rememberLazyListState()
+    val workGridState = rememberLazyListState()
+    val breakGridState = rememberLazyListState()
     var isDurationDialogOpened by remember { mutableStateOf(false) }
     var isWorkDurationDialogOpened by remember { mutableStateOf(true) }
     val isSignedInState by remember { derivedStateOf { uiState.isSignedInState } }
 
     if (isDurationDialogOpened) {
-        coroutine.launch {
-            gridState.animateScrollToItem(
-                if (isWorkDurationDialogOpened) {
-                    uiState.pomodoroWorkDuration - 1
-                } else {
-                    uiState.pomodoroBreakDuration - 1
-                }
-            )
+        val currentGridState = if (isWorkDurationDialogOpened) workGridState else breakGridState
+        LaunchedEffect(key1 = true, isWorkDurationDialogOpened) {
+            coroutine.launch {
+                delay(200)
+                currentGridState.animateScrollToItem(
+                    if (isWorkDurationDialogOpened) {
+                        Log.d("R/T", "work section ${uiState.pomodoroWorkDuration - 1}")
+                        uiState.pomodoroWorkDuration - 1
+                    } else {
+                        Log.d("R/T", "break section ${uiState.pomodoroBreakDuration - 1}")
+                        uiState.pomodoroBreakDuration - 1
+                    }
+                )
+            }
         }
         NumberPickerDialog(
             textTitle = stringResource(
@@ -77,15 +87,13 @@ fun SettingsScreen(
                 else
                     R.string.break_time
             ),
-            gridState = gridState,
+            gridState = currentGridState,
             onClick = {
                 if (isWorkDurationDialogOpened) {
                     settingsViewModel.savePomodoroWorkDuration(uiState.pomodoroWorkDuration)
                 } else {
                     settingsViewModel.savePomodoroBreakDuration(uiState.pomodoroBreakDuration)
                 }
-
-                isDurationDialogOpened = false
             },
             content = { visible, currIndex ->
                 val isSelected = visible + 1 == currIndex
@@ -98,23 +106,24 @@ fun SettingsScreen(
                         .padding(vertical = 8.dp)
                         .clickable {
                             coroutine.launch {
-                                gridState.animateScrollToItem(
+                                currentGridState.animateScrollToItem(
                                     index = maxOf(0, currIndex - 1)
                                 )
                             }
                         },
                     textAlign = TextAlign.Center
                 )
-                if (isSelected) {
-                    if (isWorkDurationDialogOpened) {
-                        settingsViewModel.updateWorkDuration(currIndex)
-                    } else {
-                        settingsViewModel.updateBreakDuration(currIndex)
-                    }
-                }
             },
             onDismissRequest = {
-                isWorkDurationDialogOpened = false
+                coroutine.launch {
+                    if (isWorkDurationDialogOpened) {
+                        workGridState.scrollToItem(maxOf(0, uiState.pomodoroWorkDuration - 1))
+                    } else {
+                        Log.d("R/T", "break triggered")
+                        breakGridState.scrollToItem(maxOf(0, uiState.pomodoroBreakDuration - 1))
+                    }
+                    isWorkDurationDialogOpened = false
+                }
                 isDurationDialogOpened = false
             }
         )
