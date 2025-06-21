@@ -1,6 +1,6 @@
 [versions]
 accompanistNavigationAnimation = "0.35.1-alpha"
-agp = "8.7.0-alpha08"
+agp = "8.7.3"
 awsAndroidSdkDdb = "2.22.1"
 awsAndroidSdkMobileClient = "2.35.0"
 awsApi = "2.25.0"

@@ -16,6 +16,9 @@
       <SelectionState runConfigName="previewStatisticsScreen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="enterToDoListItem_showResult()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
