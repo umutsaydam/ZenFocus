@@ -90,12 +90,21 @@ fun HomeScreen(
     val context = LocalContext.current
     val adState by homeViewModel.adState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val navigationEvent by homeViewModel.navigationEvent.collectAsState()
 
     LaunchedEffect(homeUiState.uiMessage) {
         homeUiState.uiMessage?.let { message ->
             Toast.makeText(context, context.getString(message), Toast.LENGTH_SHORT).show()
             homeViewModel.clearUiMessage()
         }
+    }
+
+    LaunchedEffect(navigationEvent) {
+        when(navigationEvent){
+            Route.Auth -> { navController.safeNavigate(Route.Auth.route) }
+            else -> {}
+        }
+        homeViewModel.clearNavigationEvent()
     }
 
     ObserverLifecycleEvents(
