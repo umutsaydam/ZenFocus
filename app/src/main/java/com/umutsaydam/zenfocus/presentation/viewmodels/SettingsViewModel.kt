@@ -17,7 +17,9 @@ data class SettingsUiState(
     val defaultTimeOutRingerState: Boolean = false,
     val isSignedInState: Boolean = false,
     val pomodoroWorkDuration: Int = 0,
-    val pomodoroBreakDuration: Int = 0
+    val tmpPomodoroWorkDuration: Int = 0,
+    val pomodoroBreakDuration: Int = 0,
+    val tmpPomodoroBreakDuration: Int = 0
 )
 
 @HiltViewModel
@@ -56,15 +58,15 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun readTimeOutRingerState(){
+    private fun readTimeOutRingerState() {
         viewModelScope.launch {
-            localUserDataStoreCases.readTimeOutRingerState().collectLatest{ state ->
+            localUserDataStoreCases.readTimeOutRingerState().collectLatest { state ->
                 updateUiState { copy(defaultTimeOutRingerState = state) }
             }
         }
     }
 
-    fun setTimeOutRingerState(state: Boolean){
+    fun setTimeOutRingerState(state: Boolean) {
         viewModelScope.launch {
             localUserDataStoreCases.saveTimeOutRingerState(state)
         }
@@ -90,35 +92,47 @@ class SettingsViewModel @Inject constructor(
 
     private fun getPomodoroWorkDuration() {
         viewModelScope.launch {
-            val workDuration = localUserDataStoreCases.readPomodoroWorkDuration().first()
-            updateUiState { copy(pomodoroWorkDuration = workDuration) }
+            localUserDataStoreCases.readPomodoroWorkDuration().collectLatest { workDuration ->
+                updateUiState {
+                    copy(
+                        pomodoroWorkDuration = workDuration,
+                        tmpPomodoroWorkDuration = workDuration
+                    )
+                }
+            }
         }
     }
 
-    fun savePomodoroWorkDuration(newDuration: Int) {
+    fun savePomodoroWorkDuration() {
         viewModelScope.launch {
-            localUserDataStoreCases.savePomodoroWorkDuration(newDuration)
+            localUserDataStoreCases.savePomodoroWorkDuration(uiState.value.tmpPomodoroWorkDuration)
         }
     }
 
     private fun getPomodoroBreakDuration() {
         viewModelScope.launch {
-            val breakDuration = localUserDataStoreCases.readPomodoroBreakDuration().first()
-            updateUiState { copy(pomodoroBreakDuration = breakDuration) }
+            localUserDataStoreCases.readPomodoroBreakDuration().collectLatest { breakDuration ->
+                updateUiState {
+                    copy(
+                        pomodoroBreakDuration = breakDuration,
+                        tmpPomodoroBreakDuration = breakDuration
+                    )
+                }
+            }
         }
     }
 
-    fun savePomodoroBreakDuration(newDuration: Int) {
+    fun savePomodoroBreakDuration() {
         viewModelScope.launch {
-            localUserDataStoreCases.savePomodoroBreakDuration(newDuration)
+            localUserDataStoreCases.savePomodoroBreakDuration(uiState.value.tmpPomodoroBreakDuration)
         }
     }
 
     fun updateWorkDuration(currIndex: Int) {
-        updateUiState { copy(pomodoroWorkDuration = currIndex) }
+        updateUiState { copy(tmpPomodoroWorkDuration = currIndex) }
     }
 
     fun updateBreakDuration(currIndex: Int) {
-        updateUiState { copy(pomodoroBreakDuration = currIndex) }
+        updateUiState { copy(tmpPomodoroBreakDuration = currIndex) }
     }
 }

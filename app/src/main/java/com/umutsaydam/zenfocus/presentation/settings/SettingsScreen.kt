@@ -9,9 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.umutsaydam.zenfocus.R
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
+import com.umutsaydam.zenfocus.presentation.common.BaseListItem
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.navigation.Route
@@ -44,6 +50,7 @@ import com.umutsaydam.zenfocus.presentation.viewmodels.SettingsViewModel
 import com.umutsaydam.zenfocus.ui.theme.Gray
 import com.umutsaydam.zenfocus.ui.theme.LightGray
 import com.umutsaydam.zenfocus.ui.theme.Outline
+import com.umutsaydam.zenfocus.ui.theme.Primary
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 import com.umutsaydam.zenfocus.util.safeNavigate
@@ -90,9 +97,9 @@ fun SettingsScreen(
             gridState = currentGridState,
             onClick = {
                 if (isWorkDurationDialogOpened) {
-                    settingsViewModel.savePomodoroWorkDuration(uiState.pomodoroWorkDuration)
+                    settingsViewModel.savePomodoroWorkDuration()
                 } else {
-                    settingsViewModel.savePomodoroBreakDuration(uiState.pomodoroBreakDuration)
+                    settingsViewModel.savePomodoroBreakDuration()
                 }
             },
             content = { visible, currIndex ->
@@ -113,18 +120,25 @@ fun SettingsScreen(
                         },
                     textAlign = TextAlign.Center
                 )
+
+                if (isSelected) {
+                    if (isWorkDurationDialogOpened) {
+                        settingsViewModel.updateWorkDuration(currIndex)
+                    } else {
+                        settingsViewModel.updateBreakDuration(currIndex)
+                    }
+                }
             },
             onDismissRequest = {
                 coroutine.launch {
                     if (isWorkDurationDialogOpened) {
                         workGridState.scrollToItem(maxOf(0, uiState.pomodoroWorkDuration - 1))
                     } else {
-                        Log.d("R/T", "break triggered")
                         breakGridState.scrollToItem(maxOf(0, uiState.pomodoroBreakDuration - 1))
                     }
                     isWorkDurationDialogOpened = false
+                    isDurationDialogOpened = false
                 }
-                isDurationDialogOpened = false
             }
         )
     }
@@ -168,89 +182,131 @@ fun SettingsScreen(
         ) {
             SettingsSection(
                 content = {
-                    MenuItem(
-                        menuTitle = stringResource(R.string.appearance),
-                        onClick = {
-                            navController.safeNavigate(Route.Appearance.route)
+                    BaseListItem(
+                        title = stringResource(R.string.appearance),
+                        description = "Select a theme for the focus mode",
+                        onClick = { navController.safeNavigate(Route.Appearance.route) },
+                        iconRes = R.drawable.ic_theme,
+                        contentDesc = "Select a theme for the focus mode"
+                    )
+                    BaseListItem(
+                        title = stringResource(R.string.change_the_app_language),
+                        description = "Change the app language",
+                        onClick = { navController.safeNavigate(Route.AppLanguage.route) },
+                        iconRes = R.drawable.ic_translate,
+                        contentDesc = "Change the app language"
+                    )
+                    BaseListItem(
+                        title = stringResource(R.string.vibrate),
+                        onClick = { settingsViewModel.setVibrateState(!uiState.defaultVibrateState) },
+                        iconRes = R.drawable.ic_vibrate,
+                        contentDesc = stringResource(R.string.vibrate),
+                        trailingContent = {
+                            Switch(
+                                modifier = Modifier
+                                    .scale(0.7f)
+                                    .weight(0.2f),
+                                checked = uiState.defaultVibrateState,
+                                onCheckedChange = { newState ->
+                                    settingsViewModel.setVibrateState(newState)
+                                },
+                                colors = SwitchDefaults.colors().copy(
+                                    checkedThumbColor = Primary,
+                                    checkedTrackColor = LightGray,
+                                    uncheckedThumbColor = LightGray,
+                                    uncheckedTrackColor = Primary,
+                                )
+                            )
                         }
                     )
-                    MenuItem(
-                        menuTitle = stringResource(R.string.change_the_app_language),
-                        onClick = {
-                            navController.safeNavigate(Route.AppLanguage.route)
+                    BaseListItem(
+                        title = stringResource(R.string.time_out_ringer),
+                        description = "When session ends, play a ringtone",
+                        onClick = { },
+                        iconRes = R.drawable.ic_bell,
+                        contentDesc = stringResource(R.string.time_out_ringer),
+                        trailingContent = {
+                            Switch(
+                                modifier = Modifier
+                                    .scale(0.7f)
+                                    .weight(0.2f),
+                                checked = uiState.defaultTimeOutRingerState,
+                                onCheckedChange = { newState ->
+                                    settingsViewModel.setTimeOutRingerState(newState)
+                                },
+                                colors = SwitchDefaults.colors().copy(
+                                    checkedThumbColor = Primary,
+                                    checkedTrackColor = LightGray,
+                                    uncheckedThumbColor = LightGray,
+                                    uncheckedTrackColor = Primary,
+                                )
+                            )
                         }
                     )
-                    MenuItemSwitch(
-                        menuTitle = stringResource(R.string.vibrate),
-                        onClick = { newState ->
-                            settingsViewModel.setVibrateState(newState)
-                        },
-                        isChecked = uiState.defaultVibrateState
-                    )
-                    MenuItemSwitch(
-                        menuTitle = stringResource(R.string.time_out_ringer),
-                        onClick = { newState ->
-                            settingsViewModel.setTimeOutRingerState(newState)
-                        },
-                        isChecked = uiState.defaultTimeOutRingerState
-                    )
-                    MenuItem(
-                        menuTitle = stringResource(R.string.working_time),
+                    BaseListItem(
+                        title = stringResource(R.string.working_time),
+                        description = "Set working session duration",
                         onClick = {
                             isWorkDurationDialogOpened = true
                             isDurationDialogOpened = true
-                        }
+                        },
+                        iconRes = R.drawable.ic_study,
+                        contentDesc = stringResource(R.string.working_time)
                     )
-                    MenuItem(
-                        menuTitle = stringResource(R.string.break_time),
+                    BaseListItem(
+                        title = stringResource(R.string.break_time),
+                        description = "Set working session duration",
                         onClick = {
                             isWorkDurationDialogOpened = false
                             isDurationDialogOpened = true
-                        }
+                        },
+                        iconRes = R.drawable.ic_coffee,
+                        contentDesc = stringResource(R.string.break_time)
                     )
-                    MenuItem(
-                        menuTitle = stringResource(R.string.statistics),
-                        onClick = {
-                            navController.safeNavigate(Route.Statistics.route)
-                        }
+                    BaseListItem(
+                        title = stringResource(R.string.statistics),
+                        description = "View your pomodoro statistics",
+                        onClick = { navController.safeNavigate(Route.Statistics.route) },
+                        iconRes = R.drawable.ic_statistics,
+                        contentDesc = stringResource(R.string.statistics)
                     )
                 }
             )
             SettingsSection(
                 content = {
-                    MenuItem(
-                        menuTitle = stringResource(R.string.policy),
-                        onClick = {
-                            navController.safeNavigate(Route.Policy.route)
-                        }
+                    BaseListItem(
+                        title = stringResource(R.string.policy),
+                        onClick = { navController.safeNavigate(Route.Policy.route) },
+                        iconRes = R.drawable.ic_policy,
+                        contentDesc = stringResource(R.string.policy)
                     )
-                    MenuItemDescription(
-                        menuTitle = stringResource(R.string.version),
-                        description = stringResource(R.string.version_number),
-                        onClick = {
-                            //TODO: perform onClick
-                        }
+                    BaseListItem(
+                        title = stringResource(R.string.version),
+                        onClick = {},
+                        iconRes = R.drawable.ic_package,
+                        contentDesc = stringResource(R.string.version),
+                        trailingContent = { Text(stringResource(R.string.version_number)) }
                     )
                 }
             )
             SettingsSection(
                 content = {
                     if (isSignedInState) {
-                        MenuItem(
-                            headIcon = R.drawable.ic_log_out,
-                            menuTitle = stringResource(R.string.log_out),
+                        BaseListItem(
+                            title = stringResource(R.string.log_out),
                             onClick = {
                                 settingsViewModel.signOut()
                                 navController.popBackStackOrIgnore()
-                            }
+                            },
+                            iconRes = R.drawable.ic_log_out,
+                            contentDesc = stringResource(R.string.log_out)
                         )
                     } else {
-                        MenuItem(
-                            headIcon = R.drawable.ic_account,
-                            menuTitle = stringResource(R.string.sign_in_sign_up),
-                            onClick = {
-                                navController.safeNavigate(Route.Auth.route)
-                            }
+                        BaseListItem(
+                            title = stringResource(R.string.sign_in_sign_up),
+                            onClick = { navController.safeNavigate(Route.Auth.route) },
+                            iconRes = R.drawable.ic_account,
+                            contentDesc = stringResource(R.string.sign_in_sign_up)
                         )
                     }
                 }
