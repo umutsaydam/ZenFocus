@@ -8,6 +8,7 @@ import com.umutsaydam.zenfocus.presentation.appLanguage.AppLanguageScreen
 import com.umutsaydam.zenfocus.presentation.appearance.AppearanceScreen
 import com.umutsaydam.zenfocus.presentation.confirmAccount.AccountConfirmScreen
 import com.umutsaydam.zenfocus.presentation.auth.AuthScreen
+import com.umutsaydam.zenfocus.presentation.colorSelection.ColorSelection
 import com.umutsaydam.zenfocus.presentation.focusMode.FocusModeScreen
 import com.umutsaydam.zenfocus.presentation.home.HomeScreen
 import com.umutsaydam.zenfocus.presentation.navTransitionManager.NavigationTransitionManager
@@ -158,6 +159,19 @@ fun MainNavHost() {
                     navController = navController
                 )
             }
+        }
+        composable(
+            route = Route.ColorSelection.route,
+            enterTransition = {
+                val fromRoute = navController.previousBackStackEntry?.destination?.route
+                navTransitionManager.getEnterTransition(Route.ColorSelection.route, fromRoute)
+            },
+            exitTransition = {
+                val fromRoute = navController.previousBackStackEntry?.destination?.route
+                navTransitionManager.getExitTransition(Route.ColorSelection.route, fromRoute)
+            }
+        ){
+            ColorSelection(navController = navController)
         }
     }
 }

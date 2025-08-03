@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.presentation.appearance.components
+package com.umutsaydam.zenfocus.presentation.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,14 +19,13 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.Transparent
 
 @Composable
-fun CenterFocusedCarouselList(
+fun <T> CenterFocusedCarouselListGeneric(
     modifier: Modifier = Modifier,
-    listOfTheme: List<ThemeInfo?>,
+    listOfItems: List<T?>,
     gridState: LazyGridState,
     content: @Composable (Int, Int) -> Unit
 ) {
@@ -54,7 +53,7 @@ fun CenterFocusedCarouselList(
                 vertical = 12.dp
             )
         ) {
-            items(listOfTheme.size) { currentIndex ->
+            items(listOfItems.size) { currentIndex ->
                 content(visibleIndex, currentIndex)
             }
         }

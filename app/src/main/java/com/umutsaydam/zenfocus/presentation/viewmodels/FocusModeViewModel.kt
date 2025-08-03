@@ -3,12 +3,14 @@ package com.umutsaydam.zenfocus.presentation.viewmodels
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.umutsaydam.zenfocus.domain.model.ProgressColor
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.ThemeRepositoryUseCases
 import com.umutsaydam.zenfocus.util.Constants.IMAGES_FORMATS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,8 +25,24 @@ class FocusModeViewModel @Inject constructor(
     private val _defaultTheme = MutableStateFlow<Bitmap?>(null)
     val defaultTheme: StateFlow<Bitmap?> = _defaultTheme
 
+    private val _defaultWorkSessionTrackColor = MutableStateFlow<ProgressColor?>(null)
+    val defaultWorkSessionTrackColor: StateFlow<ProgressColor?> = _defaultWorkSessionTrackColor
+
     init {
+        getDefaultWorkSessionTrackColorId()
         getDefaultThemeName()
+    }
+
+    private fun setDefaultWorkSessionTrackColor(workTrackColorId: Int) {
+        _defaultWorkSessionTrackColor.value = ProgressColor.fromId(workTrackColorId)
+    }
+
+    private fun getDefaultWorkSessionTrackColorId() {
+        viewModelScope.launch {
+            localUserDataStoreCases.readWorkSessionTrackColor().collectLatest { workTrackColorId ->
+                setDefaultWorkSessionTrackColor(workTrackColorId)
+            }
+        }
     }
 
     private fun getDefaultThemeName() {

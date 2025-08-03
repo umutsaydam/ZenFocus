@@ -1,6 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.appearance.components
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +34,20 @@ fun PreviewTheme(
 }
 
 @Composable
+fun PreviewThemeWithProgressBar(
+    selectedTheme: Bitmap
+) {
+    Image(
+        modifier = Modifier
+            .fillMaxSize(0.7f)
+            .clip(RoundedCornerShape(16.dp)),
+        painter = rememberAsyncImagePainter(selectedTheme),
+        contentDescription = "Selected Theme",
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
 fun PreviewTheme(
     selectedTheme: ThemeInfo,
     context: Context,
@@ -42,6 +57,33 @@ fun PreviewTheme(
 
     LaunchedEffect(selectedTheme.themeName) {
         videoPlayerViewModel.startPlayer(selectedTheme.themeName, selectedTheme.themeUrl)
+    }
+
+    videoPlayer?.let { exoPlayer ->
+        AndroidView(
+            factory = {
+                PlayerView(context).apply {
+                    player = exoPlayer
+                    useController = false
+                }
+            },
+            modifier = Modifier
+                .fillMaxSize(0.7f)
+                .clip(RoundedCornerShape(16.dp))
+        )
+    }
+}
+
+@Composable
+fun PreviewThemeWithProgressBar(
+    selectedThemeName: String,
+    context: Context,
+    videoPlayerViewModel: VideoPlayerViewModel
+) {
+    val videoPlayer by videoPlayerViewModel.exoPlayer.collectAsState()
+
+    LaunchedEffect(selectedThemeName) {
+        videoPlayerViewModel.startPlayer(selectedThemeName, null)
     }
 
     videoPlayer?.let { exoPlayer ->

@@ -1,4 +1,4 @@
-package com.umutsaydam.zenfocus.presentation.appearance.components
+package com.umutsaydam.zenfocus.presentation.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

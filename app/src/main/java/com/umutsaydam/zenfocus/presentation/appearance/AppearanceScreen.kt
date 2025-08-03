@@ -2,22 +2,17 @@ package com.umutsaydam.zenfocus.presentation.appearance
 
 import android.app.Activity
 import android.widget.Toast
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -38,21 +33,19 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
 import com.umutsaydam.zenfocus.R
-import com.umutsaydam.zenfocus.data.remote.dto.ThemeInfo
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_MEDIUM
 import com.umutsaydam.zenfocus.presentation.Dimens.CORNER_SMALL
 import com.umutsaydam.zenfocus.presentation.Dimens.PADDING_MEDIUM2
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_SMALL1
 import com.umutsaydam.zenfocus.presentation.Dimens.SIZE_SMALL2
 import com.umutsaydam.zenfocus.presentation.Dimens.SPACE_MEDIUM
-import com.umutsaydam.zenfocus.presentation.appearance.components.CenterFocusedCarouselList
 import com.umutsaydam.zenfocus.presentation.appearance.components.PreviewTheme
+import com.umutsaydam.zenfocus.presentation.common.CenterFocusedCarouselGeneric
 import com.umutsaydam.zenfocus.presentation.common.IconWithTopAppBar
 import com.umutsaydam.zenfocus.presentation.common.NotConnectedMessage
 import com.umutsaydam.zenfocus.presentation.viewmodels.AppearanceViewModel
@@ -61,12 +54,9 @@ import com.umutsaydam.zenfocus.ui.theme.OnPrimary
 import com.umutsaydam.zenfocus.ui.theme.Outline
 import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.White
-import com.umutsaydam.zenfocus.util.Constants.SELECTING_ANIM_DUR
 import com.umutsaydam.zenfocus.util.Constants.THEME_TYPE_IMAGE
 import com.umutsaydam.zenfocus.util.Constants.THEME_TYPE_VIDEO
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun AppearanceScreen(
@@ -172,101 +162,57 @@ fun AppearanceScreen(
                     tint = Color.LightGray
                 )
 
-
-                CenterFocusedCarousel(modifier = Modifier.align(Alignment.CenterHorizontally),
-                    listOfTheme = uiState.themeList,
+                CenterFocusedCarouselGeneric(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    items = uiState.themeList,
                     gridState = gridState,
                     isTablet = isTablet,
                     themeSpace = themeSpace,
                     coroutineScope = coroutine,
-                    onThemeSelected = { theme ->
+                    onItemSelected = { theme ->
                         appearanceViewModel.setDefaultTheme(theme)
-                    })
+                    }
+                ) { theme, isFocused, animatedWidth, animatedHeight, onClick ->
+                    theme?.let {
+                        val isVideo = it.themeType == THEME_TYPE_VIDEO
 
+                        Box {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .width(animatedWidth)
+                                    .height(animatedHeight)
+                                    .padding(if (isFocused) 0.dp else 5.dp)
+                                    .clip(RoundedCornerShape(CORNER_MEDIUM))
+                                    .clickable {
+                                        onClick()
+                                    },
+
+                                model = if (isVideo) it.videoThumbnailUrl else it.themeUrl,
+                                contentDescription = it.themeName,
+                                contentScale = ContentScale.Crop
+                            )
+                            if (isVideo) {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(if (isFocused) SIZE_SMALL2 else SIZE_SMALL1)
+                                        .offset(
+                                            x = if (isFocused) 5.dp else 0.dp,
+                                            y = if (isFocused) (-5).dp else 0.dp
+                                        )
+                                        .background(OnPrimary)
+                                        .clip(RoundedCornerShape(CORNER_SMALL))
+                                        .align(Alignment.TopEnd),
+                                    painter = painterResource(R.drawable.ic_videocam),
+                                    tint = White,
+                                    contentDescription = "Playable a theme"
+                                )
+                            }
+                        }
+                    }
+                }
             }
         } else {
             NotConnectedMessage()
         }
-    }
-}
-
-@Composable
-fun CenterFocusedCarousel(
-    modifier: Modifier = Modifier,
-    listOfTheme: List<ThemeInfo?>,
-    gridState: LazyGridState,
-    isTablet: Boolean,
-    themeSpace: Dp,
-    coroutineScope: CoroutineScope,
-    onThemeSelected: (ThemeInfo) -> Unit
-) {
-    CenterFocusedCarouselList(modifier = modifier,
-        listOfTheme = listOfTheme,
-        gridState = gridState,
-        content = { firstVisibleIndex, currentIndex ->
-            val theme = listOfTheme[currentIndex]
-            if (theme != null) {
-                val isBigger = firstVisibleIndex + 1 == currentIndex
-                val (imageWidth, imageHeight) = calculateImageSize(isTablet, isBigger)
-                val animatedWith by animateDpAsState(
-                    targetValue = imageWidth, animationSpec = tween(
-                        durationMillis = SELECTING_ANIM_DUR, easing = LinearEasing
-                    ), label = "Animated Width"
-                )
-                val animatedHeight by animateDpAsState(
-                    targetValue = imageHeight, animationSpec = tween(
-                        durationMillis = SELECTING_ANIM_DUR, easing = LinearEasing
-                    ), label = "Animated Height"
-                )
-                val isVideo = theme.themeType == THEME_TYPE_VIDEO
-                Box() {
-                    AsyncImage(
-                        modifier = Modifier
-                            .width(animatedWith)
-                            .height(animatedHeight)
-                            .padding(if (isBigger) 0.dp else 5.dp)
-                            .clip(RoundedCornerShape(CORNER_MEDIUM))
-                            .clickable {
-                                coroutineScope.launch {
-                                    gridState.animateScrollToItem(
-                                        index = maxOf(0, currentIndex - 1)
-                                    )
-                                }
-                            },
-                        model = if (isVideo) theme.videoThumbnailUrl else theme.themeUrl,
-                        contentDescription = theme.themeName,
-                        contentScale = ContentScale.Crop
-                    )
-                    if (isVideo) {
-                        Icon(
-                            modifier = Modifier
-                                .size(if (isBigger) SIZE_SMALL2 else SIZE_SMALL1)
-                                .offset(
-                                    x = if (isBigger) 5.dp else 0.dp,
-                                    y = if (isBigger) (-5).dp else 0.dp
-                                )
-                                .background(OnPrimary)
-                                .clip(RoundedCornerShape(CORNER_SMALL))
-                                .align(Alignment.TopEnd),
-                            painter = painterResource(R.drawable.ic_videocam),
-                            tint = White,
-                            contentDescription = "Playable a theme"
-                        )
-                    }
-                }
-                if (isBigger) {
-                    onThemeSelected(theme)
-                }
-            } else {
-                Spacer(modifier = Modifier.width(themeSpace))
-            }
-        })
-}
-
-private fun calculateImageSize(isTablet: Boolean, isBigger: Boolean): Pair<Dp, Dp> {
-    return if (isTablet) {
-        if (isBigger) 180.dp to 190.dp else 170.dp to 180.dp
-    } else {
-        if (isBigger) 100.dp to 110.dp else 80.dp to 90.dp
     }
 }

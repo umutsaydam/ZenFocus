@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +48,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.common.util.Log
 import com.google.android.gms.ads.AdSize
 import com.umutsaydam.zenfocus.presentation.viewmodels.PomodoroViewModel
 import com.umutsaydam.zenfocus.domain.model.TaskModel
@@ -54,7 +56,7 @@ import com.umutsaydam.zenfocus.presentation.common.CustomAlertDialog
 import com.umutsaydam.zenfocus.presentation.common.StatusBarSwitcher
 import com.umutsaydam.zenfocus.presentation.home.components.AddToDo
 import com.umutsaydam.zenfocus.presentation.home.components.BottomSheetContent
-import com.umutsaydam.zenfocus.presentation.home.components.CircularProgressWithText
+import com.umutsaydam.zenfocus.presentation.common.CircularProgressWithText
 import com.umutsaydam.zenfocus.presentation.home.components.CustomBottomSheet
 import com.umutsaydam.zenfocus.presentation.home.components.CustomFab
 import com.umutsaydam.zenfocus.presentation.home.components.FocusControlButtons
@@ -91,6 +93,8 @@ fun HomeScreen(
     val adState by homeViewModel.adState.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
     val navigationEvent by homeViewModel.navigationEvent.collectAsState()
+    val currentProgressTrackColor by pomodoroViewModel.currentProgressTrackColor.collectAsState()
+    val currentTextColor by pomodoroViewModel.currentTextColor.collectAsState()
 
     LaunchedEffect(homeUiState.uiMessage) {
         homeUiState.uiMessage?.let { message ->
@@ -165,12 +169,16 @@ fun HomeScreen(
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            HomeCircularProgress(
-                remainingPercent = pomodoroUiState.remainingPercent,
-                remainingTime = pomodoroUiState.remainingTime,
-                isWorking = pomodoroUiState.isWorkingSession
-            )
+            Log.d("R/T", "${currentProgressTrackColor == null} ${currentTextColor == null}")
+            if(currentProgressTrackColor != null && currentTextColor != null){
+                HomeCircularProgress(
+                    remainingPercent = pomodoroUiState.remainingPercent,
+                    remainingTime = pomodoroUiState.remainingTime,
+                    isWorking = pomodoroUiState.isWorkingSession,
+                    progressColor = currentProgressTrackColor!!.color,
+                    textColor = currentTextColor!!.color
+                )
+            }
 
             Spacer(modifier = Modifier.height(SPACE_MEDIUM))
 
@@ -375,13 +383,21 @@ fun FocusControlButtonGroup(
 
 @Composable
 fun HomeCircularProgress(
-    remainingPercent: Float, remainingTime: String, isWorking: Boolean
+    remainingPercent: Float,
+    remainingTime: String,
+    isWorking: Boolean,
+    progressColor: Color,
+    textColor: Color
 ) {
     Box(
         contentAlignment = Alignment.Center
     ) {
         CircularProgressWithText(
-            progress = remainingPercent, isWorking = isWorking, text = remainingTime
+            progress = remainingPercent,
+            isWorking = isWorking,
+            progressColor = progressColor,
+            text = remainingTime,
+            textColor = textColor
         )
     }
 }

@@ -190,6 +190,13 @@ fun SettingsScreen(
                         contentDesc = "Select a theme for the focus mode"
                     )
                     BaseListItem(
+                        title = "Color Selection",
+                        description = "Select progress bar and text color",
+                        onClick = { navController.safeNavigate(Route.ColorSelection.route) },
+                        iconRes = R.drawable.ic_palette,
+                        contentDesc = "Select progress bar and text color"
+                    )
+                    BaseListItem(
                         title = stringResource(R.string.change_the_app_language),
                         description = "Change the app language",
                         onClick = { navController.safeNavigate(Route.AppLanguage.route) },

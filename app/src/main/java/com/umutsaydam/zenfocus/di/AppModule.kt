@@ -73,6 +73,10 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.SaveApp
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appLangCases.SaveAppLang
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.ReadAvailableForReview
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.SaveAvailableForReview
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.breakSessionTextColorCases.ReadBreakSessionTextColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.breakSessionTextColorCases.SaveBreakSessionTextColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.breakSessionTrackColorCases.ReadBreakSessionTrackColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.breakSessionTrackColorCases.SaveBreakSessionTrackColor
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.ReadFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.SaveFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.ReadPomodoroBreakDuration
@@ -89,6 +93,10 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.timeOutRingerStateCas
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.SaveUserId
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.SaveUserType
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibrateState
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.workSessionTextColorCases.ReadWorkSessionTextColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.workSessionTextColorCases.SaveWorkSessionTextColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.workSessionTrackColorCases.ReadWorkSessionTrackColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.workSessionTrackColorCases.SaveWorkSessionTrackColor
 import com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions.PomodoroSessionsUseCases
 import com.umutsaydam.zenfocus.domain.usecases.pomodoroSessions.PomodoroSessionsUseCasesImpl
 import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
@@ -157,7 +165,15 @@ object AppModule {
             savePomodoroWorkDuration = SavePomodoroWorkDuration(localUserManager),
             readPomodoroWorkDuration = ReadPomodoroWorkDuration(localUserManager),
             saveAvailableForReview = SaveAvailableForReview(localUserManager),
-            readAvailableForReview = ReadAvailableForReview(localUserManager)
+            readAvailableForReview = ReadAvailableForReview(localUserManager),
+            saveWorkSessionTrackColor = SaveWorkSessionTrackColor(localUserManager),
+            readWorkSessionTrackColor = ReadWorkSessionTrackColor(localUserManager),
+            saveBreakSessionTrackColor = SaveBreakSessionTrackColor(localUserManager),
+            readBreakSessionTrackColor = ReadBreakSessionTrackColor(localUserManager),
+            saveWorkSessionTextColor = SaveWorkSessionTextColor(localUserManager),
+            readWorkSessionTextColor = ReadWorkSessionTextColor(localUserManager),
+            saveBreakSessionTextColor = SaveBreakSessionTextColor(localUserManager),
+            readBreakSessionTextColor = ReadBreakSessionTextColor(localUserManager)
         )
     }
 
