@@ -1,5 +1,6 @@
 package com.umutsaydam.zenfocus.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.umutsaydam.zenfocus.data.foregroundService.PomodoroForegroundService
@@ -15,7 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -64,20 +65,21 @@ class PomodoroViewModel @Inject constructor(
 
     private fun initColorsAndSetCurrent() {
         viewModelScope.launch {
-            val workTrackColorId = localUserDataStoreCases.readWorkSessionTrackColor().first()
-            val workTextColorId = localUserDataStoreCases.readWorkSessionTextColor().first()
-            val breakTrackColorId = localUserDataStoreCases.readBreakSessionTrackColor().first()
-            val breakTextColorId = localUserDataStoreCases.readBreakSessionTextColor().first()
-
-            setDefaultWorkSessionTrackColor(workTrackColorId)
-            setDefaultWorkSessionTextColor(workTextColorId)
-            setDefaultBreakSessionTrackColor(breakTrackColorId)
-            setDefaultBreakSessionTextColor(breakTextColorId)
-
-            setCurrentProgressAndTextColor()
+            combine(
+                localUserDataStoreCases.readWorkSessionTrackColor(),
+                localUserDataStoreCases.readWorkSessionTextColor(),
+                localUserDataStoreCases.readBreakSessionTrackColor(),
+                localUserDataStoreCases.readBreakSessionTextColor()
+            ) { workTrack, workText, breakTrack, breakText ->
+                setDefaultWorkSessionTrackColor(workTrack)
+                setDefaultWorkSessionTextColor(workText)
+                setDefaultBreakSessionTrackColor(breakTrack)
+                setDefaultBreakSessionTextColor(breakText)
+            }.collectLatest {
+                setCurrentProgressAndTextColor()
+            }
         }
     }
-
 
     fun setTimer() {
         if (PomodoroForegroundService.isServiceRunning) {
@@ -227,10 +229,14 @@ class PomodoroViewModel @Inject constructor(
     private fun setCurrentProgressAndTextColor() {
         viewModelScope.launch {
             pomodoroManagerUseCase.isWorkingSession().collectLatest { isWorking ->
-                if(isWorking){
+                if (isWorking) {
                     _currentProgressTrackColor.value = _defaultWorkSessionTrackColor.value
+                    Log.d(
+                        "R/T",
+                        "_currentProgressTrackColor.value: ${_currentProgressTrackColor.value}"
+                    )
                     _currentTextColor.value = _defaultWorkSessionTextColor.value
-                }else{
+                } else {
                     _currentProgressTrackColor.value = _defaultBreakSessionTrackColor.value
                     _currentTextColor.value = _defaultBreakSessionTextColor.value
                 }
@@ -249,7 +255,6 @@ class PomodoroViewModel @Inject constructor(
     private fun setDefaultBreakSessionTextColor(breakTextColorId: Int) {
         _defaultBreakSessionTextColor.value = ProgressColor.fromId(breakTextColorId)
     }
-
 
     private fun setDefaultBreakSessionTrackColor(breakTrackColorId: Int) {
         _defaultBreakSessionTrackColor.value = ProgressColor.fromId(breakTrackColorId)

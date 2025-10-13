@@ -3,6 +3,7 @@ package com.umutsaydam.zenfocus.presentation.home
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.WindowMetrics
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -48,7 +49,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.media3.common.util.Log
 import com.google.android.gms.ads.AdSize
 import com.umutsaydam.zenfocus.presentation.viewmodels.PomodoroViewModel
 import com.umutsaydam.zenfocus.domain.model.TaskModel
