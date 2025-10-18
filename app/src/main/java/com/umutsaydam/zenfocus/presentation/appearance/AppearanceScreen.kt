@@ -56,6 +56,7 @@ import com.umutsaydam.zenfocus.ui.theme.SurfaceContainerLow
 import com.umutsaydam.zenfocus.ui.theme.White
 import com.umutsaydam.zenfocus.util.Constants.THEME_TYPE_IMAGE
 import com.umutsaydam.zenfocus.util.Constants.THEME_TYPE_VIDEO
+import com.umutsaydam.zenfocus.util.SafeClickHelper
 import com.umutsaydam.zenfocus.util.popBackStackOrIgnore
 
 @Composable
@@ -112,11 +113,13 @@ fun AppearanceScreen(
         }, containerColor = Color.Transparent, actions = {
             IconButton(onClick = remember {
                 {
-                    if (appearanceViewModel.isConnected()) {
-                        if (appearanceViewModel.willShowAd()) {
-                            appearanceViewModel.showRewardedAd()
-                        } else {
-                            appearanceViewModel.saveTheme()
+                    if (SafeClickHelper.canClick()) {
+                        if (appearanceViewModel.isConnected()) {
+                            if (appearanceViewModel.willShowAd()) {
+                                appearanceViewModel.showRewardedAd()
+                            } else {
+                                appearanceViewModel.saveTheme()
+                            }
                         }
                     }
                 }
