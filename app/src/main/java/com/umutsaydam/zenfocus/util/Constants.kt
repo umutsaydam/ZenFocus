@@ -18,6 +18,10 @@ object Constants {
     const val DEFAULT_THEME = "default_theme.jpg"
     const val POMODORO_SERVICE_CHANNEL_ID = "Pomodoro_Foreground_Service"
     const val AVAILABLE_FOR_REVIEW = "Available_For_Review"
+    const val WORK_SESSION_TRACK_COLOR_ID = "Work_Session_Track_Color_Id"
+    const val BREAK_SESSION_TRACK_COLOR_ID = "Break_Session_Track_Color_Id"
+    const val WORK_SESSION_TEXT_COLOR_ID = "Work_Session_Text_Color_Id"
+    const val BREAK_SESSION_TEXT_COLOR_ID = "Break_Session_Text_Color_Id"
     const val POMODORO_NOTIFICATION_ID = 1
     const val NONE = "None"
     const val THEME_TYPE_VIDEO = "video"
@@ -29,6 +33,10 @@ object Constants {
     const val DEFAULT_POMODORO_CYCLE = 4
     const val DEFAULT_POMODORO_WORK_DURATION = 25
     const val DEFAULT_POMODORO_BREAK_DURATION = 5
+    const val DEFAULT_WORK_SESSION_TRACK_COLOR_ID = 0
+    const val DEFAULT_BREAK_SESSION_TRACK_COLOR_ID = 0
+    const val DEFAULT_BREAK_SESSION_TEXT_COLOR_ID = 12
+    const val DEFAULT_WORK_SESSION_TEXT_COLOR_ID = 12
 
     // VIBRATION
     const val DEFAULT_VIBRATION_DURATION = 500L

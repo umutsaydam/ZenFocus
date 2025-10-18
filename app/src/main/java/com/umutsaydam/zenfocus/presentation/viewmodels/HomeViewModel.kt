@@ -17,6 +17,7 @@ import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
 import com.umutsaydam.zenfocus.presentation.home.components.BottomSheetContent
+import com.umutsaydam.zenfocus.presentation.navigation.Route
 import com.umutsaydam.zenfocus.util.Constants.NONE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,6 +60,9 @@ class HomeViewModel @Inject constructor(
 
     private val _adState = MutableStateFlow(GoogleBannerAdState())
     val adState: StateFlow<GoogleBannerAdState> = _adState
+
+    private val _navigationEvent = MutableStateFlow<Route?>(null)
+    val navigationEvent: StateFlow<Route?> = _navigationEvent
 
     init {
         getTasks()
@@ -218,6 +222,7 @@ class HomeViewModel @Inject constructor(
             }
         } else {
             updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
+            _navigationEvent.value = Route.Auth
         }
     }
 
@@ -246,5 +251,9 @@ class HomeViewModel @Inject constructor(
 
     fun clearUiMessage() {
         updateHomeUiState { copy(uiMessage = null) }
+    }
+
+    fun clearNavigationEvent(){
+        _navigationEvent.value = null
     }
 }

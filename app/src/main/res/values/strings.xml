@@ -99,4 +99,6 @@
     <string name="first_login_to_synchronize">To synchronize, you must first log in.</string>
     <string name="no_statistics_data">It seems there is no data stored on this device. Start a pomodoro run and get your stats, or if you have backed up data, you can try synchronizing it!</string>
     <string name="not_found_data">Data not found.</string>
+    <string name="work_session">Work Session</string>
+    <string name="break_session">Break Session</string>
 </resources>

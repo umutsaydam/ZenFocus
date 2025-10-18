@@ -23,4 +23,5 @@ sealed class Route(
             navArgument("shouldResend") { type = NavType.BoolType },
         )
     )
+    data object ColorSelection : Route("ColorSelections")
 }

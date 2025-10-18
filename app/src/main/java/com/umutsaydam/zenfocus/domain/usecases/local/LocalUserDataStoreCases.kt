@@ -11,6 +11,10 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.appEntryCases.SaveApp
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appLangCases.SaveAppLang
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.ReadAvailableForReview
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.appReviewCases.SaveAvailableForReview
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.breakSessionTextColorCases.ReadBreakSessionTextColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.breakSessionTextColorCases.SaveBreakSessionTextColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.breakSessionTrackColorCases.ReadBreakSessionTrackColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.breakSessionTrackColorCases.SaveBreakSessionTrackColor
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.ReadFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.focusSoundCases.SaveFocusSound
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.pomodoroBreakDurationCases.ReadPomodoroBreakDuration
@@ -26,6 +30,10 @@ import com.umutsaydam.zenfocus.domain.usecases.local.cases.timeOutRingerStateCas
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userIdCases.SaveUserId
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.userTypeCases.SaveUserType
 import com.umutsaydam.zenfocus.domain.usecases.local.cases.vibrateCases.SaveVibrateState
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.workSessionTextColorCases.ReadWorkSessionTextColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.workSessionTextColorCases.SaveWorkSessionTextColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.workSessionTrackColorCases.ReadWorkSessionTrackColor
+import com.umutsaydam.zenfocus.domain.usecases.local.cases.workSessionTrackColorCases.SaveWorkSessionTrackColor
 
 data class LocalUserDataStoreCases(
     val saveAppEntry: SaveAppEntry,
@@ -53,5 +61,13 @@ data class LocalUserDataStoreCases(
     val savePomodoroWorkDuration: SavePomodoroWorkDuration,
     val readPomodoroWorkDuration: ReadPomodoroWorkDuration,
     val saveAvailableForReview: SaveAvailableForReview,
-    val readAvailableForReview: ReadAvailableForReview
+    val readAvailableForReview: ReadAvailableForReview,
+    val saveWorkSessionTrackColor: SaveWorkSessionTrackColor,
+    val readWorkSessionTrackColor: ReadWorkSessionTrackColor,
+    val saveBreakSessionTrackColor: SaveBreakSessionTrackColor,
+    val readBreakSessionTrackColor: ReadBreakSessionTrackColor,
+    val saveWorkSessionTextColor: SaveWorkSessionTextColor,
+    val readWorkSessionTextColor: ReadWorkSessionTextColor,
+    val saveBreakSessionTextColor: SaveBreakSessionTextColor,
+    val readBreakSessionTextColor: ReadBreakSessionTextColor
 )

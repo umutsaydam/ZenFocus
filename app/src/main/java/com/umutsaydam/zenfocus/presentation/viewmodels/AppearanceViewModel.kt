@@ -142,7 +142,8 @@ class AppearanceViewModel @Inject constructor(
     }
 
     fun willShowAd(): Boolean {
-        return _userType.value != UserTypeEnum.AD_FREE_USER.type
+        return false
+//        return _userType.value != UserTypeEnum.AD_FREE_USER.type
     }
 
     fun showRewardedAd() {

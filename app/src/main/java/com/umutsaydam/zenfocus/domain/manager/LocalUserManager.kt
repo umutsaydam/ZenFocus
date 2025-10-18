@@ -40,4 +40,16 @@ interface LocalUserManager {
 
     suspend fun saveAvailableForReview(isAvailable: Boolean)
     fun readAvailableForReview(): Flow<Boolean>
+
+    suspend fun saveWorkSessionTrackColorId(workSessionTrackColorId: Int)
+    fun readWorkSessionTrackColorId(): Flow<Int>
+
+    suspend fun saveBreakSessionTrackColorId(breakSessionTrackColorId: Int)
+    fun readBreakSessionTrackColorId(): Flow<Int>
+
+    suspend fun saveWorkSessionTextColorId(workSessionTextColorId: Int)
+    fun readWorkSessionTextColorId(): Flow<Int>
+
+    suspend fun saveBreakSessionTextColorId(breakSessionTextColorId: Int)
+    fun readBreakSessionTextColorId(): Flow<Int>
 }

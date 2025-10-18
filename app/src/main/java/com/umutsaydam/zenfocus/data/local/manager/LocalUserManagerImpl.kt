@@ -12,9 +12,13 @@ import com.umutsaydam.zenfocus.domain.manager.LocalUserManager
 import com.umutsaydam.zenfocus.util.Constants
 import com.umutsaydam.zenfocus.util.Constants.APP_ENTRY
 import com.umutsaydam.zenfocus.util.Constants.APP_LANG_ENGLISH
+import com.umutsaydam.zenfocus.util.Constants.DEFAULT_BREAK_SESSION_TRACK_COLOR_ID
+import com.umutsaydam.zenfocus.util.Constants.DEFAULT_BREAK_SESSION_TEXT_COLOR_ID
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_POMODORO_BREAK_DURATION
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_POMODORO_CYCLE
 import com.umutsaydam.zenfocus.util.Constants.DEFAULT_POMODORO_WORK_DURATION
+import com.umutsaydam.zenfocus.util.Constants.DEFAULT_WORK_SESSION_TRACK_COLOR_ID
+import com.umutsaydam.zenfocus.util.Constants.DEFAULT_WORK_SESSION_TEXT_COLOR_ID
 import com.umutsaydam.zenfocus.util.Constants.NONE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -178,6 +182,59 @@ class LocalUserManagerImpl(
             preferences[PreferencesKeys.AVAILABLE_FOR_REVIEW] ?: true
         }
     }
+
+    override suspend fun saveWorkSessionTrackColorId(workSessionTrackColorId: Int) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.WORK_SESSION_TRACK_COLOR_ID] = workSessionTrackColorId
+        }
+    }
+
+    override fun readWorkSessionTrackColorId(): Flow<Int> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.WORK_SESSION_TRACK_COLOR_ID]
+                ?: DEFAULT_WORK_SESSION_TRACK_COLOR_ID
+        }
+    }
+
+    override suspend fun saveBreakSessionTrackColorId(breakSessionTrackColorId: Int) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.BREAK_SESSION_TRACK_COLOR_ID] = breakSessionTrackColorId
+        }
+    }
+
+    override fun readBreakSessionTrackColorId(): Flow<Int> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.BREAK_SESSION_TRACK_COLOR_ID]
+                ?: DEFAULT_BREAK_SESSION_TRACK_COLOR_ID
+        }
+    }
+
+    override suspend fun saveWorkSessionTextColorId(workSessionTextColorId: Int) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.WORK_TEXT_SESSION_COLOR_ID] = workSessionTextColorId
+        }
+    }
+
+    override fun readWorkSessionTextColorId(): Flow<Int> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.WORK_TEXT_SESSION_COLOR_ID]
+                ?: DEFAULT_WORK_SESSION_TEXT_COLOR_ID
+        }
+    }
+
+    override suspend fun saveBreakSessionTextColorId(breakSessionTextColorId: Int) {
+        context.dataStore.edit { settings ->
+            settings[PreferencesKeys.BREAK_TEXT_SESSION_COLOR_ID] =
+                breakSessionTextColorId
+        }
+    }
+
+    override fun readBreakSessionTextColorId(): Flow<Int> {
+        return context.dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.BREAK_TEXT_SESSION_COLOR_ID]
+                ?: DEFAULT_BREAK_SESSION_TEXT_COLOR_ID
+        }
+    }
 }
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = APP_ENTRY)
@@ -195,4 +252,12 @@ private object PreferencesKeys {
     val POMODORO_WORK_DURATION = intPreferencesKey(name = Constants.POMODORO_WORK_DURATION)
     val POMODORO_BREAK_DURATION = intPreferencesKey(name = Constants.POMODORO_BREAK_DURATION)
     val AVAILABLE_FOR_REVIEW = booleanPreferencesKey(name = Constants.AVAILABLE_FOR_REVIEW)
+    val WORK_SESSION_TRACK_COLOR_ID =
+        intPreferencesKey(name = Constants.WORK_SESSION_TRACK_COLOR_ID)
+    val BREAK_SESSION_TRACK_COLOR_ID =
+        intPreferencesKey(name = Constants.BREAK_SESSION_TRACK_COLOR_ID)
+    val WORK_TEXT_SESSION_COLOR_ID =
+        intPreferencesKey(name = Constants.WORK_SESSION_TEXT_COLOR_ID)
+    val BREAK_TEXT_SESSION_COLOR_ID =
+        intPreferencesKey(name = Constants.BREAK_SESSION_TEXT_COLOR_ID)
 }
