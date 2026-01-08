@@ -99,4 +99,10 @@
     <string name="not_found_data">未找到数据。</string>
     <string name="work_session">工作时段</string>
     <string name="break_session">休息时段</string>
+    <string name="paywall_title">终身享受无广告专注体验</string>
+    <string name="paywall_description">通过一次性购买支持 ZenFocus，享受无广告、纯净且无干扰的专注体验。</string>
+    <string name="message_continue">继续</string>
+    <string name="paywall_sub_description">一次性付费。您的 ZenFocus 高级会员资格终身有效。</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="restore">恢复购买</string>
 </resources>

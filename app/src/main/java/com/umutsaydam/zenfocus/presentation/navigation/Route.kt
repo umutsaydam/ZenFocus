@@ -24,4 +24,5 @@ sealed class Route(
         )
     )
     data object ColorSelection : Route("ColorSelections")
+    data object Paywall : Route("Paywall")
 }

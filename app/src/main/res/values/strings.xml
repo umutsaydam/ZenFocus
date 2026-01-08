@@ -101,4 +101,17 @@
     <string name="not_found_data">Data not found.</string>
     <string name="work_session">Work Session</string>
     <string name="break_session">Break Session</string>
+    <string name="paywall_title">Focus Without Ads, For Life</string>
+    <string name="paywall_description">Support ZenFocus with a one-time purchase and enjoy an ad-free, pure, and uninterrupted focus experience.</string>
+    <string name="message_continue">Continue</string>
+    <string name="paywall_sub_description">One-time payment. Your ZenFocus Premium membership is lifetime.</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="restore">Restore</string>
+
+    <string-array name="paywall_features">
+        <item>All ads removed</item>
+        <item>Valid for lifetime</item>
+        <item>One-time payment</item>
+        <item>Faster and cleaner experience</item>
+    </string-array>
 </resources>

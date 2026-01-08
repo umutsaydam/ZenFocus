@@ -11,7 +11,8 @@ interface GoogleProductsInAppRepository {
     fun setPurchasesUpdatedListener()
     fun buildBillingClient()
     fun startConnection(activity: Activity)
-    fun queryProductDetails()
-    fun launchPurchaseFlow(productDetails: ProductDetails)
+    fun queryPurchaseAsync()
+    suspend fun queryProductDetails(): List<ProductDetails>
+    fun launchPurchaseFlow(productDetails: ProductDetails, activity: Activity)
     fun handlePurchase(purchase: Purchase)
 }

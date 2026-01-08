@@ -12,6 +12,7 @@ import com.umutsaydam.zenfocus.presentation.colorSelection.ColorSelection
 import com.umutsaydam.zenfocus.presentation.focusMode.FocusModeScreen
 import com.umutsaydam.zenfocus.presentation.home.HomeScreen
 import com.umutsaydam.zenfocus.presentation.navTransitionManager.NavigationTransitionManager
+import com.umutsaydam.zenfocus.presentation.paywall.PaywallScreen
 import com.umutsaydam.zenfocus.presentation.policy.PolicyScreen
 import com.umutsaydam.zenfocus.presentation.settings.SettingsScreen
 import com.umutsaydam.zenfocus.presentation.statistics.StatisticsScreen
@@ -170,8 +171,21 @@ fun MainNavHost() {
                 val fromRoute = navController.previousBackStackEntry?.destination?.route
                 navTransitionManager.getExitTransition(Route.ColorSelection.route, fromRoute)
             }
-        ){
+        ) {
             ColorSelection(navController = navController)
+        }
+        composable(
+            route = Route.Paywall.route,
+            enterTransition = {
+                val fromRoute = navController.previousBackStackEntry?.destination?.route
+                navTransitionManager.getEnterTransition(Route.Paywall.route, fromRoute)
+            },
+            exitTransition = {
+                val fromRoute = navController.previousBackStackEntry?.destination?.route
+                navTransitionManager.getExitTransition(Route.Paywall.route, fromRoute)
+            }
+        ) {
+            PaywallScreen(navController = navController)
         }
     }
 }
