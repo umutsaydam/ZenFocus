@@ -16,8 +16,8 @@ android {
         applicationId = "com.umutsaydam.zenfocus"
         minSdk = 24
         targetSdk = 35
-        versionCode = 37
-        versionName = "1.0.5"
+        versionCode = 38
+        versionName = "1.0.8"
 
         val properties: Properties = Properties()
         properties.load(
