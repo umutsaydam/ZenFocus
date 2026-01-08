@@ -1,8 +1,7 @@
 package com.umutsaydam.zenfocus.presentation.common
 
-import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -10,9 +9,11 @@ import androidx.core.view.WindowCompat
 fun StatusBarSwitcher(
     enableDarkBg: Boolean = true
 ) {
-    val window = (LocalContext.current as Activity).window
-    val view = LocalView.current
-    val windowInsetsController = WindowCompat.getInsetsController(window, view)
-    windowInsetsController.isAppearanceLightNavigationBars = enableDarkBg
-    windowInsetsController.isAppearanceLightStatusBars = enableDarkBg
+    LocalActivity.current?.let {
+        val window = it.window
+        val view = LocalView.current
+        val windowInsetsController = WindowCompat.getInsetsController(window, view)
+        windowInsetsController.isAppearanceLightNavigationBars = enableDarkBg
+        windowInsetsController.isAppearanceLightStatusBars = enableDarkBg
+    }
 }

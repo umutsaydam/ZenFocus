@@ -99,4 +99,10 @@
     <string name="not_found_data">Veri bulunamadı.</string>
     <string name="work_session">Çalışma Oturumu</string>
     <string name="break_session">Mola Oturumu</string>
+    <string name="paywall_title">Ömür Boyu Reklamsız Odaklanın</string>
+    <string name="paywall_description">ZenFocus’u tek seferlik bir satın alma ile destekleyin; reklamsız, saf ve kesintisiz bir odaklanma deneyiminin tadını çıkarın.</string>
+    <string name="message_continue">Devam Et</string>
+    <string name="paywall_sub_description">Tek seferlik ödeme. ZenFocus Premium üyeliğiniz ömür boyu geçerlidir.</string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+    <string name="restore">Geri Yükle</string>
 </resources>

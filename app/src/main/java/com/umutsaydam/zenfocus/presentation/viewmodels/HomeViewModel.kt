@@ -1,18 +1,13 @@
 package com.umutsaydam.zenfocus.presentation.viewmodels
 
-import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.umutsaydam.zenfocus.R
-import com.umutsaydam.zenfocus.domain.model.Resource
 import com.umutsaydam.zenfocus.domain.model.TaskModel
-import com.umutsaydam.zenfocus.domain.model.UserTypeEnum
 import com.umutsaydam.zenfocus.domain.usecases.local.FocusSoundUseCases
 import com.umutsaydam.zenfocus.domain.usecases.local.LocalUserDataStoreCases
 import com.umutsaydam.zenfocus.domain.usecases.local.NetworkCheckerUseCases
-import com.umutsaydam.zenfocus.domain.usecases.remote.AwsAuthCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleAdUseCases
 import com.umutsaydam.zenfocus.domain.usecases.remote.GoogleProductsInAppUseCases
 import com.umutsaydam.zenfocus.domain.usecases.tasks.ToDoUsesCases
@@ -29,7 +24,7 @@ import javax.inject.Inject
 
 data class HomeUiState(
     val userId: String = "",
-    val userType: String? = null,
+    val isUserPremium: Boolean? = null,
     val toDoList: List<TaskModel> = emptyList(),
     val sliderPosition: Float = 1f,
     val bottomSheetContent: BottomSheetContent? = null,
@@ -48,7 +43,6 @@ class HomeViewModel @Inject constructor(
     private val localUserDataStoreCases: LocalUserDataStoreCases,
     private val focusSoundUseCases: FocusSoundUseCases,
     private val checkerUseCases: NetworkCheckerUseCases,
-    private val authCases: AwsAuthCases,
     private val googleProductsInAppUseCases: GoogleProductsInAppUseCases,
     private val googleAdUseCases: GoogleAdUseCases
 ) : ViewModel() {
@@ -65,11 +59,19 @@ class HomeViewModel @Inject constructor(
     val navigationEvent: StateFlow<Route?> = _navigationEvent
 
     init {
+        getUserPremiumState()
         getTasks()
         getUserId()
-        getUserType()
         getDefaultFocusSound()
         getSliderPosition()
+    }
+
+    private fun getUserPremiumState() {
+        viewModelScope.launch {
+            googleProductsInAppUseCases.getPurchaseFlow().collectLatest { isPremium ->
+                updateHomeUiState { copy(isUserPremium = isPremium) }
+            }
+        }
     }
 
     private fun updateHomeUiState(update: HomeUiState.() -> HomeUiState) {
@@ -160,43 +162,10 @@ class HomeViewModel @Inject constructor(
         return checkerUseCases.isConnected()
     }
 
-    fun shouldShowAd(): Boolean {
-        return homeUiState.value.userType != UserTypeEnum.AD_FREE_USER.type
-    }
-
-    private fun getUserType() {
-        viewModelScope.launch {
-            localUserDataStoreCases.readUserType().collectLatest { type ->
-                updateHomeUiState { copy(userType = type) }
-            }
-        }
-    }
-
     private fun getUserId() {
         viewModelScope.launch {
             localUserDataStoreCases.readUserId().collectLatest { id ->
                 updateHomeUiState { copy(userId = id) }
-            }
-        }
-    }
-
-    private fun changeUserTypeAsAdFree() {
-        viewModelScope.launch {
-            val adFreeUser = UserTypeEnum.AD_FREE_USER.type
-            if (homeUiState.value.userId.isNotEmpty() && homeUiState.value.userType != adFreeUser) {
-                val result = authCases.updateUserInfo(
-                    userId = homeUiState.value.userId, userType = adFreeUser
-                )
-
-                when (result) {
-                    is Resource.Success -> {
-                        updateHomeUiState { copy(uiMessage = R.string.became_ad_free_user) }
-                    }
-
-                    is Resource.Error -> {
-                        updateHomeUiState { copy(uiMessage = R.string.error_occurred_ad_free) }
-                    }
-                }
             }
         }
     }
@@ -207,23 +176,6 @@ class HomeViewModel @Inject constructor(
         }, onFirstAdRequested = { isFirstAdRequested ->
             _adState.value = _adState.value.copy(isFirstAdRequested = isFirstAdRequested)
         })
-    }
-
-    fun startProductsInApp(activity: Activity) {
-        if (_homeUiState.value.userId.isNotEmpty()) {
-            googleProductsInAppUseCases.startConnection(activity)
-
-            viewModelScope.launch {
-                googleProductsInAppUseCases.observePurchaseStateFlow().collect { purchaseState ->
-                    if (purchaseState) {
-                        changeUserTypeAsAdFree()
-                    }
-                }
-            }
-        } else {
-            updateHomeUiState { copy(uiMessage = R.string.must_sign_in_remove_ad) }
-            _navigationEvent.value = Route.Auth
-        }
     }
 
     private fun setBottomSheetContent(content: BottomSheetContent) {
@@ -253,7 +205,7 @@ class HomeViewModel @Inject constructor(
         updateHomeUiState { copy(uiMessage = null) }
     }
 
-    fun clearNavigationEvent(){
+    fun clearNavigationEvent() {
         _navigationEvent.value = null
     }
 }

@@ -350,9 +350,12 @@ object AppModule {
     ): NetworkCheckerRepository = NetworkCheckerRepositoryImpl(application)
 
     @Provides
+    @Singleton
     fun provideGoogleProductsInAppRepository(
-        @ApplicationContext context: Context
-    ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(context)
+        @ApplicationContext context: Context,
+        authCases: AwsAuthCases,
+        localUserDataStoreCases: LocalUserDataStoreCases
+    ): GoogleProductsInAppRepository = GoogleProductsInAppRepositoryImpl(context, authCases, localUserDataStoreCases)
 
 
     @Provides

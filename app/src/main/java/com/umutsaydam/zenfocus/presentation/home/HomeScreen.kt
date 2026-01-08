@@ -104,8 +104,11 @@ fun HomeScreen(
     }
 
     LaunchedEffect(navigationEvent) {
-        when(navigationEvent){
-            Route.Auth -> { navController.safeNavigate(Route.Auth.route) }
+        when (navigationEvent) {
+            Route.Auth -> {
+                navController.safeNavigate(Route.Auth.route)
+            }
+
             else -> {}
         }
         homeViewModel.clearNavigationEvent()
@@ -134,15 +137,16 @@ fun HomeScreen(
         }
     }
 
-    Scaffold(modifier = modifier
-        .fillMaxSize()
-        .background(
-            color = SurfaceContainerLow
-        ), containerColor = Transparent, topBar = {
-        HomeAppBar(
-            navController = navController, viewModel = homeViewModel
-        )
-    }) { paddingValues ->
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                color = SurfaceContainerLow
+            ), containerColor = Transparent, topBar = {
+            HomeAppBar(
+                navController = navController, homeUiState
+            )
+        }) { paddingValues ->
 
         StopPomodoroDialog(showDialog = showDialog) { confirmedState ->
             if (confirmedState) {
@@ -170,7 +174,7 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Log.d("R/T", "${currentProgressTrackColor == null} ${currentTextColor == null}")
-            if(currentProgressTrackColor != null && currentTextColor != null){
+            if (currentProgressTrackColor != null && currentTextColor != null) {
                 HomeCircularProgress(
                     remainingPercent = pomodoroUiState.remainingPercent,
                     remainingTime = pomodoroUiState.remainingTime,
@@ -182,7 +186,8 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(SPACE_MEDIUM))
 
-            FocusControlButtonGroup(isTimerRunning = pomodoroUiState.isTimerRunning,
+            FocusControlButtonGroup(
+                isTimerRunning = pomodoroUiState.isTimerRunning,
                 navController = navController,
                 pomodoroViewModel = pomodoroViewModel,
                 homeViewModel = homeViewModel,
@@ -199,9 +204,10 @@ fun HomeScreen(
                 viewModel = homeViewModel, adState = adState
             )
 
-            BannerAdView(
-                viewModel = homeViewModel, adState = adState
-            )
+            if (homeUiState.isUserPremium == false) {
+                Log.d("R/T", "homeUiState.userType.isNullOrEmpty(): ${homeUiState.isUserPremium}")
+                BannerAdView(viewModel = homeViewModel, adState = adState)
+            }
         }
     }
 }
@@ -265,10 +271,8 @@ fun BottomSheetContentHandler(
 
 @Composable
 fun HomeAppBar(
-    navController: NavHostController, viewModel: HomeViewModel
+    navController: NavHostController, homeUiState: HomeUiState
 ) {
-    val context = LocalContext.current
-
     IconWithTopAppBar(title = {
 
     }, containerColor = Transparent, navigationIcon = {
@@ -282,12 +286,15 @@ fun HomeAppBar(
             )
         }
     }, actions = {
-        if (viewModel.shouldShowAd()) {
+        if (homeUiState.isUserPremium == false) {
             TextButton(onClick = {
+                /*
                 val activity = context as? Activity
                 activity?.let {
                     viewModel.startProductsInApp(it)
                 }
+                */
+                navController.safeNavigate(Route.Paywall.route)
             }) {
                 Text(
                     text = stringResource(R.string.remove_ad),
@@ -303,7 +310,8 @@ fun StopPomodoroDialog(
     showDialog: Boolean, isConfirmed: (Boolean) -> Unit
 ) {
     if (showDialog) {
-        CustomAlertDialog(icon = painterResource(R.drawable.ic_timer_off),
+        CustomAlertDialog(
+            icon = painterResource(R.drawable.ic_timer_off),
             title = stringResource(R.string.stop_pomodoro),
             text = stringResource(R.string.pomodoro_will_stop),
             isConfirmed = { confirmedState ->
@@ -317,7 +325,8 @@ fun DeleteTaskDialog(
     showDialog: Boolean, taskModel: TaskModel?, isConfirmed: (Boolean) -> Unit
 ) {
     if (showDialog && taskModel != null) {
-        CustomAlertDialog(icon = painterResource(R.drawable.ic_delete),
+        CustomAlertDialog(
+            icon = painterResource(R.drawable.ic_delete),
             title = stringResource(R.string.delete_task),
             text = stringResource(R.string.task_will_delete),
             isConfirmed = { confirmedState ->
@@ -426,7 +435,8 @@ fun HomeFab(
         modifier = if (adState.isAdLoaded) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
     ) {
-        CustomFab(alignment = Alignment.BottomEnd,
+        CustomFab(
+            alignment = Alignment.BottomEnd,
             containerColor = OutLineVariant,
             fabIcon = painterResource(R.drawable.ic_add),
             contentDescription = stringResource(R.string.add_to_do_button),
@@ -440,7 +450,7 @@ fun HomeFab(
 fun BannerAdView(
     viewModel: HomeViewModel, adState: GoogleBannerAdState
 ) {
-    if (viewModel.isNetworkConnected() && viewModel.shouldShowAd() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
+    if (viewModel.isNetworkConnected() && (adState.isAdLoaded || !adState.isFirstAdRequested)) {
         val context = LocalContext.current
         val adSize: AdSize by remember { derivedStateOf { getAdSize(context) } }
 

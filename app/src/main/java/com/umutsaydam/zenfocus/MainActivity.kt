@@ -25,16 +25,21 @@ import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin
 import com.google.android.gms.ads.MobileAds
+import com.umutsaydam.zenfocus.domain.repository.remote.GoogleProductsInAppRepository
 import com.umutsaydam.zenfocus.presentation.navigation.MainNavHost
 import com.umutsaydam.zenfocus.presentation.viewmodels.MainActivityViewModel
 import com.umutsaydam.zenfocus.presentation.viewmodels.PomodoroViewModel
 import com.umutsaydam.zenfocus.ui.theme.ZenFocusTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var pomodoroViewModel: PomodoroViewModel
+
+    @Inject
+    lateinit var googleProductsInAppRepository: GoogleProductsInAppRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         actionBar?.hide()
         enableEdgeToEdge()
         initAmplify()
+        googleProductsInAppRepository.startConnection(this)
         initGoogleAds(this)
         setContent {
             ZenFocusTheme {
